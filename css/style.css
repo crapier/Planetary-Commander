@@ -1,0 +1,67 @@
+h1{
+	position: relative;
+	margin: 0px auto 0px auto;
+}
+
+.game{
+	/*box model*/
+	border: 1px solid #000000;
+	height: 800px;
+	width: 1000px;
+	margin: 10px auto 10px auto;
+	
+	/*position*/
+	position: relative;
+}
+
+.smallNode{
+	border: 1px solid #000000;
+	border-radius: 50%;
+	height: 20px;
+	width: 20px;
+	
+	position: relative;
+}
+
+.mediumNode{
+	border: 1px solid #000000;
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+	
+	position: relative;
+}
+
+.largeNode{
+	border: 1px solid #000000;
+	border-radius: 50%;
+	height: 100px;
+	width: 100px;
+	
+	position: absolute;
+}
+
+
+.largeNode:hover{
+	transition: all 200ms ease-in-out;
+}
+
+#middle{
+	top: 350px;
+	left: 450px;
+}
+
+#startingLeft{
+	top: 150px;
+	left: 200px;
+}
+
+#startingRight{
+	top: 200px;
+	left: 750px;
+}
+
+#startingBottom{
+	top: 600px;
+	left: 500px;
+}
