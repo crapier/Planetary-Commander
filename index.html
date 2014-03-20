@@ -8,11 +8,13 @@
 	<link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
 	
 	<script src="/socket.io/socket.io.js"></script>
+	<script src="/javascript/node.js"></script>
 	<script src="http://code.createjs.com/easeljs-0.7.1.min.js"></script>
 	
 	<script>
+		var stage;
 		function init() {
-			var stage = new createjs.Stage("pcgame");
+			stage = new createjs.Stage("pcgame");
 			
 			var circle = new createjs.Shape();
 			circle.graphics.beginStroke("black").drawCircle(0, 0, 50);

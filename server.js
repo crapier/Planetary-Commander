@@ -4,6 +4,8 @@ var app = require('http').createServer(handler);
 var io = require('socket.io').listen(app);
 // Allows access to local file system.
 var fs = require('fs');
+// Allows for parsing urls
+var url = require('url');
 
 // Listen on a high port.
 var listen_port = 61111;
@@ -12,7 +14,7 @@ console.log('HTTP Server is listening on port: ' + listen_port);
 
 // Handles HTTP requests.
 function handler(request, response) {
-	var path = request.url;
+	var path = url.parse(request.url).pathname;
 	switch (path) {
 		case '/':
 			response.writeHead(200, {'Content-Type': 'text/html'});
@@ -22,6 +24,12 @@ function handler(request, response) {
 		default:
 			if (/\.(css)$/.test(path)) {
 				response.writeHead(200, {'Content-Type': 'text/css'});
+				response.write(fs.readFileSync(__dirname + path, 'utf8'));
+				response.end();
+				break;
+			}
+			if (/\.(js)$/.test(path)) {
+				response.writeHead(200, {'Content-Type': 'application/x-javascript'});
 				response.write(fs.readFileSync(__dirname + path, 'utf8'));
 				response.end();
 				break;
