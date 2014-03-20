@@ -26,8 +26,8 @@ function handler(request, response) {
 				response.end();
 				break;
 			}
-			response.send(404, 'Could not find ' + path);
-			response.end();
+			response.writeHead(404);
+			return response.end('Could not find ' + path);
 			break;
 	}
 }
