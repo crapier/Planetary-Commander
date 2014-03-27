@@ -104,31 +104,31 @@ var update = function(owner, units, visible) {
 }
 
 var game_setup = function() {
-	nodes.push(new node(20, none, large, [15, 6, 8, 4, 14]));
-	nodes.push(new node(20, none, large, [5, 18, 7, 22, 10]));
-	nodes.push(new node(20, none, large, [11, 20, 9, 23, 12]));
-	nodes.push(new node(20, none, large, [17, 6, 16, 9, 21, 7]));
+	nodes.push(new node(20, none, large, [4, 6, 8, 14, 15]));
+	nodes.push(new node(20, none, large, [5, 7, 10, 18, 22]));
+	nodes.push(new node(20, none, large, [9, 11, 12, 20, 23]));
+	nodes.push(new node(20, none, large, [6, 7, 9, 16, 17, 21]));
 	nodes.push(new node(10, none, medium, [0, 13]));
-	nodes.push(new node(10, none, medium, [13, 1]));
+	nodes.push(new node(10, none, medium, [1, 13]));
 	nodes.push(new node(10, none, medium, [0, 3]));
 	nodes.push(new node(10, none, medium, [1, 3]));
 	nodes.push(new node(10, none, medium, [0, 19]));
 	nodes.push(new node(10, none, medium, [2, 3]));
 	nodes.push(new node(10, none, medium, [1, 24]));
-	nodes.push(new node(10, none, medium, [19, 2]));
+	nodes.push(new node(10, none, medium, [2, 19]));
 	nodes.push(new node(10, none, medium, [2, 24]));
-	nodes.push(new node(5, none, small, 580, 70, [4, 5]));
-	nodes.push(new node(5, none, small, 460, 150, [0, 17, 18]));
-	nodes.push(new node(5, none, small, 230, 230, [0, 16, 20]));
-	nodes.push(new node(5, none, small, 370, 270, [3, 15, 20]));
-	nodes.push(new node(5, none, small, 460, 240, [3, 14, 18]));
-	nodes.push(new node(5, none, small, 620, 210, [1, 14, 17]));
-	nodes.push(new node(5, none, small, 240, 430, [8, 11]));
-	nodes.push(new node(5, none, small, 370, 410, [2, 15, 16]));
-	nodes.push(new node(5, none, small, 540, 350, [3, 22, 23]));
-	nodes.push(new node(5, none, small, 660, 320, [1, 21, 23]));
-	nodes.push(new node(5, none, small, 620, 500, [2, 21, 22]));
-	nodes.push(new node(5, none, small, 820, 460, [10, 12]));
+	nodes.push(new node(5, none, small, [4, 5]));
+	nodes.push(new node(5, none, small, [0, 17, 18]));
+	nodes.push(new node(5, none, small, [0, 16, 20]));
+	nodes.push(new node(5, none, small, [3, 15, 20]));
+	nodes.push(new node(5, none, small, [3, 14, 18]));
+	nodes.push(new node(5, none, small, [1, 14, 17]));
+	nodes.push(new node(5, none, small, [8, 11]));
+	nodes.push(new node(5, none, small, [2, 15, 16]));
+	nodes.push(new node(5, none, small, [3, 22, 23]));
+	nodes.push(new node(5, none, small, [1, 21, 23]));
+	nodes.push(new node(5, none, small, [2, 21, 22]));
+	nodes.push(new node(5, none, small, [10, 12]));
 	
 	var client_1_start = Math.floor((Math.random()*3));
 	var client_2_start = Math.floor((Math.random()*3));

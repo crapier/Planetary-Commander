@@ -55,18 +55,18 @@ function create_lines() {
 }
 
 function create_nodes() {
-	nodes.push(new node(large, 200, 150, [15, 6, 8, 4, 14]));
-	nodes.push(new node(large, 850, 190, [5, 18, 7, 22, 10]));
-	nodes.push(new node(large, 470, 550, [11, 20, 9, 23, 12]));
-	nodes.push(new node(large, 490, 300, [17, 6, 16, 9, 21, 7]));
+	nodes.push(new node(large, 200, 150, [4, 6, 8, 14, 15]));
+	nodes.push(new node(large, 850, 190, [5, 7, 10, 18, 22]));
+	nodes.push(new node(large, 470, 550, [9, 11, 12, 20, 23]));
+	nodes.push(new node(large, 490, 300, [6, 7, 9, 16, 17, 21]));
 	nodes.push(new node(medium, 450, 100, [0, 13]));
-	nodes.push(new node(medium, 700, 80, [13, 1]));
+	nodes.push(new node(medium, 700, 80, [1, 13]));
 	nodes.push(new node(medium, 350, 220, [0, 3]));
 	nodes.push(new node(medium, 650, 270, [1, 3]));
 	nodes.push(new node(medium, 140, 340, [0, 19]));
 	nodes.push(new node(medium, 420, 390, [2, 3]));
 	nodes.push(new node(medium, 930, 360, [1, 24]));
-	nodes.push(new node(medium, 280, 540, [19, 2]));
+	nodes.push(new node(medium, 280, 540, [2, 19]));
 	nodes.push(new node(medium, 680, 520, [2, 24]));
 	nodes.push(new node(small, 580, 70, [4, 5]));
 	nodes.push(new node(small, 460, 150, [0, 17, 18]));
