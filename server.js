@@ -58,9 +58,9 @@ function handler(request, response) {
 	}
 }
 
-var large = 40;
-var medium = 20;
-var small = 13;
+var large = 10;
+var medium = 5;
+var small = 2;
 
 var none = 0;
 var player = 1;
@@ -83,10 +83,18 @@ var node = function(units, owner, size, adjacent) {
 	this.owner = owner;
 	this.size = size;
 	this.adjacent = adjacent;
+	this.generating = false;
 }
 
 node.prototype.generate = function() {
-
+	if(this.owner == client_1 || this.owner == client_2) {
+		if(this.generating) {
+			this.units = this.units + this.size;
+		}
+		else {
+			this.generating = true;
+		}
+	}
 }
 
 var update = function(owner, units, visible) {
@@ -130,8 +138,10 @@ var game_setup = function() {
 	
 	nodes[client_1_start].owner = client_1;
 	nodes[client_1_start].units = 50;
+	nodes[client_1_start].generating = true;
 	nodes[client_2_start].owner = client_2;
 	nodes[client_2_start].units = 50;
+	nodes[client_2_start].generating = true;
 }
 
 var send_updates = function() {
@@ -226,6 +236,7 @@ var calculate_movements = function(){
 			else if (client_1_incoming > nodes[i].units) {
 				nodes[i].units = client_1_incoming - nodes[i].units;
 				nodes[i].owner = client_1;
+				nodes[i].generating = false;
 			}
 			else {
 				nodes[i].units = nodes[i].units - client_1_incoming;
@@ -239,6 +250,7 @@ var calculate_movements = function(){
 			else if (client_2_incoming > nodes[i].units) {
 				nodes[i].units = client_2_incoming - nodes[i].units;
 				nodes[i].owner = client_2;
+				nodes[i].generating = false;
 			}
 			else {
 				nodes[i].units = nodes[i].units - client_2_incoming;
@@ -250,7 +262,6 @@ var calculate_movements = function(){
 		nodes[i].generate();
 	}
 	
-	console.log(nodes);
 	var client_1_holds = 0;
 	var client_2_holds = 0;
 	for(var i = 0; i < nodes.length; i++){
@@ -287,7 +298,9 @@ var movement_handler = function(message) {
 }
 
 var disconnect_handler = function() {
-	num_connected_clients--;
+	num_connected_clients = 0;
+	io.sockets.socket(client_1_socket_id).emit('results', "winner");
+	io.sockets.socket(client_2_socket_id).emit('results', "winner");
 	nodes = [];
 }
 
@@ -297,16 +310,21 @@ var connection_handler = function(client) {
 		client_1_socket_id = client.id;
 		game_setup();
 		num_connected_clients++;
+		client.on('movements', movement_handler);
+		client.on('disconnect', disconnect_handler);
 	}
-	else { 
+	else if (num_connected_clients == 1) { 
 		client.emit("client_id", client_2);
 		client_2_socket_id = client.id;
 		send_updates();
 		num_connected_clients++
+		client.on('movements', movement_handler);
+		client.on('disconnect', disconnect_handler);
+	}
+	else {
+		client.on('disconnect', function() {});
 	}
 	
-	client.on('movements', movement_handler);
-	client.on('disconnect', disconnect_handler);
 }
 
 io.sockets.on('connection', connection_handler);

@@ -3,6 +3,7 @@ var set_client_id = function(id) {
 }
 
 var update_handler = function(updates) {
+	console.log(updates);
 	for(var i = 0; i < updates.length; i++){
 		nodes[i].update(updates[i]);
 	}
@@ -10,7 +11,7 @@ var update_handler = function(updates) {
 	finish.shape.addEventListener("click", finish_click_listener);
 	movements = [];
 	for(var i = 0; i < nodes.length; i++) {
-		if(nodes[i].owner == player){
+		if(nodes[i].owner == player && nodes[i].visible == true){
 			nodes[i].shape.addEventListener("click", source_node_select);
 		}
 	}
@@ -38,7 +39,7 @@ var source_node_select = function(event) {
 	}
 	selected = event.currentTarget.node_id;
 	
-	nodes[selected].shape.graphics.clear().beginStroke("black").beginFill(visible_player).drawCircle(nodes[selected].x, nodes[selected].y, nodes[selected].size);
+	nodes[selected].shape.graphics.clear().setStrokeStyle(3).beginStroke("black").beginFill(visible_player).drawCircle(nodes[selected].x, nodes[selected].y, nodes[selected].size);
 	stage.update();
 
 	nodes[selected].shape.addEventListener("click", destination_node_select);
@@ -59,12 +60,19 @@ var destination_node_select = function(event) {
 	var destination = event.currentTarget.node_id;
 	if(selected != destination){
 		movements.push(new movement(selected, destination, Math.floor(percent.percent/100*nodes[selected].units)));
-		
 	}
 	
 	for(var i = 0; i < nodes.length; i++) {
-		if(nodes[i].owner == player){
-			nodes[i].shape.addEventListener("click", source_node_select);
+		if(nodes[i].owner == player && nodes[i].visible == true){
+			var movement_found = false;
+			for(var j = 0; j < movements.length; j++) {
+				if(movements[j].source == i) {
+					movement_found = true;
+				}
+			}
+			if(!movement_found){
+				nodes[i].shape.addEventListener("click", source_node_select);
+			}
 		}
 	}
 }
@@ -72,6 +80,12 @@ var destination_node_select = function(event) {
 var finish_click_listener = function() {
 	socket.emit("movements", {client_id:client_id, movements:movements});
 	finish.shape.removeEventListener("click", finish_click_listener);
+	
+	for(var i = 0; i < nodes.length; i++) {
+		if(nodes[i].owner == player){
+			nodes[i].shape.removeEventListener("click", source_node_select);
+		}
+	}
 }
 
 var percent_key_listener = function() {

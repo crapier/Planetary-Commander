@@ -18,7 +18,7 @@ var opponent = 2;
 var visible_player = "#0000FF";;
 var visible_opponent = "#FF0000";
 var visible_none = "#808080";
-var hidden_player = "#6666FF";;
+var hidden_player = "#FF6666";;
 var hidden_opponent = "#FF6666";
 var hidden_none = "#A6A6A6";
 
