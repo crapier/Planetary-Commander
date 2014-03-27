@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>Planetary Commander</title>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<link rel="stylesheet" href="/client/css/style.css" type="text/css" media="all" />
+	
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="http://code.createjs.com/easeljs-0.7.1.min.js"></script>
+	
+	<script src="/client/javascript/node.js"></script>
+	<script src="/client/javascript/percent.js"></script>
+	<script src="/client/javascript/finish.js"></script>
+	<script src="/client/javascript/movement.js"></script>
+	<script src="/client/javascript/setup.js"></script>
+	<script src="/client/javascript/listeners.js"></script>
+	
+	</head>
+	<body onLoad="initialize();" onkeydown="percent_key_listener()">
+	<h1>Planetary Commander</h1>
+	<div class="game" >
+		<canvas id="pcgame" width="1000" height="800"></canvas>	
+	</div>
+	</body>
+</html>
