@@ -26,8 +26,8 @@ var node = function(size, x, y, adjacent) {
 			default:
 		}
 		this.text = new createjs.Text(this.units, node_font, node_font_color);
-		this.text.x = x - this.text.getMeasuredWidth()/2;
-		this.text.y = y - this.text.getMeasuredHeight()/2;
+		this.text.x = this.x - this.text.getMeasuredWidth()/2;
+		this.text.y = this.y - this.text.getMeasuredHeight()/2;
 	}
 }
 
@@ -40,6 +40,8 @@ node.prototype.update = function(update) {
 	}
 	
 	this.text.text = this.units;
+	this.text.x = this.x - this.text.getMeasuredWidth()/2;
+	this.text.y = this.y - this.text.getMeasuredHeight()/2;
 	
 	this.visible = update.visible;
 	if(this.visible == false) {
