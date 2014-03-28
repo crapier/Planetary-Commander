@@ -77,7 +77,7 @@ var destination_node_select = function(event) {
 	}
 }
 
-var finish_click_listener = function() {
+var finish_click_listener = function(event) {
 	socket.emit("movements", {client_id:client_id, movements:movements});
 	finish.shape.removeEventListener("click", finish_click_listener);
 	
@@ -88,8 +88,10 @@ var finish_click_listener = function() {
 	}
 }
 
-var percent_key_listener = function() {
+var percent_key_listener = function(event) {
+	//Tested this, confirmed working in FireFox and Chrome Internet Explorer 11
 	var key_pressed = event.which;
+	
 	if(key_pressed >= 49 && key_pressed <= 57) {
 		percent.update((key_pressed-48)*10);
 		stage.update();

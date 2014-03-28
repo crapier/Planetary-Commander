@@ -40,6 +40,8 @@ function initialize() {
 	socket.on("updates", update_handler);
 	socket.on("results", result_handler);
 	socket.on("client_id", set_client_id);
+	
+	document.onkeydown = percent_key_listener;
 }
 
 function create_lines() {
