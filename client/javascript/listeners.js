@@ -123,6 +123,8 @@ var finish_click_listener = function(event) {
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player){
 			nodes[i].img.removeEventListener("click", source_node_select);
+			nodes[i].img.removeEventListener("mouseover", node_in);
+			nodes[i].img.removeEventListener("mouseout", node_out);
 		}
 	}
 }
