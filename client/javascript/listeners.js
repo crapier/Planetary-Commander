@@ -96,6 +96,8 @@ var destination_node_select = function(event) {
 		movements.push(new movement(selected, destination, Math.floor(percent.percent/100*nodes[selected].units)));
 	}
 	
+	selected = -1;
+	
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player && nodes[i].visible == true){
 			var movement_found = false;
@@ -118,6 +120,10 @@ var finish_click_listener = function(event) {
 	finalize_button.removeEventListener("click", finish_click_listener);
 	stage.removeChild(finalize_button);
 	stage.addChild(waiting);
+	
+	if(selected >= 0) {
+		nodes[selected].hide_target();
+	}
 	stage.update();
 	
 	for(var i = 0; i < nodes.length; i++) {
