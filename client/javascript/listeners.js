@@ -29,6 +29,7 @@ var update_handler = function(updates) {
 			nodes[i].img.addEventListener("mouseout", node_out);
 		}
 	}
+	timer.start(time_limit);
 }
 
 var node_in = function(event) {
@@ -120,6 +121,9 @@ var finish_click_listener = function(event) {
 	finalize_button.removeEventListener("click", finish_click_listener);
 	stage.removeChild(finalize_button);
 	stage.addChild(waiting);
+	
+	window.clearInterval(timer.interval);
+	stage.removeChild(timer.text);
 	
 	if(selected >= 0) {
 		nodes[selected].hide_target();

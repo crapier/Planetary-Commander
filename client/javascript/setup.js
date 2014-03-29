@@ -46,6 +46,12 @@ var node_font_color = "#000000";
 var percent_font = "50px Arial";
 var percent_font_color = "#FFFFFF";
 
+var timer_font = "50px Arial";
+var timer_color = "#FFFFFF";
+var timer_x = 450;
+var timer_y = 740
+var time_limit = 180;
+
 var line_color = "#FFFFFF";
 
 var waiting = new createjs.Text("Waiting for other player", "30px Arial", "#FFFFFF");
