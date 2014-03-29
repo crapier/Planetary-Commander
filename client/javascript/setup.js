@@ -54,7 +54,8 @@ waiting.y = 750;
 
 function initialize() {
 	stage = new createjs.Stage("pcgame");
-	
+	stage.enableMouseOver()
+
 	stage.addChild(start_menu_background);
 	stage.addChild(play_button);
 	play_button.x = 500 - play_button.image.width/2;

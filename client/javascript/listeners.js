@@ -25,8 +25,22 @@ var update_handler = function(updates) {
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player && nodes[i].visible == true){
 			nodes[i].img.addEventListener("click", source_node_select);
+			nodes[i].img.addEventListener("mouseover", node_in);
+			nodes[i].img.addEventListener("mouseout", node_out);
 		}
 	}
+}
+
+var node_in = function(event) {
+	var hover = event.currentTarget.node_id;
+	nodes[hover].show_target();
+	stage.update();
+}
+
+var node_out = function(event) {
+	var hover = event.currentTarget.node_id;
+	nodes[hover].hide_target();
+	stage.update();
 }
 	
 var result_handler = function(message) {
@@ -50,16 +64,17 @@ var source_node_select = function(event) {
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player){
 			nodes[i].img.removeEventListener("click", source_node_select);
+			nodes[i].img.removeEventListener("mouseover", node_in);
+			nodes[i].img.removeEventListener("mouseout", node_out);
 		}
 	}
 	selected = event.currentTarget.node_id;
-	
-	nodes[selected].show_target();
-	stage.update();
 
 	nodes[selected].img.addEventListener("click", destination_node_select);
 	for(var i = 0; i < nodes[selected].adjacent.length; i++){
 		nodes[nodes[selected].adjacent[i]].img.addEventListener("click", destination_node_select);
+		nodes[nodes[selected].adjacent[i]].img.addEventListener("mouseover", node_in);
+		nodes[nodes[selected].adjacent[i]].img.addEventListener("mouseout", node_out);
 	}
 }
 
@@ -67,12 +82,16 @@ var destination_node_select = function(event) {
 	nodes[selected].img.removeEventListener("click", destination_node_select);
 	for(var i = 0; i < nodes[selected].adjacent.length; i++){
 		nodes[nodes[selected].adjacent[i]].img.removeEventListener("click", destination_node_select);
+		nodes[nodes[selected].adjacent[i]].img.removeEventListener("mouseover", node_in);
+		nodes[nodes[selected].adjacent[i]].img.removeEventListener("mouseout", node_out);
 	}
 	
+	var destination = event.currentTarget.node_id;
+	
 	nodes[selected].hide_target();
+	nodes[destination].hide_target();
 	stage.update();
 	
-	var destination = event.currentTarget.node_id;
 	if(selected != destination){
 		movements.push(new movement(selected, destination, Math.floor(percent.percent/100*nodes[selected].units)));
 	}
@@ -87,6 +106,8 @@ var destination_node_select = function(event) {
 			}
 			if(!movement_found){
 				nodes[i].img.addEventListener("click", source_node_select);
+				nodes[i].img.addEventListener("mouseover", node_in);
+				nodes[i].img.addEventListener("mouseout", node_out);
 			}
 		}
 	}
