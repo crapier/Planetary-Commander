@@ -22,6 +22,11 @@ var update_handler = function(updates) {
 	stage.update();
 	finalize_button.addEventListener("click", finish_click_listener);
 	movements = [];
+	for(var i = 0; i < units_list.length; i++){
+		stage.removeChild(units_list[i].img);
+		stage.removeChild(units_list[i].text);
+	}
+	units_list = [];
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player && nodes[i].visible == true){
 			nodes[i].img.addEventListener("click", source_node_select);
@@ -91,19 +96,23 @@ var destination_node_select = function(event) {
 	
 	nodes[selected].hide_target();
 	nodes[destination].hide_target();
-	stage.update();
 	
 	if(selected != destination){
-		movements.push(new movement(selected, destination, Math.floor(percent.percent/100*nodes[selected].units)));
+		var send_units = Math.floor(percent.percent/100*nodes[selected].units);
+		movements.push(new movement(selected, destination, send_units));
+		units_list.push(new units(selected, destination, send_units));
+		var update_source = {owner: -1, units: nodes[selected].units - send_units, visible: true};
+		nodes[selected].update(update_source);
 	}
 	
+	stage.update();
 	selected = -1;
 	
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player && nodes[i].visible == true){
 			var movement_found = false;
 			for(var j = 0; j < movements.length; j++) {
-				if(movements[j].source == i) {
+				if(movements[j].source == i && movements[j].units > 0) {
 					movement_found = true;
 				}
 			}
@@ -114,6 +123,30 @@ var destination_node_select = function(event) {
 			}
 		}
 	}
+	for(var i = 0; i < units_list.length; i++) {
+		units_list[i].img.addEventListener("click", units_click_listener);
+	}
+}
+
+var units_click_listener = function(event) {
+	var unit_id = event.currentTarget.units_id;
+	
+	stage.removeChild(units_list[unit_id].img);
+	stage.removeChild(units_list[unit_id].text);
+	
+	for(var i = 0; i < movements.length; i++) {
+		if(movements[i].source == units_list[unit_id].source){
+			movements[i].units = 0;
+		}
+	}
+	
+	var update_source = {owner: -1, units:nodes[units_list[unit_id].source].units + units_list[unit_id].units, visible: true};
+	nodes[units_list[unit_id].source].update(update_source);
+	stage.update();
+	
+	nodes[units_list[unit_id].source].img.addEventListener("click", source_node_select);
+	nodes[units_list[unit_id].source].img.addEventListener("mouseover", node_in);
+	nodes[units_list[unit_id].source].img.addEventListener("mouseout", node_out);
 }
 
 var finish_click_listener = function(event) {

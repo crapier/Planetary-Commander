@@ -10,44 +10,36 @@ var node = function(size, x, y, adjacent) {
 	switch(this.size) {
 		case small:
 			this.img = hidden_unknown_small_node.clone();
-			this.img.x = this.x - this.img.image.width/2;
-			this.img.y = this.y - this.img.image.width/2;
-			stage.addChild(this.img);
-			
 			this.target = small_target.clone();
-			this.target.x = this.x - this.target.image.width/2;
-			this.target.y = this.y - this.target.image.width/2;
-			
 			break;
 		case medium:
 			this.img = hidden_unknown_medium_node.clone();
-			this.img.x = this.x - this.img.image.width/2;
-			this.img.y = this.y - this.img.image.width/2;
-			stage.addChild(this.img);
-			
 			this.target = medium_target.clone();
-			this.target.x = this.x - this.target.image.width/2;
-			this.target.y = this.y - this.target.image.width/2;
-			
 			break;
 		case large:
-			this.img = hidden_unknown_large_node.clone();
-			this.img.x = this.x - this.img.image.width/2;
-			this.img.y = this.y - this.img.image.width/2;
-			stage.addChild(this.img);
-			
+			this.img = hidden_unknown_large_node.clone();		
 			this.target = large_target.clone();
-			this.target.x = this.x - this.target.image.width/2;
-			this.target.y = this.y - this.target.image.width/2;
-			
 			break;
 		default:
 	}
+	this.img.x = this.x;
+	this.img.regX = this.img.image.width/2;
+	this.img.y = this.y;
+	this.img.regY = this.img.image.width/2;
+	stage.addChild(this.img);
+	
+	this.target.x = this.x;
+	this.target.regX = this.target.image.width/2;
+	this.target.y = this.y;
+	this.target.regY = this.target.image.width/2;
+	
 	this.img.node_id = nodes.length;
 	
 	this.text = new createjs.Text(this.units, node_font, node_font_color);
-	this.text.x = this.x - this.text.getMeasuredWidth()/2;
-	this.text.y = this.y - this.text.getMeasuredHeight()/2;
+	this.text.x = this.x;
+	this.text.regX = this.text.getMeasuredWidth()/2;
+	this.text.y = this.y;
+	this.text.regY = this.text.getMeasuredHeight()/2;
 }
 
 node.prototype.show_target = function() {
@@ -62,13 +54,15 @@ node.prototype.update = function(update) {
 	if(update.owner != -1) {
 		this.owner = update.owner;
 	}
-	if(update.owner != -1) {
+	if(update.units != -1) {
 		this.units = update.units;
 	}
 	
 	this.text.text = this.units;
-	this.text.x = this.x - this.text.getMeasuredWidth()/2;
-	this.text.y = this.y - this.text.getMeasuredHeight()/2;
+	this.text.x = this.x;
+	this.text.regX = this.text.getMeasuredWidth()/2;
+	this.text.y = this.y;
+	this.text.regY = this.text.getMeasuredHeight()/2;
 	
 	this.visible = update.visible;
 	if(this.visible == false) {

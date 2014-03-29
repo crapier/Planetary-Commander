@@ -2,6 +2,7 @@ var stage;
 var nodes = [];
 var lines = [];
 var movements = [];
+var units_list = [];
 var percent;
 var socket;
 var selected
@@ -32,6 +33,8 @@ var hidden_opponent_small_node = new createjs.Bitmap("/client/img/hidden_small_o
 var hidden_opponent_medium_node = new createjs.Bitmap("/client/img/hidden_medium_opponent.png");
 var hidden_opponent_large_node = new createjs.Bitmap("/client/img/hidden_large_opponent.png");
 
+var units_img = new createjs.Bitmap("/client/img/units.png");
+
 var small = 0;
 var medium = 1;
 var large = 2;
@@ -41,13 +44,16 @@ var player = 1;
 var opponent = 2;
 
 var node_font = "20px Arial";
-var node_font_color = "#000000";
+var node_font_color = "#FFFFFF";
 
 var percent_font = "50px Arial";
 var percent_font_color = "#FFFFFF";
 
+var units_font = "20px Arial";
+var units_font_color = "#FFFFFF";
+
 var timer_font = "50px Arial";
-var timer_color = "#FFFFFF";
+var timer_font_color = "#FFFFFF";
 var timer_x = 450;
 var timer_y = 740
 var time_limit = 180;

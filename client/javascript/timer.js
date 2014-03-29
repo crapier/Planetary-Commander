@@ -1,6 +1,6 @@
 var timer = {
 	time: 0,
-	text: new createjs.Text("0:00", timer_font, timer_color)
+	text: new createjs.Text("0:00", timer_font, timer_font_color)
 }
 
 timer.start = function(time) {
