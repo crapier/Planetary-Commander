@@ -1,39 +1,82 @@
 var stage;
 var nodes = [];
+var lines = [];
 var movements = [];
 var percent;
-var finish;
 var socket;
 var selected
 var client_id;
 
-var large = 40;
-var medium = 20;
-var small = 13;
+var start_menu_background = new createjs.Bitmap("/client/img/start_menu_background.png");
+var game_background = new createjs.Bitmap("/client/img/background1.png");
+var play_button = new createjs.Bitmap("/client/img/play_button.png");
+var instructions_button = new createjs.Bitmap("/client/img/instructions_button.png");
+
+var finalize_button = new createjs.Bitmap("/client/img/finalize_button.png");
+var small_target = new createjs.Bitmap("/client/img/small_target.png");
+var medium_target = new createjs.Bitmap("/client/img/medium_target.png");
+var large_target = new createjs.Bitmap("/client/img/large_target.png");
+var visible_player_small_node = new createjs.Bitmap("/client/img/visible_small_player.png");
+var visible_player_medium_node = new createjs.Bitmap("/client/img/visible_medium_player.png");
+var visible_player_large_node = new createjs.Bitmap("/client/img/visible_large_player.png");
+var visible_opponent_small_node = new createjs.Bitmap("/client/img/visible_small_opponent.png");
+var visible_opponent_medium_node = new createjs.Bitmap("/client/img/visible_medium_opponent.png");
+var visible_opponent_large_node = new createjs.Bitmap("/client/img/visible_large_opponent.png");
+var visible_unowned_small_node = new createjs.Bitmap("/client/img/visible_small_unowned.png");
+var visible_unowned_medium_node = new createjs.Bitmap("/client/img/visible_medium_unowned.png");
+var visible_unowned_large_node = new createjs.Bitmap("/client/img/visible_large_unowned.png");
+var hidden_unknown_small_node = new createjs.Bitmap("/client/img/hidden_small_unknown.png");
+var hidden_unknown_medium_node = new createjs.Bitmap("/client/img/hidden_medium_unknown.png");
+var hidden_unknown_large_node = new createjs.Bitmap("/client/img/hidden_large_unknown.png");
+var hidden_opponent_small_node = new createjs.Bitmap("/client/img/hidden_small_opponent.png");
+var hidden_opponent_medium_node = new createjs.Bitmap("/client/img/hidden_medium_opponent.png");
+var hidden_opponent_large_node = new createjs.Bitmap("/client/img/hidden_large_opponent.png");
+
+var small = 0;
+var medium = 1;
+var large = 2;
 
 var none = 0;
 var player = 1;
 var opponent = 2;
 
-var visible_player = "#0000FF";;
-var visible_opponent = "#FF0000";
-var visible_none = "#808080";
-var hidden_player = "#FF6666";;
-var hidden_opponent = "#FF6666";
-var hidden_none = "#A6A6A6";
-
 var node_font = "20px Arial";
 var node_font_color = "#000000";
 
 var percent_font = "50px Arial";
-var percent_font_color = "#000000";
+var percent_font_color = "#FFFFFF";
+
+var line_color = "#FFFFFF";
+
+var waiting = new createjs.Text("Waiting for other player", "30px Arial", "#FFFFFF");
+waiting.x = 680;
+waiting.y = 750;
 
 function initialize() {
 	stage = new createjs.Stage("pcgame");
+	
+	stage.addChild(start_menu_background);
+	stage.addChild(play_button);
+	play_button.x = 500 - play_button.image.width/2;
+	play_button.y = 300;
+	stage.addChild(instructions_button);
+	instructions_button.x = 500 - instructions_button.image.width/2;
+	instructions_button.y = 350;
+	stage.update();
+	
+	play_button.addEventListener("click", play_button_listener);
+	instructions_button.addEventListener("click", instruction_button_listener);
+}
+
+function start_game() {
+
+	stage.addChild(game_background);
 	create_nodes();
 	create_lines();
 	percent = new percent_display(50, 10, 740);
-	finish = new finish_button(845, 710);
+	stage.addChild(finalize_button);
+	finalize_button.x = 790;
+	finalize_button.y = 750;
 	stage.update();
 	
 	socket = io.connect('http://' + document.location.host);
@@ -45,15 +88,18 @@ function initialize() {
 }
 
 function create_lines() {
+	index = 0;
 	for(var i = 0; i < nodes.length; i++) {
 		for(var j = 0; j < nodes[i].adjacent.length; j++) {
 			if(nodes[i].adjacent[j] > i) {
-				var line = new createjs.Shape();
-				line.graphics.setStrokeStyle(1).beginStroke("black").moveTo(nodes[i].x, nodes[i].y).lineTo(nodes[nodes[i].adjacent[j]].x, nodes[nodes[i].adjacent[j]].y).endStroke();
-				stage.addChildAt(line, 0);
+				lines.push(new createjs.Shape());
+				lines[index].graphics.setStrokeStyle(1).beginStroke(line_color).moveTo(nodes[i].x, nodes[i].y).lineTo(nodes[nodes[i].adjacent[j]].x, nodes[nodes[i].adjacent[j]].y).endStroke();
+				stage.addChildAt(lines[index], 1);
+				index++;
 			}
 		}
 	}
+	
 }
 
 function create_nodes() {

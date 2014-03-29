@@ -7,28 +7,55 @@ var node = function(size, x, y, adjacent) {
 	this.x = x;
 	this.y = y;
 	
-	if(x >= 0 && y >= 0) { 
-		this.shape = new createjs.Shape();
-		this.shape.node_id = nodes.length;
-		switch(size) {
-			case small:
-				this.shape.graphics.beginFill(hidden_none).drawCircle(x, y, small);
-				stage.addChild(this.shape);
-				break;
-			case medium:
-				this.shape.graphics.beginFill(hidden_none).drawCircle(x, y, medium);
-				stage.addChild(this.shape);
-				break;
-			case large:
-				this.shape.graphics.beginFill(hidden_none).drawCircle(x, y, large);
-				stage.addChild(this.shape);
-				break;
-			default:
-		}
-		this.text = new createjs.Text(this.units, node_font, node_font_color);
-		this.text.x = this.x - this.text.getMeasuredWidth()/2;
-		this.text.y = this.y - this.text.getMeasuredHeight()/2;
+	switch(this.size) {
+		case small:
+			this.img = hidden_unknown_small_node.clone();
+			this.img.x = this.x - this.img.image.width/2;
+			this.img.y = this.y - this.img.image.width/2;
+			stage.addChild(this.img);
+			
+			this.target = small_target.clone();
+			this.target.x = this.x - this.target.image.width/2;
+			this.target.y = this.y - this.target.image.width/2;
+			
+			break;
+		case medium:
+			this.img = hidden_unknown_medium_node.clone();
+			this.img.x = this.x - this.img.image.width/2;
+			this.img.y = this.y - this.img.image.width/2;
+			stage.addChild(this.img);
+			
+			this.target = medium_target.clone();
+			this.target.x = this.x - this.target.image.width/2;
+			this.target.y = this.y - this.target.image.width/2;
+			
+			break;
+		case large:
+			this.img = hidden_unknown_large_node.clone();
+			this.img.x = this.x - this.img.image.width/2;
+			this.img.y = this.y - this.img.image.width/2;
+			stage.addChild(this.img);
+			
+			this.target = large_target.clone();
+			this.target.x = this.x - this.target.image.width/2;
+			this.target.y = this.y - this.target.image.width/2;
+			
+			break;
+		default:
 	}
+	this.img.node_id = nodes.length;
+	
+	this.text = new createjs.Text(this.units, node_font, node_font_color);
+	this.text.x = this.x - this.text.getMeasuredWidth()/2;
+	this.text.y = this.y - this.text.getMeasuredHeight()/2;
+}
+
+node.prototype.show_target = function() {
+	stage.addChildAt(this.target, stage.getChildIndex(this.img));
+}
+
+node.prototype.hide_target = function() {
+	stage.removeChild(this.target);
 }
 
 node.prototype.update = function(update) {
@@ -48,13 +75,46 @@ node.prototype.update = function(update) {
 		stage.removeChild(this.text);
 		switch(this.owner) {
 			case none:
-				this.shape.graphics.clear().beginFill(hidden_none).drawCircle(this.x, this.y, this.size);
+				switch(this.size) {
+					case small:
+						this.img.image = hidden_unknown_small_node.image;
+						break;
+					case medium:
+						this.img.image = hidden_unknown_medium_node.image;
+						break;
+					case large:
+						this.img.image = hidden_unknown_large_node.image;
+						break;
+					default:
+				}
 				break;
 			case player:
-				this.shape.graphics.clear().beginFill(hidden_player).drawCircle(this.x, this.y, this.size);
+				switch(this.size) {
+					case small:
+						this.img.image = hidden_opponent_small_node.image;
+						break;
+					case medium:
+						this.img.image = hidden_opponent_medium_node.image;
+						break;
+					case large:
+						this.img.image = hidden_opponent_large_node.image;
+						break;
+					default:
+				}
 				break;
 			case opponent:
-				this.shape.graphics.clear().beginFill(hidden_opponent).drawCircle(this.x, this.y, this.size);
+				switch(this.size) {
+					case small:
+						this.img.image = hidden_opponent_small_node.image;
+						break;
+					case medium:
+						this.img.image = hidden_opponent_medium_node.image;
+						break;
+					case large:
+						this.img.image = hidden_opponent_large_node.image;
+						break;
+					default:
+				}
 				break;
 			default:
 		}
@@ -63,13 +123,46 @@ node.prototype.update = function(update) {
 		stage.addChild(this.text);
 		switch(this.owner) {
 			case none:
-				this.shape.graphics.clear().beginFill(visible_none).drawCircle(this.x, this.y, this.size);
+				switch(this.size) {
+					case small:
+						this.img.image = visible_unowned_small_node.image;
+						break;
+					case medium:
+						this.img.image = visible_unowned_medium_node.image;
+						break;
+					case large:
+						this.img.image = visible_unowned_large_node.image;
+						break;
+					default:
+				}
 				break;
 			case player:
-				this.shape.graphics.clear().beginFill(visible_player).drawCircle(this.x, this.y, this.size);
+				switch(this.size) {
+					case small:
+						this.img.image = visible_player_small_node.image;
+						break;
+					case medium:
+						this.img.image = visible_player_medium_node.image;
+						break;
+					case large:
+						this.img.image = visible_player_large_node.image;
+						break;
+					default:
+				}
 				break;
 			case opponent:
-				this.shape.graphics.clear().beginFill(visible_opponent).drawCircle(this.x, this.y, this.size);
+				switch(this.size) {
+					case small:
+						this.img.image = visible_opponent_small_node.image;
+						break;
+					case medium:
+						this.img.image = visible_opponent_medium_node.image;
+						break;
+					case large:
+						this.img.image = visible_opponent_large_node.image;
+						break;
+					default:
+				}
 				break;
 			default:
 		}

@@ -1,60 +1,75 @@
+var play_button_listener = function(event) {
+	stage.removeChild(start_menu_background);
+	stage.removeChild(play_button);
+	stage.removeChild(instructions_button);
+	start_game();
+}
+
+var instruction_button_listener = function(event) {
+	window.open("http://" + window.location.hostname + ":" + window.location.port + "/client/instructions.html");
+}
+
 var set_client_id = function(id) {
 	client_id = id;
 }
 
 var update_handler = function(updates) {
-	console.log(updates);
 	for(var i = 0; i < updates.length; i++){
 		nodes[i].update(updates[i]);
 	}
+	stage.addChild(finalize_button);
+	stage.removeChild(waiting);
 	stage.update();
-	finish.shape.addEventListener("click", finish_click_listener);
+	finalize_button.addEventListener("click", finish_click_listener);
 	movements = [];
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player && nodes[i].visible == true){
-			nodes[i].shape.addEventListener("click", source_node_select);
+			nodes[i].img.addEventListener("click", source_node_select);
 		}
 	}
 }
 	
-var result_handler = function(results) {
-	var results;
-	if(results == "winner"){
-		results = new createjs.Text("You Won!", "100px Arial", "#0000FF");
+var result_handler = function(message) {
+	for(var i = 0; i < message.updates.length; i++){
+		nodes[i].update(message.updates[i]);
 	}
-	else if (results == "loser") {
-		results = new createjs.Text("You Lost...", "100px Arial", "#FF0000");
+	var result_text;
+	if(message.results == "winner"){
+		result_text = new createjs.Text("You Won!", "100px Arial", "#0000FF");
 	}
-	results.x = 500 - results.getMeasuredWidth()/2;
-	results.y = 400 - results.getMeasuredHeight()/2;
-	stage.addChild(results);
+	else if (message.results == "loser") {
+		result_text = new createjs.Text("You Lost...", "100px Arial", "#FF0000");
+	}
+	result_text.x = 500 - result_text.getMeasuredWidth()/2;
+	result_text.y = 400 - result_text.getMeasuredHeight()/2;
+	stage.addChild(result_text);
 	stage.update();
 }
 
 var source_node_select = function(event) {
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player){
-			nodes[i].shape.removeEventListener("click", source_node_select);
+			nodes[i].img.removeEventListener("click", source_node_select);
 		}
 	}
 	selected = event.currentTarget.node_id;
 	
-	nodes[selected].shape.graphics.clear().setStrokeStyle(3).beginStroke("black").beginFill(visible_player).drawCircle(nodes[selected].x, nodes[selected].y, nodes[selected].size);
+	nodes[selected].show_target();
 	stage.update();
 
-	nodes[selected].shape.addEventListener("click", destination_node_select);
+	nodes[selected].img.addEventListener("click", destination_node_select);
 	for(var i = 0; i < nodes[selected].adjacent.length; i++){
-		nodes[nodes[selected].adjacent[i]].shape.addEventListener("click", destination_node_select);
+		nodes[nodes[selected].adjacent[i]].img.addEventListener("click", destination_node_select);
 	}
 }
 
 var destination_node_select = function(event) {
-	nodes[selected].shape.removeEventListener("click", destination_node_select);
+	nodes[selected].img.removeEventListener("click", destination_node_select);
 	for(var i = 0; i < nodes[selected].adjacent.length; i++){
-		nodes[nodes[selected].adjacent[i]].shape.removeEventListener("click", destination_node_select);
+		nodes[nodes[selected].adjacent[i]].img.removeEventListener("click", destination_node_select);
 	}
 	
-	nodes[selected].shape.graphics.clear().beginFill(visible_player).drawCircle(nodes[selected].x, nodes[selected].y, nodes[selected].size);
+	nodes[selected].hide_target();
 	stage.update();
 	
 	var destination = event.currentTarget.node_id;
@@ -71,7 +86,7 @@ var destination_node_select = function(event) {
 				}
 			}
 			if(!movement_found){
-				nodes[i].shape.addEventListener("click", source_node_select);
+				nodes[i].img.addEventListener("click", source_node_select);
 			}
 		}
 	}
@@ -79,11 +94,14 @@ var destination_node_select = function(event) {
 
 var finish_click_listener = function(event) {
 	socket.emit("movements", {client_id:client_id, movements:movements});
-	finish.shape.removeEventListener("click", finish_click_listener);
+	finalize_button.removeEventListener("click", finish_click_listener);
+	stage.removeChild(finalize_button);
+	stage.addChild(waiting);
+	stage.update();
 	
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player){
-			nodes[i].shape.removeEventListener("click", source_node_select);
+			nodes[i].img.removeEventListener("click", source_node_select);
 		}
 	}
 }

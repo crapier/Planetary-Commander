@@ -1,17 +1,7 @@
-h1{
-	position: relative;
-	margin: 0px auto 0px auto;
-	text-align: center;
-}
-
-.game{
-	/*box model*/
-	border: 1px solid #000000;
-	height: 800px;
-	width: 1000px;
-	margin-left: auto;
-	margin-right: auto;
-	
-	/*position*/
-	position: relative;
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }

@@ -28,6 +28,18 @@ function handler(request, response) {
 				});
 			break;
 		default:
+			if (/\.(html)$/.test(path)) {
+				fs.readFile(__dirname + path,
+					function(err, content) {
+						if (err) {
+							response.writeHead(404);
+							return response.end('Could not find file ' + path);
+						}
+						response.writeHead(200, {'Content-Type': 'text/html'});
+						response.end(content);
+					});
+				break;
+			}
 			if (/\.(css)$/.test(path)) {
 				fs.readFile(__dirname + path,
 					function(err, content) {
@@ -48,6 +60,18 @@ function handler(request, response) {
 							return response.end('Could not find file ' + path);
 						}
 						response.writeHead(200, {'Content-Type': 'application/x-javascript'});
+						response.end(content);
+					});
+				break;
+			}
+			if (/\.(png)$/.test(path)) {
+				fs.readFile(__dirname + path,
+					function(err, content) {
+						if (err) {
+							response.writeHead(404);
+							return response.end('Could not find file ' + path);
+						}
+						response.writeHead(200, {'Content-Type': 'Image'});
 						response.end(content);
 					});
 				break;
@@ -74,6 +98,7 @@ var client_2_socket_id;
 var nodes = [];
 var num_connected_clients = 0;
 var movements_recieved = 0;
+var game_state = 0;
 
 var client_1_movements = [];
 var client_2_movements = [];
@@ -196,15 +221,37 @@ var send_updates = function() {
 }
 
 var send_results = function(client_1_holds, client_2_holds) {
+	num_connected_clients = 0;
+	movements_recieved = 0;
+	game_state = 2;
+	
+	var player_1_final_update = [];
+	var player_2_final_update = [];
+	for(var i = 0; i < nodes.length; i++) {
+		if(nodes[i].owner == client_1) {
+			player_1_final_update.push(new update(player, nodes[i].units, true));
+			player_2_final_update.push(new update(opponent, nodes[i].units, true));
+		}
+		if(nodes[i].owner == client_2) {
+			player_1_final_update.push(new update(opponent, nodes[i].units, true));
+			player_2_final_update.push(new update(player, nodes[i].units, true));
+		}
+		if(nodes[i].owner == none) {
+			player_1_final_update.push(new update(none, nodes[i].units, true));
+			player_2_final_update.push(new update(none, nodes[i].units, true));
+		}
+	}
+	
 	if(client_1_holds == 0) {
-		io.sockets.socket(client_1_socket_id).emit('results', "loser");
-		io.sockets.socket(client_2_socket_id).emit('results', "winner");
+		io.sockets.socket(client_1_socket_id).emit('results', {results:"loser", updates:player_1_final_update});
+		io.sockets.socket(client_2_socket_id).emit('results', {results:"winner", updates:player_2_final_update});
 	}
 	else if(client_2_holds == 0) {
-		io.sockets.socket(client_1_socket_id).emit('results', "winner");
-		io.sockets.socket(client_2_socket_id).emit('results', "loser");
+		io.sockets.socket(client_1_socket_id).emit('results', {results:"winner", updates:player_1_final_update});
+		io.sockets.socket(client_2_socket_id).emit('results', {results:"loser", updates:player_2_final_update});
 	}
 	nodes = [];
+	
 }
 
 var calculate_movements = function(){
@@ -298,14 +345,45 @@ var movement_handler = function(message) {
 }
 
 var disconnect_handler = function() {
-	num_connected_clients = 0;
-	io.sockets.socket(client_1_socket_id).emit('results', "winner");
-	io.sockets.socket(client_2_socket_id).emit('results', "winner");
-	nodes = [];
+	if(game_state == 0) {
+		num_connected_clients = 0;
+		movements_recieved = 0;
+		nodes = [];
+	}
+	if(game_state == 1) {
+		num_connected_clients = 0;
+		movements_recieved = 0;
+		var player_1_final_update = [];
+		var player_2_final_update = [];
+		for(var i = 0; i < nodes.length; i++) {
+			if(nodes[i].owner == client_1) {
+				player_1_final_update.push(new update(player, nodes[i].units, true));
+				player_2_final_update.push(new update(opponent, nodes[i].units, true));
+			}
+			if(nodes[i].owner == client_2) {
+				player_1_final_update.push(new update(opponent, nodes[i].units, true));
+				player_2_final_update.push(new update(player, nodes[i].units, true));
+			}
+			if(nodes[i].owner == none) {
+				player_1_final_update.push(new update(none, nodes[i].units, true));
+				player_2_final_update.push(new update(none, nodes[i].units, true));
+			}
+		}
+		io.sockets.socket(client_1_socket_id).emit('results', {results:"winner", updates:player_1_final_update});
+		io.sockets.socket(client_2_socket_id).emit('results', {results:"winner", updates:player_2_final_update});
+		game_state = 3;
+		nodes = [];
+	}
+	else if (game_state == 2) {
+		game_state = 3;
+	}
+	else if (game_state == 3) {
+		game_state = 0;
+	}
 }
 
 var connection_handler = function(client) {
-	if(num_connected_clients == 0) {
+	if(num_connected_clients == 0 && game_state == 0) {
 		client.emit("client_id", client_1);
 		client_1_socket_id = client.id;
 		game_setup();
@@ -313,13 +391,14 @@ var connection_handler = function(client) {
 		client.on('movements', movement_handler);
 		client.on('disconnect', disconnect_handler);
 	}
-	else if (num_connected_clients == 1) { 
+	else if (num_connected_clients == 1 && game_state == 0) { 
 		client.emit("client_id", client_2);
 		client_2_socket_id = client.id;
 		send_updates();
 		num_connected_clients++
 		client.on('movements', movement_handler);
 		client.on('disconnect', disconnect_handler);
+		game_state = 1;
 	}
 	else {
 		client.on('disconnect', function() {});
