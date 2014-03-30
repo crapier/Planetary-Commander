@@ -1,12 +1,48 @@
 var play_button_listener = function(event) {
-	stage.removeChild(start_menu_background);
-	stage.removeChild(play_button);
-	stage.removeChild(instructions_button);
-	start_game();
+	if(menu == true) {
+		if(event.type == 'mouseover') {
+			stage.removeChild(play_button);
+			stage.addChild(play_button_hover);
+			play_button_hover.x = 500 - play_button_hover.image.width/2;
+			play_button_hover.y = 300;
+			stage.update();
+			
+		} else if(event.type == 'mouseout') {
+			stage.removeChild(play_button_hover);
+			stage.addChild(play_button);
+			play_button.x = 500 - play_button.image.width/2;
+			play_button.y = 300;
+			stage.update();
+		} else if(event.type == 'click') {
+		menu = false;
+		stage.removeChild(start_menu_background);
+		stage.removeChild(play_button);
+		stage.removeChild(play_button_hover);
+		stage.removeChild(instructions_button);
+		start_game();
+		}
+	}
 }
 
 var instruction_button_listener = function(event) {
-	window.open("http://" + window.location.hostname + ":" + window.location.port + "/client/instructions.html");
+	if(menu == true) {
+		if(event.type == 'mouseover') {
+			stage.removeChild(instructions_button);
+			stage.addChild(instructions_button_hover);
+			instructions_button_hover.x = 500 - instructions_button_hover.image.width/2;
+			instructions_button_hover.y = 350;
+			stage.update();
+			
+		} else if(event.type == 'mouseout') {
+			stage.removeChild(instructions_button_hover);
+			stage.addChild(instructions_button);
+			instructions_button.x = 500 - instructions_button.image.width/2;
+			instructions_button.y = 350;
+			stage.update();
+		} else if(event.type == 'click') {
+			window.open("http://" + window.location.hostname + ":" + window.location.port + "/client/instructions.html");
+		}
+	}
 }
 
 var set_client_id = function(id) {
@@ -20,6 +56,8 @@ var update_handler = function(updates) {
 	stage.addChild(finalize_button);
 	stage.removeChild(waiting);
 	stage.update();
+	finalize_button.addEventListener("mouseover", handle_hover);
+	finalize_button.addEventListener("mouseout", handle_hover);
 	finalize_button.addEventListener("click", finish_click_listener);
 	movements = [];
 	for(var i = 0; i < units_list.length; i++){
@@ -35,6 +73,21 @@ var update_handler = function(updates) {
 		}
 	}
 	timer.start(time_limit);
+}
+
+var handle_hover = function(event) {
+
+	stage.removeChild(finalize_button);
+	if(event.type == 'mouseover') {
+		stage.addChild(finalize_button);
+		finalize_button.x = 790;
+		finalize_button.y = 750;
+		finalize_button.style.color = '#ffffff';
+	}
+	
+	//finalize_button.removeEventListener("click", finish_click_listener);
+	//stage.removeChild(finalize_button);
+	//stage.addChild(waiting);
 }
 
 var node_in = function(event) {

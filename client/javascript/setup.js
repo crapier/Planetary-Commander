@@ -7,11 +7,14 @@ var percent;
 var socket;
 var selected
 var client_id;
+var menu;			//used to detect if still on main menu
 
 var start_menu_background = new createjs.Bitmap("/client/img/start_menu_background.png");
 var game_background = new createjs.Bitmap("/client/img/background1.png");
 var play_button = new createjs.Bitmap("/client/img/play_button.png");
+var play_button_hover = new createjs.Bitmap("/client/img/play_button_hover.png");
 var instructions_button = new createjs.Bitmap("/client/img/instructions_button.png");
+var instructions_button_hover = new createjs.Bitmap("/client/img/instructions_button_hover.png");
 
 var finalize_button = new createjs.Bitmap("/client/img/finalize_button.png");
 var small_target = new createjs.Bitmap("/client/img/small_target.png");
@@ -67,6 +70,7 @@ waiting.y = 750;
 function initialize() {
 	stage = new createjs.Stage("pcgame");
 	stage.enableMouseOver()
+	menu = true;
 
 	stage.addChild(start_menu_background);
 	stage.addChild(play_button);
@@ -77,8 +81,12 @@ function initialize() {
 	instructions_button.y = 350;
 	stage.update();
 	
-	play_button.addEventListener("click", play_button_listener);
-	instructions_button.addEventListener("click", instruction_button_listener);
+	play_button.addEventListener("mouseover", play_button_listener);
+	play_button_hover.addEventListener("click", play_button_listener);
+	play_button_hover.addEventListener("mouseout", play_button_listener);
+	instructions_button.addEventListener("mouseover", instruction_button_listener);
+	instructions_button_hover.addEventListener("click", instruction_button_listener);
+	instructions_button_hover.addEventListener("mouseout", instruction_button_listener);
 }
 
 function start_game() {
