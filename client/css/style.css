@@ -7,19 +7,26 @@ canvas {
 }
 
 .page {
+	background: #000000 url('/client/img/background1.png') top repeat-y;
 	position: relative;
 	width: 1000px;
-	margin: auto auto auto auto;
-	background: #000000 url('/client/img/background1.png') top repeat-y;
+	height: 3200px;
+	margin: 0px auto 0px auto;
+}
+
+p {
+	font-size:22px;
+}
+
+h2 {
+	font-size:25px;
 }
 
 #container {
 	position:absolute;
 	top: 300px;
 	left: 50px;
-	width: 545px;
-	height: auto;
+	width: 900px;
 	color: white;
 	font: 40px arial,sans-serif;
-	border:5px solid white;
 }
