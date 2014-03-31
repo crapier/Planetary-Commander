@@ -5,3 +5,21 @@ canvas {
     margin-right: auto;
     display: block;
 }
+
+.page {
+	position: relative;
+	width: 1000px;
+	margin: auto auto auto auto;
+	background: #000000 url('/client/img/background1.png') top repeat-y;
+}
+
+#container {
+	position:absolute;
+	top: 300px;
+	left: 50px;
+	width: 545px;
+	height: auto;
+	color: white;
+	font: 40px arial,sans-serif;
+	border:5px solid white;
+}

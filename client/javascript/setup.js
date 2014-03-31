@@ -70,7 +70,7 @@ waiting.y = 750;
 
 function initialize() {
 	stage = new createjs.Stage("pcgame");
-	stage.enableMouseOver()
+	stage.enableMouseOver(50)
 	menu = true;
 
 	stage.addChild(start_menu_background);
