@@ -7,7 +7,7 @@ var percent;
 var socket;
 var selected
 var client_id;
-var menu;			//used to detect if still on main menu
+var menu;			//used to track if still on main menu
 
 var start_menu_background = new createjs.Bitmap("/client/img/start_menu_background.png");
 var game_background = new createjs.Bitmap("/client/img/background1.png");
@@ -17,6 +17,7 @@ var instructions_button = new createjs.Bitmap("/client/img/instructions_button.p
 var instructions_button_hover = new createjs.Bitmap("/client/img/instructions_button_hover.png");
 
 var finalize_button = new createjs.Bitmap("/client/img/finalize_button.png");
+var finalize_button_hover = new createjs.Bitmap("/client/img/finalize_button_hover.png");
 var small_target = new createjs.Bitmap("/client/img/small_target.png");
 var medium_target = new createjs.Bitmap("/client/img/medium_target.png");
 var large_target = new createjs.Bitmap("/client/img/large_target.png");

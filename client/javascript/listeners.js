@@ -15,6 +15,9 @@ var play_button_listener = function(event) {
 			stage.update();
 		} else if(event.type == 'click') {
 		menu = false;
+		play_button_hover.removeEventListener("click", finish_click_listener);
+		play_button.removeEventListener("mouseover", finish_click_listener);
+		play_button_hover.removeEventListener("mouseout", finish_click_listener);
 		stage.removeChild(start_menu_background);
 		stage.removeChild(play_button);
 		stage.removeChild(play_button_hover);
@@ -56,9 +59,9 @@ var update_handler = function(updates) {
 	stage.addChild(finalize_button);
 	stage.removeChild(waiting);
 	stage.update();
-	finalize_button.addEventListener("mouseover", handle_hover);
-	finalize_button.addEventListener("mouseout", handle_hover);
-	finalize_button.addEventListener("click", finish_click_listener);
+	finalize_button.addEventListener("mouseover", finish_click_listener);
+	finalize_button_hover.addEventListener("click", finish_click_listener);
+	finalize_button_hover.addEventListener("mouseout", finish_click_listener);
 	movements = [];
 	for(var i = 0; i < units_list.length; i++){
 		stage.removeChild(units_list[i].img);
@@ -84,10 +87,6 @@ var handle_hover = function(event) {
 		finalize_button.y = 750;
 		finalize_button.style.color = '#ffffff';
 	}
-	
-	//finalize_button.removeEventListener("click", finish_click_listener);
-	//stage.removeChild(finalize_button);
-	//stage.addChild(waiting);
 }
 
 var node_in = function(event) {
@@ -203,24 +202,45 @@ var units_click_listener = function(event) {
 }
 
 var finish_click_listener = function(event) {
-	socket.emit("movements", {client_id:client_id, movements:movements});
-	finalize_button.removeEventListener("click", finish_click_listener);
-	stage.removeChild(finalize_button);
-	stage.addChild(waiting);
-	
-	window.clearInterval(timer.interval);
-	stage.removeChild(timer.text);
-	
-	if(selected >= 0) {
-		nodes[selected].hide_target();
-	}
-	stage.update();
-	
-	for(var i = 0; i < nodes.length; i++) {
-		if(nodes[i].owner == player){
-			nodes[i].img.removeEventListener("click", source_node_select);
-			nodes[i].img.removeEventListener("mouseover", node_in);
-			nodes[i].img.removeEventListener("mouseout", node_out);
+	if(menu == false) {
+		if(event.type == 'mouseover') {
+			stage.removeChild(finalize_button);
+			stage.addChild(finalize_button_hover);
+			finalize_button_hover.x = 790;
+			finalize_button_hover.y = 750;
+			stage.update();
+			
+		} else if(event.type == 'mouseout') {
+			stage.removeChild(finalize_button_hover);
+			stage.addChild(finalize_button);
+			finalize_button.x = 790;
+			finalize_button.y = 750;
+			stage.update();
+		} else if(event.type == 'click') {
+
+			socket.emit("movements", {client_id:client_id, movements:movements});
+			finalize_button_hover.removeEventListener("click", finish_click_listener);
+			finalize_button.removeEventListener("mouseover", finish_click_listener);
+			finalize_button_hover.removeEventListener("mouseout", finish_click_listener);
+			stage.removeChild(finalize_button);
+			stage.removeChild(finalize_button_hover);
+			stage.addChild(waiting);
+			
+			window.clearInterval(timer.interval);
+			stage.removeChild(timer.text);
+			
+			if(selected >= 0) {
+				nodes[selected].hide_target();
+			}
+			stage.update();
+			
+			for(var i = 0; i < nodes.length; i++) {
+				if(nodes[i].owner == player){
+					nodes[i].img.removeEventListener("click", source_node_select);
+					nodes[i].img.removeEventListener("mouseover", node_in);
+					nodes[i].img.removeEventListener("mouseout", node_out);
+				}
+			}
 		}
 	}
 }
