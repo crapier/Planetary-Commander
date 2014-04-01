@@ -6,6 +6,7 @@ var node = function(size, x, y, adjacent) {
 	this.size = size;
 	this.x = x;
 	this.y = y;
+	this.targeted = false;
 	
 	switch(this.size) {
 		case small:
@@ -43,11 +44,17 @@ var node = function(size, x, y, adjacent) {
 }
 
 node.prototype.show_target = function() {
-	stage.addChildAt(this.target, stage.getChildIndex(this.img));
+	if(this.targeted == false) {
+		this.targeted = true;
+		stage.addChildAt(this.target, stage.getChildIndex(this.img));
+	}
 }
 
 node.prototype.hide_target = function() {
-	stage.removeChild(this.target);
+	if(this.targeted == true) {
+		this.targeted = false;
+		stage.removeChild(this.target);
+	}
 }
 
 node.prototype.update = function(update) {

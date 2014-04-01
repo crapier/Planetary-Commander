@@ -7,17 +7,20 @@ var percent;
 var socket;
 var selected
 var client_id;
-var menu;			//used to track if still on main menu
 
 var start_menu_background = new createjs.Bitmap("/client/img/start_menu_background.png");
 var game_background = new createjs.Bitmap("/client/img/background1.png");
-var play_button = new createjs.Bitmap("/client/img/play_button.png");
-var play_button_hover = new createjs.Bitmap("/client/img/play_button_hover.png");
-var instructions_button = new createjs.Bitmap("/client/img/instructions_button.png");
-var instructions_button_hover = new createjs.Bitmap("/client/img/instructions_button_hover.png");
 
-var finalize_button = new createjs.Bitmap("/client/img/finalize_button.png");
-var finalize_button_hover = new createjs.Bitmap("/client/img/finalize_button_hover.png");
+var play_button_img = new createjs.Bitmap("/client/img/play_button.png");
+var play_button_hover_img = new createjs.Bitmap("/client/img/play_button_hover.png");
+var instructions_button_img = new createjs.Bitmap("/client/img/instructions_button.png");
+var instructions_button_hover_img = new createjs.Bitmap("/client/img/instructions_button_hover.png");
+var finalize_button_img = new createjs.Bitmap("/client/img/finalize_button.png");
+var finalize_button_hover_img = new createjs.Bitmap("/client/img/finalize_button_hover.png");
+var play_button;
+var instruction_button;
+var finalize_button;
+
 var small_target = new createjs.Bitmap("/client/img/small_target.png");
 var medium_target = new createjs.Bitmap("/client/img/medium_target.png");
 var large_target = new createjs.Bitmap("/client/img/large_target.png");
@@ -59,35 +62,51 @@ var units_font_color = "#FFFFFF";
 var timer_font = "50px Arial";
 var timer_font_color = "#FFFFFF";
 var timer_x = 450;
-var timer_y = 740
+var timer_y = 640
 var time_limit = 180;
 
 var line_color = "#FFFFFF";
 
 var waiting = new createjs.Text("Waiting for other player", "30px Arial", "#FFFFFF");
 waiting.x = 680;
-waiting.y = 750;
+waiting.y = 650;
 
 function initialize() {
+	
+	play_button = play_button_img.clone();
+	instructions_button = instructions_button_img.clone();
+	finalize_button = finalize_button_img.clone();
+	
+	play_button.x = 500;
+	play_button.regX = play_button.image.width/2;
+	play_button.y = 300;
+	play_button.regY = play_button.image.height/2;
+	
+	instructions_button.x = 500;
+	instructions_button.regX = instructions_button.image.width/2;
+	instructions_button.y = 350;
+	instructions_button.regY = instructions_button.image.height/2;
+	
+	finalize_button.x = 890;
+	finalize_button.regX = finalize_button.image.width/2;
+	finalize_button.y = 670;
+	finalize_button.regY = finalize_button.image.height/2;
+
 	stage = new createjs.Stage("pcgame");
-	stage.enableMouseOver(50)
-	menu = true;
+	stage.enableMouseOver();
 
 	stage.addChild(start_menu_background);
 	stage.addChild(play_button);
-	play_button.x = 500 - play_button.image.width/2;
-	play_button.y = 300;
 	stage.addChild(instructions_button);
-	instructions_button.x = 500 - instructions_button.image.width/2;
-	instructions_button.y = 350;
+	
 	stage.update();
 	
 	play_button.addEventListener("mouseover", play_button_listener);
-	play_button_hover.addEventListener("click", play_button_listener);
-	play_button_hover.addEventListener("mouseout", play_button_listener);
+	play_button.addEventListener("click", play_button_listener);
+	play_button.addEventListener("mouseout", play_button_listener);
 	instructions_button.addEventListener("mouseover", instruction_button_listener);
-	instructions_button_hover.addEventListener("click", instruction_button_listener);
-	instructions_button_hover.addEventListener("mouseout", instruction_button_listener);
+	instructions_button.addEventListener("click", instruction_button_listener);
+	instructions_button.addEventListener("mouseout", instruction_button_listener);
 }
 
 function start_game() {
@@ -95,10 +114,8 @@ function start_game() {
 	stage.addChild(game_background);
 	create_nodes();
 	create_lines();
-	percent = new percent_display(50, 10, 740);
-	stage.addChild(finalize_button);
-	finalize_button.x = 790;
-	finalize_button.y = 750;
+	percent = new percent_display(50, 10, 640);
+
 	stage.update();
 	
 	socket = io.connect('http://' + document.location.host);
