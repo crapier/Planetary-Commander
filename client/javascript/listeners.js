@@ -198,6 +198,10 @@ var finish_click_listener = function(event) {
 		}
 		stage.update();
 		
+		for(var i = 0; i < units_list.length; i++) {
+			units_list[i].img.removeEventListener("click", units_click_listener);
+		}
+		
 		for(var i = 0; i < nodes.length; i++) {
 			if(nodes[i].owner == player){
 				nodes[i].img.removeEventListener("click", source_node_select);
