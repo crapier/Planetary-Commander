@@ -256,6 +256,53 @@ var send_results = function(client_1_holds, client_2_holds) {
 
 var calculate_movements = function(){
 	for(var i = 0; i < client_1_movements.length; i++){
+		if(nodes[client_1_movements[i].source].owner != client_1) {
+			client_1_movements[i].units = 0;
+		}
+		if(nodes[client_1_movements[i].source].units < client_1_movements[i].units) {
+			client_1_movements[i].units = nodes[client_1_movements[i].source].units;
+		}
+		for (var j = 0; j < i; j++) {
+			if (client_1_movements[j].units != 0 && client_1_movements[j].source == client_1_movements[i].source) {
+				client_1_movements[j].units = 0;
+			}
+		}
+		var destination_adjacent = false;
+		for (var j = 0; j < nodes[client_1_movements[i].source].adjacent.length; j++) {
+			if (client_1_movements[i].destination == nodes[client_1_movements[i].source].adjacent[j]) {
+				destination_adjacent = true;
+				break;
+			}
+		}
+		if (destination_adjacent == false) {
+			client_1_movements[i].units = 0;
+		}
+	}
+	for(var i = 0; i < client_2_movements.length; i++){
+		if(nodes[client_2_movements[i].source].owner != client_2) {
+			client_2_movements[i].units = 0;
+		}
+		if(nodes[client_2_movements[i].source].units < client_2_movements[i].units) {
+			client_2_movements[i].units = nodes[client_2_movements[i].source].units;
+		}
+		for (var j = 0; j < i; j++) {
+			if (client_2_movements[j].units != 0 && client_2_movements[j].source == client_2_movements[i].source) {
+				client_2_movements[j].units = 0;
+			}
+		}
+		var destination_adjacent = false;
+		for (var j = 0; j < nodes[client_2_movements[i].source].adjacent.length; j++) {
+			if (client_2_movements[i].destination == nodes[client_2_movements[i].source].adjacent[j]) {
+				destination_adjacent = true;
+				break;
+			}
+		}
+		if (destination_adjacent == false) {
+			client_2_movements[i].units = 0;
+		}
+	}
+	
+	for(var i = 0; i < client_1_movements.length; i++){
 		nodes[client_1_movements[i].source].units -= client_1_movements[i].units;
 	}
 	for(var i = 0; i < client_2_movements.length; i++){
