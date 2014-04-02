@@ -56,7 +56,13 @@ var update_handler = function(updates) {
 			nodes[i].img.addEventListener("mouseout", node_out);
 		}
 	}
-	timer.start(time_limit);
+	
+	if(timer.started == false) {
+		timer.setup(time_limit);
+	}
+	else {
+		timer.restart(time_limit);
+	}
 }
 
 var node_in = function(event) {
@@ -75,16 +81,28 @@ var result_handler = function(message) {
 	for(var i = 0; i < message.updates.length; i++){
 		nodes[i].update(message.updates[i]);
 	}
-	var result_text;
+	
 	if(message.results == "winner"){
-		result_text = new createjs.Text("You Won!", "100px Arial", "#0000FF");
+		stage.addChild(win_message);
 	}
 	else if (message.results == "loser") {
-		result_text = new createjs.Text("You Lost...", "100px Arial", "#FF0000");
+		stage.addChild(lose_message);
 	}
-	result_text.x = 500 - result_text.getMeasuredWidth()/2;
-	result_text.y = 400 - result_text.getMeasuredHeight()/2;
-	stage.addChild(result_text);
+	
+	socket.disconnect();
+
+	for (var i = 0; i < nodes.length; i++) {
+		nodes[i].img.removeAllEventListeners();
+	}
+	for (var i = 0; i < units_list.length; i++) {
+		units_list[i].img.removeAllEventListeners();
+	}
+	finalize_button.removeAllEventListeners();
+	stage.removeChild(finalize_button);
+	stage.removeChild(waiting);
+	window.clearInterval(timer.interval);
+	stage.removeChild(timer.text);
+	
 	stage.update();
 }
 
@@ -182,32 +200,34 @@ var finish_click_listener = function(event) {
 		finalize_button.image = finalize_button_img.image;
 		stage.update();
 	} else if(event.type == 'click') {
+		end_turn();
+	}
+}
 
-		socket.emit("movements", {client_id:client_id, movements:movements});
-		finalize_button.removeEventListener("click", finish_click_listener);
-		finalize_button.removeEventListener("mouseover", finish_click_listener);
-		finalize_button.removeEventListener("mouseout", finish_click_listener);
-		stage.removeChild(finalize_button);
-		stage.addChild(waiting);
-		
-		window.clearInterval(timer.interval);
-		stage.removeChild(timer.text);
-		
-		if(selected >= 0) {
-			nodes[selected].hide_target();
-		}
-		stage.update();
-		
-		for(var i = 0; i < units_list.length; i++) {
-			units_list[i].img.removeEventListener("click", units_click_listener);
-		}
-		
-		for(var i = 0; i < nodes.length; i++) {
-			if(nodes[i].owner == player){
-				nodes[i].img.removeEventListener("click", source_node_select);
-				nodes[i].img.removeEventListener("mouseover", node_in);
-				nodes[i].img.removeEventListener("mouseout", node_out);
-			}
+var end_turn = function() {
+	socket.emit("movements", {client_id:client_id, movements:movements});
+	finalize_button.removeEventListener("click", finish_click_listener);
+	finalize_button.removeEventListener("mouseover", finish_click_listener);
+	finalize_button.removeEventListener("mouseout", finish_click_listener);
+	stage.removeChild(finalize_button);
+	stage.addChild(waiting);
+	
+	timer.already_finished = true;
+	
+	if(selected >= 0) {
+		nodes[selected].hide_target();
+	}
+	stage.update();
+	
+	for(var i = 0; i < units_list.length; i++) {
+		units_list[i].img.removeEventListener("click", units_click_listener);
+	}
+	
+	for(var i = 0; i < nodes.length; i++) {
+		if(nodes[i].owner == player){
+			nodes[i].img.removeEventListener("click", source_node_select);
+			nodes[i].img.removeEventListener("mouseover", node_in);
+			nodes[i].img.removeEventListener("mouseout", node_out);
 		}
 	}
 }

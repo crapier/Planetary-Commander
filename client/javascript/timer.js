@@ -1,10 +1,13 @@
 var timer = {
 	time: 0,
-	text: new createjs.Text("0:00", timer_font, timer_font_color)
+	text: new createjs.Text("0:00", timer_font, timer_font_color),
+	started: false
 }
 
-timer.start = function(time) {
+timer.setup = function(time) {
 	this.time = time;
+	this.started = true;
+	this.already_finished = false;
 	
 	var min = Math.floor(this.time/60);
 	var sec = this.time - Math.floor(this.time/60)*60;
@@ -23,9 +26,25 @@ timer.start = function(time) {
 	this.interval = window.setInterval(function(){timer.count_down()}, 1000);
 }
 
+timer.restart = function(time) {
+	this.time = time;
+	this.already_finished = false;
+	var min = Math.floor(this.time/60);
+	var sec = this.time - Math.floor(this.time/60)*60;
+	if(sec > 9) {
+		this.text.text =  min + ":" + sec;
+	}	
+	else {
+		this.text.text =  min + ":0" + sec;
+	}
+	stage.update();
+}
+
 timer.count_down = function() {
 	if(this.time == 0) {
-		finish_click_listener();
+		if(this.already_finished == false) {
+			end_turn();
+		}
 	}
 	else {
 		this.time--;

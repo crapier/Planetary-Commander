@@ -67,9 +67,23 @@ var time_limit = 180;
 
 var line_color = "#FFFFFF";
 
-var waiting = new createjs.Text("Waiting for other player", "30px Arial", "#FFFFFF");
-waiting.x = 680;
-waiting.y = 650;
+var waiting = new createjs.Text("Waiting for other Player", "30px Arial", "#FFFFFF");
+waiting.x = 830;
+waiting.regX = waiting.getMeasuredWidth()/2;
+waiting.y = 670;
+waiting.regY = waiting.getMeasuredHeight()/2;
+
+var win_message = new createjs.Text("You Won!", "100px Arial", "#0000FF");
+win_message.x = 500;
+win_message.regX = win_message.getMeasuredWidth()/2;
+win_message.y = 350;
+win_message.regY = win_message.getMeasuredHeight()/2;
+
+var lose_message = new createjs.Text("You Lost...", "100px Arial", "#FF0000");
+lose_message.x = 500;
+lose_message.regX = lose_message.getMeasuredWidth()/2;
+lose_message.y = 350;
+lose_message.regY = lose_message.getMeasuredHeight()/2;
 
 function initialize() {
 	
