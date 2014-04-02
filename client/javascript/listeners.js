@@ -100,8 +100,14 @@ var result_handler = function(message) {
 	finalize_button.removeAllEventListeners();
 	stage.removeChild(finalize_button);
 	stage.removeChild(waiting);
+	
+	timer.started = false;
 	window.clearInterval(timer.interval);
 	stage.removeChild(timer.text);
+	
+	stage.addChild(play_button);
+	play_button.x = 890;
+	play_button.y = 670;
 	
 	stage.update();
 }

@@ -124,15 +124,21 @@ function initialize() {
 }
 
 function start_game() {
-
+	stage.removeAllChildren();
+	
 	stage.addChild(game_background);
+	
+	nodes = [];
 	create_nodes();
+	
+	lines = [];
 	create_lines();
+	
 	percent = new percent_display(50, 10, 640);
 
 	stage.update();
 	
-	socket = io.connect('http://' + document.location.host);
+	socket = io.connect('http://' + document.location.host, {'force new connection':true});
 	socket.on("updates", update_handler);
 	socket.on("results", result_handler);
 	socket.on("client_id", set_client_id);
