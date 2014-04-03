@@ -5,8 +5,7 @@ var movements = [];
 var units_list = [];
 var percent;
 var socket;
-var selected
-var client_id;
+var selected;
 
 var start_menu_background = new createjs.Bitmap("/client/img/start_menu_background.png");
 var game_background = new createjs.Bitmap("/client/img/background1.png");
@@ -141,7 +140,6 @@ function start_game() {
 	socket = io.connect('http://' + document.location.host, {'force new connection':true});
 	socket.on("updates", update_handler);
 	socket.on("results", result_handler);
-	socket.on("client_id", set_client_id);
 	
 	document.onkeydown = percent_key_listener;
 }

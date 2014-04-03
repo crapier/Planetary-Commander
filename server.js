@@ -92,13 +92,13 @@ var opponent = 2;
 
 var client_1 = 1;
 var client_2 = 2;
-var client_1_socket_id;
-var client_2_socket_id;
+var client_1_socket_id = [];
+var client_2_socket_id = [];
 
 var nodes = [];
-var num_connected_clients = 0;
-var movements_recieved = 0;
-var game_state = 0;
+var num_connected_clients = [];
+var movements_recieved = [];
+var game_state = [];
 
 var client_1_movements = [];
 var client_2_movements = [];
@@ -128,32 +128,32 @@ var update = function(owner, units, visible) {
 	this.visible = visible;
 }
 
-var game_setup = function() {
-	nodes.push(new node(20, none, large, [4, 6, 8, 14, 15]));
-	nodes.push(new node(20, none, large, [5, 7, 10, 18, 22]));
-	nodes.push(new node(20, none, large, [9, 11, 12, 20, 23]));
-	nodes.push(new node(20, none, large, [6, 7, 9, 16, 17, 21]));
-	nodes.push(new node(10, none, medium, [0, 13]));
-	nodes.push(new node(10, none, medium, [1, 13]));
-	nodes.push(new node(10, none, medium, [0, 3]));
-	nodes.push(new node(10, none, medium, [1, 3]));
-	nodes.push(new node(10, none, medium, [0, 19]));
-	nodes.push(new node(10, none, medium, [2, 3]));
-	nodes.push(new node(10, none, medium, [1, 24]));
-	nodes.push(new node(10, none, medium, [2, 19]));
-	nodes.push(new node(10, none, medium, [2, 24]));
-	nodes.push(new node(5, none, small, [4, 5]));
-	nodes.push(new node(5, none, small, [0, 17, 18]));
-	nodes.push(new node(5, none, small, [0, 16, 20]));
-	nodes.push(new node(5, none, small, [3, 15, 20]));
-	nodes.push(new node(5, none, small, [3, 14, 18]));
-	nodes.push(new node(5, none, small, [1, 14, 17]));
-	nodes.push(new node(5, none, small, [8, 11]));
-	nodes.push(new node(5, none, small, [2, 15, 16]));
-	nodes.push(new node(5, none, small, [3, 22, 23]));
-	nodes.push(new node(5, none, small, [1, 21, 23]));
-	nodes.push(new node(5, none, small, [2, 21, 22]));
-	nodes.push(new node(5, none, small, [10, 12]));
+var game_setup = function(game_id) {
+	nodes[game_id].push(new node(20, none, large, [4, 6, 8, 14, 15]));
+	nodes[game_id].push(new node(20, none, large, [5, 7, 10, 18, 22]));
+	nodes[game_id].push(new node(20, none, large, [9, 11, 12, 20, 23]));
+	nodes[game_id].push(new node(20, none, large, [6, 7, 9, 16, 17, 21]));
+	nodes[game_id].push(new node(10, none, medium, [0, 13]));
+	nodes[game_id].push(new node(10, none, medium, [1, 13]));
+	nodes[game_id].push(new node(10, none, medium, [0, 3]));
+	nodes[game_id].push(new node(10, none, medium, [1, 3]));
+	nodes[game_id].push(new node(10, none, medium, [0, 19]));
+	nodes[game_id].push(new node(10, none, medium, [2, 3]));
+	nodes[game_id].push(new node(10, none, medium, [1, 24]));
+	nodes[game_id].push(new node(10, none, medium, [2, 19]));
+	nodes[game_id].push(new node(10, none, medium, [2, 24]));
+	nodes[game_id].push(new node(5, none, small, [4, 5]));
+	nodes[game_id].push(new node(5, none, small, [0, 17, 18]));
+	nodes[game_id].push(new node(5, none, small, [0, 16, 20]));
+	nodes[game_id].push(new node(5, none, small, [3, 15, 20]));
+	nodes[game_id].push(new node(5, none, small, [3, 14, 18]));
+	nodes[game_id].push(new node(5, none, small, [1, 14, 17]));
+	nodes[game_id].push(new node(5, none, small, [8, 11]));
+	nodes[game_id].push(new node(5, none, small, [2, 15, 16]));
+	nodes[game_id].push(new node(5, none, small, [3, 22, 23]));
+	nodes[game_id].push(new node(5, none, small, [1, 21, 23]));
+	nodes[game_id].push(new node(5, none, small, [2, 21, 22]));
+	nodes[game_id].push(new node(5, none, small, [10, 12]));
 	
 	var client_1_start = Math.floor((Math.random()*3));
 	var client_2_start = Math.floor((Math.random()*3));
@@ -161,296 +161,326 @@ var game_setup = function() {
 		var client_2_start = Math.floor((Math.random()*3));
 	}
 	
-	nodes[client_1_start].owner = client_1;
-	nodes[client_1_start].units = 50;
-	nodes[client_1_start].generating = true;
-	nodes[client_2_start].owner = client_2;
-	nodes[client_2_start].units = 50;
-	nodes[client_2_start].generating = true;
+	nodes[game_id][client_1_start].owner = client_1;
+	nodes[game_id][client_1_start].units = 50;
+	nodes[game_id][client_1_start].generating = true;
+	nodes[game_id][client_2_start].owner = client_2;
+	nodes[game_id][client_2_start].units = 50;
+	nodes[game_id][client_2_start].generating = true;
 }
 
-var send_updates = function() {
+var send_updates = function(game_id) {
 	var client_1_updates = [];
 	var client_2_updates = [];
-	for(var i = 0; i < nodes.length; i++) {
+	for(var i = 0; i < nodes[game_id].length; i++) {
 		client_1_updates.push(new update(-1, -1, false));
 		client_2_updates.push(new update(-1, -1, false));
 	}
 	
-	for(var i = 0; i < nodes.length; i++) {
-		if (nodes[i].owner == client_1) {
+	for(var i = 0; i < nodes[game_id].length; i++) {
+		if (nodes[game_id][i].owner == client_1) {
 			client_1_updates[i].owner = player;
-			client_1_updates[i].units = nodes[i].units;
+			client_1_updates[i].units = nodes[game_id][i].units;
 			client_1_updates[i].visible = true;
-			for(var j = 0; j < nodes[i].adjacent.length; j++) {
-				if (nodes[nodes[i].adjacent[j]].owner == client_1) {
-					client_1_updates[nodes[i].adjacent[j]].owner = player;
+			for(var j = 0; j < nodes[game_id][i].adjacent.length; j++) {
+				if (nodes[game_id][nodes[game_id][i].adjacent[j]].owner == client_1) {
+					client_1_updates[nodes[game_id][i].adjacent[j]].owner = player;
 				}
-				else if (nodes[nodes[i].adjacent[j]].owner == client_2) {
-					client_1_updates[nodes[i].adjacent[j]].owner = opponent;
+				else if (nodes[game_id][nodes[game_id][i].adjacent[j]].owner == client_2) {
+					client_1_updates[nodes[game_id][i].adjacent[j]].owner = opponent;
 				}
-				else if (nodes[nodes[i].adjacent[j]].owner == none) {
-					client_1_updates[nodes[i].adjacent[j]].owner = none;
+				else if (nodes[game_id][nodes[game_id][i].adjacent[j]].owner == none) {
+					client_1_updates[nodes[game_id][i].adjacent[j]].owner = none;
 				}
-				client_1_updates[nodes[i].adjacent[j]].units = nodes[nodes[i].adjacent[j]].units;
-				client_1_updates[nodes[i].adjacent[j]].visible = true;
+				client_1_updates[nodes[game_id][i].adjacent[j]].units = nodes[game_id][nodes[game_id][i].adjacent[j]].units;
+				client_1_updates[nodes[game_id][i].adjacent[j]].visible = true;
 			}
 		}
-		else if (nodes[i].owner == client_2) {
+		else if (nodes[game_id][i].owner == client_2) {
 			client_2_updates[i].owner = player;
-			client_2_updates[i].units = nodes[i].units;
+			client_2_updates[i].units = nodes[game_id][i].units;
 			client_2_updates[i].visible = true;
-			for(var j = 0; j < nodes[i].adjacent.length; j++) {
-				if (nodes[nodes[i].adjacent[j]].owner == client_2) {
-					client_2_updates[nodes[i].adjacent[j]].owner = player;
+			for(var j = 0; j < nodes[game_id][i].adjacent.length; j++) {
+				if (nodes[game_id][nodes[game_id][i].adjacent[j]].owner == client_2) {
+					client_2_updates[nodes[game_id][i].adjacent[j]].owner = player;
 				}
-				else if (nodes[nodes[i].adjacent[j]].owner == client_1) {
-					client_2_updates[nodes[i].adjacent[j]].owner = opponent;
+				else if (nodes[game_id][nodes[game_id][i].adjacent[j]].owner == client_1) {
+					client_2_updates[nodes[game_id][i].adjacent[j]].owner = opponent;
 				}
-				else if (nodes[nodes[i].adjacent[j]].owner == none) {
-					client_2_updates[nodes[i].adjacent[j]].owner = none;
+				else if (nodes[game_id][nodes[game_id][i].adjacent[j]].owner == none) {
+					client_2_updates[nodes[game_id][i].adjacent[j]].owner = none;
 				}
-				client_2_updates[nodes[i].adjacent[j]].units = nodes[nodes[i].adjacent[j]].units;
-				client_2_updates[nodes[i].adjacent[j]].visible = true;
+				client_2_updates[nodes[game_id][i].adjacent[j]].units = nodes[game_id][nodes[game_id][i].adjacent[j]].units;
+				client_2_updates[nodes[game_id][i].adjacent[j]].visible = true;
 			}
 		}
 	}
 	
-	io.sockets.socket(client_1_socket_id).emit('updates', client_1_updates);
-	io.sockets.socket(client_2_socket_id).emit('updates', client_2_updates);
+	io.sockets.socket(client_1_socket_id[game_id]).emit('updates', client_1_updates);
+	io.sockets.socket(client_2_socket_id[game_id]).emit('updates', client_2_updates);
 }
 
-var send_results = function(client_1_holds, client_2_holds) {
-	num_connected_clients = 0;
-	movements_recieved = 0;
-	game_state = 2;
+var send_results = function(game_id, client_1_holds, client_2_holds) {
+	num_connected_clients[game_id] = 0;
+	movements_recieved[game_id] = 0;
+	game_state[game_id] = 2;
 	
 	var player_1_final_update = [];
 	var player_2_final_update = [];
-	for(var i = 0; i < nodes.length; i++) {
-		if(nodes[i].owner == client_1) {
-			player_1_final_update.push(new update(player, nodes[i].units, true));
-			player_2_final_update.push(new update(opponent, nodes[i].units, true));
+	for(var i = 0; i < nodes[game_id].length; i++) {
+		if(nodes[game_id][i].owner == client_1) {
+			player_1_final_update.push(new update(player, nodes[game_id][i].units, true));
+			player_2_final_update.push(new update(opponent, nodes[game_id][i].units, true));
 		}
-		if(nodes[i].owner == client_2) {
-			player_1_final_update.push(new update(opponent, nodes[i].units, true));
-			player_2_final_update.push(new update(player, nodes[i].units, true));
+		if(nodes[game_id][i].owner == client_2) {
+			player_1_final_update.push(new update(opponent, nodes[game_id][i].units, true));
+			player_2_final_update.push(new update(player, nodes[game_id][i].units, true));
 		}
-		if(nodes[i].owner == none) {
-			player_1_final_update.push(new update(none, nodes[i].units, true));
-			player_2_final_update.push(new update(none, nodes[i].units, true));
+		if(nodes[game_id][i].owner == none) {
+			player_1_final_update.push(new update(none, nodes[game_id][i].units, true));
+			player_2_final_update.push(new update(none, nodes[game_id][i].units, true));
 		}
 	}
 	
 	if(client_1_holds == 0) {
-		io.sockets.socket(client_1_socket_id).emit('results', {results:"loser", updates:player_1_final_update});
-		io.sockets.socket(client_2_socket_id).emit('results', {results:"winner", updates:player_2_final_update});
+		io.sockets.socket(client_1_socket_id[game_id]).emit('results', {results:"loser", updates:player_1_final_update});
+		io.sockets.socket(client_2_socket_id[game_id]).emit('results', {results:"winner", updates:player_2_final_update});
 	}
 	else if(client_2_holds == 0) {
-		io.sockets.socket(client_1_socket_id).emit('results', {results:"winner", updates:player_1_final_update});
-		io.sockets.socket(client_2_socket_id).emit('results', {results:"loser", updates:player_2_final_update});
+		io.sockets.socket(client_1_socket_id[game_id]).emit('results', {results:"winner", updates:player_1_final_update});
+		io.sockets.socket(client_2_socket_id[game_id]).emit('results', {results:"loser", updates:player_2_final_update});
 	}
-	nodes = [];
+	nodes[game_id] = [];
 	
 }
 
-var calculate_movements = function(){
-	for(var i = 0; i < client_1_movements.length; i++){
-		if(nodes[client_1_movements[i].source].owner != client_1) {
-			client_1_movements[i].units = 0;
+var calculate_movements = function(game_id){
+	for(var i = 0; i < client_1_movements[game_id].length; i++){
+		if(nodes[game_id][client_1_movements[game_id][i].source].owner != client_1) {
+			client_1_movements[game_id][i].units = 0;
 		}
-		if(nodes[client_1_movements[i].source].units < client_1_movements[i].units) {
-			client_1_movements[i].units = nodes[client_1_movements[i].source].units;
+		if(nodes[game_id][client_1_movements[game_id][i].source].units < client_1_movements[game_id][i].units) {
+			client_1_movements[game_id][i].units = nodes[game_id][client_1_movements[game_id][i].source].units;
 		}
 		for (var j = 0; j < i; j++) {
-			if (client_1_movements[j].units != 0 && client_1_movements[j].source == client_1_movements[i].source) {
-				client_1_movements[j].units = 0;
+			if (client_1_movements[game_id][j].units != 0 && client_1_movements[game_id][j].source == client_1_movements[game_id][i].source) {
+				client_1_movements[game_id][j].units = 0;
 			}
 		}
 		var destination_adjacent = false;
-		for (var j = 0; j < nodes[client_1_movements[i].source].adjacent.length; j++) {
-			if (client_1_movements[i].destination == nodes[client_1_movements[i].source].adjacent[j]) {
+		for (var j = 0; j < nodes[game_id][client_1_movements[game_id][i].source].adjacent.length; j++) {
+			if (client_1_movements[game_id][i].destination == nodes[game_id][client_1_movements[game_id][i].source].adjacent[j]) {
 				destination_adjacent = true;
 				break;
 			}
 		}
 		if (destination_adjacent == false) {
-			client_1_movements[i].units = 0;
+			client_1_movements[game_id][i].units = 0;
 		}
 	}
-	for(var i = 0; i < client_2_movements.length; i++){
-		if(nodes[client_2_movements[i].source].owner != client_2) {
-			client_2_movements[i].units = 0;
+	for(var i = 0; i < client_2_movements[game_id].length; i++){
+		if(nodes[game_id][client_2_movements[game_id][i].source].owner != client_2) {
+			client_2_movements[game_id][i].units = 0;
 		}
-		if(nodes[client_2_movements[i].source].units < client_2_movements[i].units) {
-			client_2_movements[i].units = nodes[client_2_movements[i].source].units;
+		if(nodes[game_id][client_2_movements[game_id][i].source].units < client_2_movements[game_id][i].units) {
+			client_2_movements[game_id][i].units = nodes[game_id][client_2_movements[game_id][i].source].units;
 		}
 		for (var j = 0; j < i; j++) {
-			if (client_2_movements[j].units != 0 && client_2_movements[j].source == client_2_movements[i].source) {
-				client_2_movements[j].units = 0;
+			if (client_2_movements[game_id][j].units != 0 && client_2_movements[game_id][j].source == client_2_movements[game_id][i].source) {
+				client_2_movements[game_id][j].units = 0;
 			}
 		}
 		var destination_adjacent = false;
-		for (var j = 0; j < nodes[client_2_movements[i].source].adjacent.length; j++) {
-			if (client_2_movements[i].destination == nodes[client_2_movements[i].source].adjacent[j]) {
+		for (var j = 0; j < nodes[game_id][client_2_movements[game_id][i].source].adjacent.length; j++) {
+			if (client_2_movements[game_id][i].destination == nodes[game_id][client_2_movements[game_id][i].source].adjacent[j]) {
 				destination_adjacent = true;
 				break;
 			}
 		}
 		if (destination_adjacent == false) {
-			client_2_movements[i].units = 0;
+			client_2_movements[game_id][i].units = 0;
 		}
 	}
 	
-	for(var i = 0; i < client_1_movements.length; i++){
-		nodes[client_1_movements[i].source].units -= client_1_movements[i].units;
+	for(var i = 0; i < client_1_movements[game_id].length; i++){
+		nodes[game_id][client_1_movements[game_id][i].source].units -= client_1_movements[game_id][i].units;
 	}
-	for(var i = 0; i < client_2_movements.length; i++){
-		nodes[client_2_movements[i].source].units -= client_2_movements[i].units;
+	for(var i = 0; i < client_2_movements[game_id].length; i++){
+		nodes[game_id][client_2_movements[game_id][i].source].units -= client_2_movements[game_id][i].units;
 	}
 	
-	for(var i = 0; i < nodes.length; i++){
+	for(var i = 0; i < nodes[game_id].length; i++){
 		var client_1_incoming = 0;
 		var client_2_incoming = 0;
-		for(var j = 0; j < client_1_movements.length; j++) {
-			if(client_1_movements[j].destination == i) {
-				client_1_incoming += client_1_movements[j].units;
+		for(var j = 0; j < client_1_movements[game_id].length; j++) {
+			if(client_1_movements[game_id][j].destination == i) {
+				client_1_incoming += client_1_movements[game_id][j].units;
 			}
 		}
-		for(var j = 0; j < client_2_movements.length; j++) {
-			if(client_2_movements[j].destination == i) {
-				client_2_incoming += client_2_movements[j].units;
+		for(var j = 0; j < client_2_movements[game_id].length; j++) {
+			if(client_2_movements[game_id][j].destination == i) {
+				client_2_incoming += client_2_movements[game_id][j].units;
 			}
 		}
 		if(client_1_incoming >= client_2_incoming) {
 			client_1_incoming -= client_2_incoming;
-			if (nodes[i].owner == client_1) {
-				nodes[i].units += client_1_incoming;
+			if (nodes[game_id][i].owner == client_1) {
+				nodes[game_id][i].units += client_1_incoming;
 			}
-			else if (client_1_incoming > nodes[i].units) {
-				nodes[i].units = client_1_incoming - nodes[i].units;
-				nodes[i].owner = client_1;
-				nodes[i].generating = false;
+			else if (client_1_incoming > nodes[game_id][i].units) {
+				nodes[game_id][i].units = client_1_incoming - nodes[game_id][i].units;
+				nodes[game_id][i].owner = client_1;
+				nodes[game_id][i].generating = false;
 			}
 			else {
-				nodes[i].units = nodes[i].units - client_1_incoming;
+				nodes[game_id][i].units = nodes[game_id][i].units - client_1_incoming;
 			}	
 		}
 		else {
 			client_2_incoming -= client_1_incoming;
-			if (nodes[i].owner == client_2) {
-				nodes[i].units += client_2_incoming;
+			if (nodes[game_id][i].owner == client_2) {
+				nodes[game_id][i].units += client_2_incoming;
 			}
-			else if (client_2_incoming > nodes[i].units) {
-				nodes[i].units = client_2_incoming - nodes[i].units;
-				nodes[i].owner = client_2;
-				nodes[i].generating = false;
+			else if (client_2_incoming > nodes[game_id][i].units) {
+				nodes[game_id][i].units = client_2_incoming - nodes[game_id][i].units;
+				nodes[game_id][i].owner = client_2;
+				nodes[game_id][i].generating = false;
 			}
 			else {
-				nodes[i].units = nodes[i].units - client_2_incoming;
+				nodes[game_id][i].units = nodes[game_id][i].units - client_2_incoming;
 			}	
 		}
 	}
 	
-	for(var i = 0; i < nodes.length; i++){
-		nodes[i].generate();
+	for(var i = 0; i < nodes[game_id].length; i++){
+		nodes[game_id][i].generate();
 	}
 	
 	var client_1_holds = 0;
 	var client_2_holds = 0;
-	for(var i = 0; i < nodes.length; i++){
-		if(nodes[i].owner == client_1) {
+	for(var i = 0; i < nodes[game_id].length; i++){
+		if(nodes[game_id][i].owner == client_1) {
 			client_1_holds++;
 		}
-		else if (nodes[i].owner == client_2) {
+		else if (nodes[game_id][i].owner == client_2) {
 			client_2_holds++;
 		}
 	}
 	if (client_1_holds == 0 || client_2_holds == 0) {
-		send_results(client_1_holds, client_2_holds);
+		send_results(game_id, client_1_holds, client_2_holds);
 	}
 	else {
-		send_updates();
+		send_updates(game_id);
 	}
 }
 
-var movement_handler = function(message) {
-	if(message.client_id == client_1) {
-		client_1_movements = message.movements;
+var movement_handler = function(movements) {
+	var game_id = this.store.data.game_id;
+	var client_id = this.store.data.client_id;
+	
+	if(client_id == client_1) {
+		client_1_movements[game_id] = movements;
 	}
-	else if (message.client_id == client_2) {
-		client_2_movements = message.movements;
+	else if (client_id == client_2) {
+		client_2_movements[game_id] = movements;
 	}
 	
-	if(movements_recieved == 0) {
-		movements_recieved++;
+	if(movements_recieved[game_id] == 0) {
+		movements_recieved[game_id]++;
 	}
 	else {
-		calculate_movements();
-		movements_recieved--;
+		calculate_movements(game_id);
+		movements_recieved[game_id]--;
 	}
 }
 
 var disconnect_handler = function() {
-	if(game_state == 0) {
-		num_connected_clients = 0;
-		movements_recieved = 0;
-		nodes = [];
+	var game_id = this.store.data.game_id;
+	var client_id = this.store.data.client_id;
+	
+	if(game_state[game_id] == 0) {
+		num_connected_clients[game_id] = 0;
+		movements_recieved[game_id] = 0;
+		nodes[game_id] = [];
 	}
-	if(game_state == 1) {
-		num_connected_clients = 0;
-		movements_recieved = 0;
+	if(game_state[game_id] == 1) {
+		num_connected_clients[game_id] = 0;
+		movements_recieved[game_id] = 0;
 		var player_1_final_update = [];
 		var player_2_final_update = [];
-		for(var i = 0; i < nodes.length; i++) {
-			if(nodes[i].owner == client_1) {
-				player_1_final_update.push(new update(player, nodes[i].units, true));
-				player_2_final_update.push(new update(opponent, nodes[i].units, true));
+		for(var i = 0; i < nodes[game_id].length; i++) {
+			if(nodes[game_id][i].owner == client_1) {
+				player_1_final_update.push(new update(player, nodes[game_id][i].units, true));
+				player_2_final_update.push(new update(opponent, nodes[game_id][i].units, true));
 			}
-			if(nodes[i].owner == client_2) {
-				player_1_final_update.push(new update(opponent, nodes[i].units, true));
-				player_2_final_update.push(new update(player, nodes[i].units, true));
+			if(nodes[game_id][i].owner == client_2) {
+				player_1_final_update.push(new update(opponent, nodes[game_id][i].units, true));
+				player_2_final_update.push(new update(player, nodes[game_id][i].units, true));
 			}
-			if(nodes[i].owner == none) {
-				player_1_final_update.push(new update(none, nodes[i].units, true));
-				player_2_final_update.push(new update(none, nodes[i].units, true));
+			if(nodes[game_id][i].owner == none) {
+				player_1_final_update.push(new update(none, nodes[game_id][i].units, true));
+				player_2_final_update.push(new update(none, nodes[game_id][i].units, true));
 			}
 		}
-		io.sockets.socket(client_1_socket_id).emit('results', {results:"winner", updates:player_1_final_update});
-		io.sockets.socket(client_2_socket_id).emit('results', {results:"winner", updates:player_2_final_update});
-		game_state = 3;
-		nodes = [];
+		if(client_id == client_1) {
+			io.sockets.socket(client_2_socket_id[game_id]).emit('results', {results:"winner", updates:player_2_final_update});
+		}
+		else if(client_id == client_2) {
+			io.sockets.socket(client_1_socket_id[game_id]).emit('results', {results:"winner", updates:player_1_final_update});
+		}
+		game_state[game_id] = 3;
+		nodes[game_id] = [];
 	}
-	else if (game_state == 2) {
-		game_state = 3;
+	else if (game_state[game_id] == 2) {
+		game_state[game_id] = 3;
 	}
-	else if (game_state == 3) {
-		game_state = 0;
+	else if (game_state[game_id] == 3) {
+		game_state[game_id] = 0;
 	}
 }
 
 var connection_handler = function(client) {
-	if(num_connected_clients == 0 && game_state == 0) {
-		client.emit("client_id", client_1);
-		client_1_socket_id = client.id;
-		game_setup();
-		num_connected_clients++;
-		client.on('movements', movement_handler);
-		client.on('disconnect', disconnect_handler);
+	var game_id = -1;
+	for(var i = 0; i < num_connected_clients.length; i++) {
+		if(num_connected_clients[i] <= 1 && game_state[i] == 0) {
+			game_id = i;
+			break;
+		}
 	}
-	else if (num_connected_clients == 1 && game_state == 0) { 
-		client.emit("client_id", client_2);
-		client_2_socket_id = client.id;
-		send_updates();
-		num_connected_clients++
-		client.on('movements', movement_handler);
-		client.on('disconnect', disconnect_handler);
-		game_state = 1;
-	}
-	else {
-		client.on('disconnect', function() {});
+	if(game_id == -1) {
+		game_id = num_connected_clients.length;
+		num_connected_clients.push(0);
+		movements_recieved.push(0);
+		game_state.push(0);
+		nodes.push([]);
+		client_1_movements.push([]);
+		client_2_movements.push([]);
+		
+		client_1_socket_id.push(0);
+		client_2_socket_id.push(0);
 	}
 	
+	if(num_connected_clients[game_id] == 0) {
+		console.log("New client joined game " + game_id + " as client " + client_1);
+		client.set("game_id", game_id);
+		client.set("client_id", client_1);
+		client_1_socket_id[game_id] = client.id;
+		game_setup(game_id);
+		num_connected_clients[game_id]++;
+		client.on('movements', movement_handler);
+		client.on('disconnect', disconnect_handler);
+	}
+	else if (num_connected_clients[game_id] == 1) {
+		console.log("New client joined game " + game_id + " as client " + client_2);	
+		client.set("game_id", game_id);
+		client.set("client_id", client_2);
+		client_2_socket_id[game_id] = client.id;
+		send_updates(game_id);
+		num_connected_clients[game_id]++
+		client.on('movements', movement_handler);
+		client.on('disconnect', disconnect_handler);
+		game_state[game_id] = 1;
+	}
 }
 
 io.sockets.on('connection', connection_handler);

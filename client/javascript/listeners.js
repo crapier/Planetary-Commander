@@ -27,10 +27,6 @@ var instruction_button_listener = function(event) {
 	}
 }
 
-var set_client_id = function(id) {
-	client_id = id;
-}
-
 var update_handler = function(updates) {
 	for(var i = 0; i < updates.length; i++){
 		nodes[i].update(updates[i]);
@@ -211,7 +207,7 @@ var finish_click_listener = function(event) {
 }
 
 var end_turn = function() {
-	socket.emit("movements", {client_id:client_id, movements:movements});
+	socket.emit("movements", movements);
 	finalize_button.removeEventListener("click", finish_click_listener);
 	finalize_button.removeEventListener("mouseover", finish_click_listener);
 	finalize_button.removeEventListener("mouseout", finish_click_listener);
