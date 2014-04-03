@@ -84,6 +84,12 @@ lose_message.regX = lose_message.getMeasuredWidth()/2;
 lose_message.y = 350;
 lose_message.regY = lose_message.getMeasuredHeight()/2;
 
+var player_match_message = new createjs.Text("Waiting for another Player.", "50px Arial", "#FFFFFF");
+player_match_message.x = 500;
+player_match_message.regX = player_match_message.getMeasuredWidth()/2;
+player_match_message.y = 350;
+player_match_message.regY = player_match_message.getMeasuredHeight()/2;
+
 var initialize = function() {
 	
 	play_button = play_button_img.clone();
@@ -132,7 +138,8 @@ var start_game = function() {
 	lines = [];
 	
 	percent = new percent_display(50, 10, 640);
-
+	stage.addChild(player_match_message);
+	
 	stage.update();
 	
 	socket = io.connect('http://' + document.location.host, {'force new connection':true});
@@ -158,6 +165,8 @@ var create_lines = function() {
 }
 
 var draw_map = function(map_id) {
+	stage.removeChild(player_match_message);
+	
 	create_nodes[map_id]();
 	create_lines();
 	
@@ -205,4 +214,31 @@ create_nodes.push (function() {
 	nodes.push(new node(small, 500, 230, [3, 7, 8]));
 	nodes.push(new node(small, 560, 320, [4, 6, 8]));
 	nodes.push(new node(small, 400, 300, [5, 6, 7]));
+})
+
+create_nodes.push (function() {
+	nodes.push(new node(large, 550, 296, [1, 2, 4]));
+	nodes.push(new node(large, 425, 295, [2, 0, 5]));
+	nodes.push(new node(large, 486, 372, [1, 0, 3]));
+	nodes.push(new node(small, 484, 494, [2, 9, 10, 16]));
+	nodes.push(new node(small, 662, 227, [11, 0, 12, 15]));
+	nodes.push(new node(small, 309, 224, [1, 13, 14, 17]));
+	nodes.push(new node(large, 846, 559, [9, 10, 21]));
+	nodes.push(new node(large, 529, 45, [11, 12, 22]));
+	nodes.push(new node(large, 80, 422, [13, 14, 23]));
+	nodes.push(new node(small, 652, 566, [3, 6, 16]));
+	nodes.push(new node(medium, 678, 458, [6, 3, 18]));
+	nodes.push(new node(small, 653, 82, [7, 4, 15]));
+	nodes.push(new node(medium, 495, 125, [7, 4, 20]));
+	nodes.push(new node(small, 117, 253, [5, 8, 17]));
+	nodes.push(new node(medium, 217, 337, [8, 5, 19]));
+	nodes.push(new node(small, 753, 277, [11, 4, 18]));
+	nodes.push(new node(small, 387, 508, [3, 9, 19]));
+	nodes.push(new node(small, 369, 141, [5, 13, 20]));
+	nodes.push(new node(small, 633, 348, [15, 10]));
+	nodes.push(new node(small, 347, 361, [16, 14]));
+	nodes.push(new node(small, 446, 199, [12, 17]));
+	nodes.push(new node(small, 907, 405, [6]));
+	nodes.push(new node(small, 364, 22, [7]));
+	nodes.push(new node(small, 180, 576, [8]));
 })

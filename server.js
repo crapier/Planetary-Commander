@@ -205,6 +205,46 @@ maps.push(function(game_id) {
 	nodes[game_id][client_2_start].generating = true;
 })
 
+maps.push(function(game_id) {
+	nodes[game_id].push(new node(20, large, [1, 2, 4]));
+	nodes[game_id].push(new node(20, large, [2, 0, 5]));
+	nodes[game_id].push(new node(20, large, [1, 0, 3]));
+	nodes[game_id].push(new node(5, small, [2, 9, 10, 16]));
+	nodes[game_id].push(new node(5, small, [11, 0, 12, 15]));
+	nodes[game_id].push(new node(5, small, [1, 13, 14, 17]));
+	nodes[game_id].push(new node(20, large, [9, 10, 21]));
+	nodes[game_id].push(new node(20, large, [11, 12, 22]));
+	nodes[game_id].push(new node(20, large, [13, 14, 23]));
+	nodes[game_id].push(new node(5, small, [3, 6, 16]));
+	nodes[game_id].push(new node(10, medium, [6, 3, 18]));
+	nodes[game_id].push(new node(5, small, [7, 4, 15]));
+	nodes[game_id].push(new node(10, medium, [7, 4, 20]));
+	nodes[game_id].push(new node(5, small, [5, 8, 17]));
+	nodes[game_id].push(new node(10, medium, [8, 5, 19]));
+	nodes[game_id].push(new node(5, small, [11, 4, 18]));
+	nodes[game_id].push(new node(5, small, [3, 9, 19]));
+	nodes[game_id].push(new node(5, small, [5, 13, 20]));
+	nodes[game_id].push(new node(5, small, [15, 10]));
+	nodes[game_id].push(new node(5, small, [16, 14]));
+	nodes[game_id].push(new node(5, small, [12, 17]));
+	nodes[game_id].push(new node(5, small, [6]));
+	nodes[game_id].push(new node(5, small, [7]));
+	nodes[game_id].push(new node(5, small, [8]));
+
+	var client_1_start = Math.floor((Math.random()*3));
+	var client_2_start = Math.floor((Math.random()*3));
+	while(client_1_start == client_2_start) {
+		var client_2_start = Math.floor((Math.random()*3));
+	}
+
+	nodes[game_id][client_1_start].owner = client_1;
+	nodes[game_id][client_1_start].units = 50;
+	nodes[game_id][client_1_start].generating = true;
+	nodes[game_id][client_2_start].owner = client_2;
+	nodes[game_id][client_2_start].units = 50;
+	nodes[game_id][client_2_start].generating = true;
+})
+
 var send_updates = function(game_id) {
 	var client_1_updates = [];
 	var client_2_updates = [];
@@ -478,9 +518,17 @@ var disconnect_handler = function() {
 var connection_handler = function(client) {
 	var game_id = -1;
 	for(var i = 0; i < num_connected_clients.length; i++) {
-		if(num_connected_clients[i] <= 1 && game_state[i] == 0) {
+		if(num_connected_clients[i] == 1 && game_state[i] == 0) {
 			game_id = i;
 			break;
+		}
+	}
+	if(game_id == -1) {
+		for(var i = 0; i < num_connected_clients.length; i++) {
+			if(num_connected_clients[i] == 0 && game_state[i] == 0) {
+				game_id = i;
+				break;
+			}
 		}
 	}
 	if(game_id == -1) {
