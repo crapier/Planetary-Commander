@@ -84,7 +84,7 @@ lose_message.regX = lose_message.getMeasuredWidth()/2;
 lose_message.y = 350;
 lose_message.regY = lose_message.getMeasuredHeight()/2;
 
-function initialize() {
+var initialize = function() {
 	
 	play_button = play_button_img.clone();
 	instructions_button = instructions_button_img.clone();
@@ -122,29 +122,27 @@ function initialize() {
 	instructions_button.addEventListener("mouseout", instruction_button_listener);
 }
 
-function start_game() {
+var start_game = function() {
 	stage.removeAllChildren();
 	
 	stage.addChild(game_background);
 	
 	nodes = [];
-	create_nodes();
 	
 	lines = [];
-	create_lines();
 	
 	percent = new percent_display(50, 10, 640);
 
 	stage.update();
 	
 	socket = io.connect('http://' + document.location.host, {'force new connection':true});
-	socket.on("updates", update_handler);
-	socket.on("results", result_handler);
+	socket.on("map_select", draw_map);
+	
 	
 	document.onkeydown = percent_key_listener;
 }
 
-function create_lines() {
+var create_lines = function() {
 	index = 0;
 	for(var i = 0; i < nodes.length; i++) {
 		for(var j = 0; j < nodes[i].adjacent.length; j++) {
@@ -159,7 +157,17 @@ function create_lines() {
 	
 }
 
-function create_nodes() {
+var draw_map = function(map_id) {
+	create_nodes[map_id]();
+	create_lines();
+	
+	socket.on("updates", update_handler);
+	socket.on("results", result_handler);
+}
+
+var create_nodes = []
+
+create_nodes.push (function() {
 	nodes.push(new node(large, 200, 150, [4, 6, 8, 14, 15]));
 	nodes.push(new node(large, 850, 190, [5, 7, 10, 18, 22]));
 	nodes.push(new node(large, 470, 550, [9, 11, 12, 20, 23]));
@@ -185,4 +193,16 @@ function create_nodes() {
 	nodes.push(new node(small, 660, 320, [1, 21, 23]));
 	nodes.push(new node(small, 620, 500, [2, 21, 22]));
 	nodes.push(new node(small, 820, 460, [10, 12]));
-}
+})
+
+create_nodes.push (function() {
+	nodes.push(new node(large, 200, 150, [3, 5]));
+	nodes.push(new node(large, 850, 190, [3, 4]));
+	nodes.push(new node(large, 470, 550, [4, 5]));
+	nodes.push(new node(medium, 540, 100, [0, 1, 6]));
+	nodes.push(new node(medium, 700, 400, [1, 2, 7]));
+	nodes.push(new node(medium, 260, 380, [0, 2, 8]));
+	nodes.push(new node(small, 500, 230, [3, 7, 8]));
+	nodes.push(new node(small, 560, 320, [4, 6, 8]));
+	nodes.push(new node(small, 400, 300, [5, 6, 7]));
+})
