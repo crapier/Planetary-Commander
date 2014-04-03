@@ -30,3 +30,11 @@ h2 {
 	color: white;
 	font: 40px arial,sans-serif;
 }
+
+textarea {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}

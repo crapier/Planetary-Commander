@@ -12,6 +12,9 @@
 	
 	<script src="/client/javascript/node.js"></script>
 	<script>
+		var stage;
+		var code_box;
+		
 		var small = 0;
 		var medium = 1;
 		var large = 2;
@@ -23,6 +26,9 @@
 		var nodes = [];
 		var lines = [];
 		var selected = -1;
+		
+		var allow_starts = true;
+		var number_starts = 0;
 		
 		var background = new createjs.Bitmap("/client/img/background1.png");
 		
@@ -45,6 +51,14 @@
 		var hidden_opponent_medium_node = new createjs.Bitmap("/client/img/hidden_medium_opponent.png");
 		var hidden_opponent_large_node = new createjs.Bitmap("/client/img/hidden_large_opponent.png");
 		
+		var generate_button_img = new createjs.Bitmap("/client/img/generate_button.png");
+		var generate_button_hover_img = new createjs.Bitmap("/client/img/generate_button_hover.png");
+		var generate_button;
+		
+		var clear_button_img = new createjs.Bitmap("/client/img/clear_button.png");
+		var clear_button_hover_img = new createjs.Bitmap("/client/img/clear_button_hover.png");
+		var clear_button;
+		
 		var node_font = "20px Arial";
 		var node_font_color = "#FFFFFF";
 		
@@ -52,18 +66,44 @@
 		
 		var initialize = function() {
 			stage = new createjs.Stage("pcgame");
+			
+			generate_button = generate_button_img.clone();
+			generate_button.x = 890;
+			generate_button.regX = generate_button.image.width/2;
+			generate_button.y = 670;
+			generate_button.regY = generate_button.image.height/2;
+			
+			clear_button = clear_button_img.clone();
+			clear_button.x = 110;
+			clear_button.regX = clear_button.image.width/2;
+			clear_button.y = 670;
+			clear_button.regY = clear_button.image.height/2;
+			
+			generate_button.addEventListener("mouseover", generate_button_listener);
+			generate_button.addEventListener("click", generate_button_listener);
+			generate_button.addEventListener("mouseout", generate_button_listener);
+			
+			clear_button.addEventListener("mouseover", clear_button_listener);
+			clear_button.addEventListener("click", clear_button_listener);
+			clear_button.addEventListener("mouseout", clear_button_listener);
+			
 			stage.addChild(background);
+			stage.addChild(generate_button);
+			stage.addChild(clear_button);
+			
 			stage.update();
 			stage.enableMouseOver();
 			stage.addEventListener("click", add_node)
+			code_box = document.getElementById("code_output");
 		}
 		
 		var add_node = function(event) {
-			var size = prompt("Size of the planet", "large, medium, or small");
+			var size = prompt("Size of the planet", "start, large, medium, or small");
 			
 			if (size == "large") {
+				allow_starts = false;
 				nodes.push(new node(large, event.stageX, event.stageY, []));
-				nodes[nodes.length-1].update({units:20, owner:player, visible:true});
+				nodes[nodes.length-1].update({units:20, owner:none, visible:true});
 				if(selected == -1) {
 					nodes[nodes.length-1].img.addEventListener("click", node_listener);
 					nodes[nodes.length-1].img.addEventListener("mouseover", node_listener);
@@ -77,8 +117,9 @@
 				stage.update();
 			}
 			else if (size == "medium") {
+				allow_starts = false;
 				nodes.push(new node(medium, event.stageX, event.stageY, []));
-				nodes[nodes.length-1].update({units:10, owner:player, visible:true});
+				nodes[nodes.length-1].update({units:10, owner:none, visible:true});
 				if(selected == -1) {
 					nodes[nodes.length-1].img.addEventListener("click", node_listener);
 					nodes[nodes.length-1].img.addEventListener("mouseover", node_listener);
@@ -92,8 +133,9 @@
 				stage.update();
 			}
 			else if (size == "small") {
+				allow_starts = false;
 				nodes.push(new node(small, event.stageX, event.stageY, []));
-				nodes[nodes.length-1].update({units:5, owner:player, visible:true});
+				nodes[nodes.length-1].update({units:5, owner:none, visible:true});
 				if(selected == -1) {
 					nodes[nodes.length-1].img.addEventListener("click", node_listener);
 					nodes[nodes.length-1].img.addEventListener("mouseover", node_listener);
@@ -106,7 +148,29 @@
 				}
 				stage.update();
 			}
+			else if (size == "start") {
+				if(allow_starts == true) {
+					number_starts++;
+					nodes.push(new node(large, event.stageX, event.stageY, []));
+					nodes[nodes.length-1].update({units:20, owner:player, visible:true});
+					if(selected == -1) {
+						nodes[nodes.length-1].img.addEventListener("click", node_listener);
+						nodes[nodes.length-1].img.addEventListener("mouseover", node_listener);
+						nodes[nodes.length-1].img.addEventListener("mouseout", node_listener);
+					}
+					else {
+						nodes[nodes.length-1].img.addEventListener("click", adjacent_listener);
+						nodes[nodes.length-1].img.addEventListener("mouseover", adjacent_listener);
+						nodes[nodes.length-1].img.addEventListener("mouseout", adjacent_listener);
+					}
+					stage.update();
+				}
+				else {
+					alert("Start planets must be added first.");
+				}
+			}
 		}
+		
 		
 		var node_listener = function(event) {
 			if(event.type == "click") {
@@ -199,6 +263,48 @@
 			stage.update();
 		}
 		
+		var generate_button_listener = function(event) {
+			if(event.type == "click") {
+				generate_code();
+				event.stopPropagation();
+			}
+			else if(event.type == "mouseover") {
+				generate_button.image = generate_button_hover_img.image;
+				stage.update();
+			}
+			else if(event.type == "mouseout") {
+				generate_button.image = generate_button_img.image;
+				stage.update();
+			}
+		}
+		
+		var clear_button_listener = function(event) {
+			if(event.type == "click") {
+				stage.removeAllChildren();
+				nodes = [];
+				lines = [];
+				selected = -1;
+		
+				allow_starts = true;
+				number_starts = 0;
+				
+				stage.addChild(background);
+				stage.addChild(generate_button);
+				stage.addChild(clear_button);
+				
+				stage.update();
+				event.stopPropagation();
+			}
+			else if(event.type == "mouseover") {
+				clear_button.image = clear_button_hover_img.image;
+				stage.update();
+			}
+			else if(event.type == "mouseout") {
+				clear_button.image = clear_button_img.image;
+				stage.update();
+			}
+		}
+		
 		var generate_code = function(){
 			var client_side = "create_nodes.push (function() {\n";
 			var server_side = "maps.push(function(game_id) {\n";
@@ -236,15 +342,26 @@
 				server_side = server_side + "]));\n";
 			}
 			client_side = client_side + "})";
-			server_side = server_side + "\n\t//Include Player Starts here\n})";
+			server_side = server_side + "\n\tvar client_1_start = Math.floor((Math.random()*" + number_starts + "));"
+			server_side = server_side + "\n\tvar client_2_start = Math.floor((Math.random()*" + number_starts + "));"
+			server_side = server_side + "\n\twhile(client_1_start == client_2_start) {"
+			server_side = server_side + "\n\t\tvar client_2_start = Math.floor((Math.random()*" + number_starts + "));"
+			server_side = server_side + "\n\t}"
+			server_side = server_side + "\n\t"
+			server_side = server_side + "\n\tnodes[game_id][client_1_start].owner = client_1;"
+			server_side = server_side + "\n\tnodes[game_id][client_1_start].units = 50;"
+			server_side = server_side + "\n\tnodes[game_id][client_1_start].generating = true;"
+			server_side = server_side + "\n\tnodes[game_id][client_2_start].owner = client_2;"
+			server_side = server_side + "\n\tnodes[game_id][client_2_start].units = 50;"
+			server_side = server_side + "\n\tnodes[game_id][client_2_start].generating = true;\n})";
 			
-			console.log("Client Side Code:\n" + client_side);
-			console.log("\nServer Side Code:\n" +server_side);
+			code_box.value = "Client Side Code:\n" + client_side + "\n\nServer Side Code:\n" +server_side;
 		}
 	</script>
 	
 	</head>
 	<body onLoad="initialize();">
 		<canvas id="pcgame" width="1000" height="700"></canvas>	
+		<textarea id="code_output" rows="10" cols="124"></textarea>
 	</body>
 </html>
