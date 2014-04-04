@@ -1,4 +1,5 @@
 var stage;
+var canvas;
 var nodes = [];
 var lines = [];
 var movements = [];
@@ -113,6 +114,11 @@ var initialize = function() {
 
 	stage = new createjs.Stage("pcgame");
 	stage.enableMouseOver();
+	
+	canvas = document.getElementById("pcgame");
+	canvas.oncontextmenu = function() {
+		return false;  
+	} 
 
 	stage.addChild(start_menu_background);
 	stage.addChild(play_button);
@@ -147,6 +153,8 @@ var start_game = function() {
 	
 	
 	document.onkeydown = percent_key_listener;
+	var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel";
+	document.addEventListener(mousewheelevt, percent_wheel_listener);
 }
 
 var create_lines = function() {

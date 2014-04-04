@@ -247,3 +247,25 @@ var percent_key_listener = function(event) {
 		stage.update();
 	}
 }
+
+var percent_wheel_listener = function(event) {
+	//wheelDelta is for chrome, detail is for firefox
+	var wheelinfo;
+	if(/Firefox/i.test(navigator.userAgent)) {
+		wheelinfo = -1 * event.detail;
+	}
+	else {
+		wheelinfo = event.wheelDelta;
+	}
+	if(wheelinfo < 0) {
+		if(percent.percent >= 10) {
+			percent.update(percent.percent-10);
+		}
+	}
+	else if(wheelinfo > 0) {
+		if(percent.percent <= 90) {
+			percent.update(percent.percent+10);
+		}
+	}
+	stage.update();
+}
