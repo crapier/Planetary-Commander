@@ -343,7 +343,7 @@
 			}
 			client_side = client_side + "})";
 			server_side = server_side + "\n\tvar client_1_start = Math.floor((Math.random()*" + number_starts + "));"
-			server_side = server_side + "\n\tvar client_2_start = Math.floor((Math.random()*" + number_starts + "));"
+			server_side = server_side + "\n\tclient_2_start = Math.floor((Math.random()*" + number_starts + "));"
 			server_side = server_side + "\n\twhile(client_1_start == client_2_start) {"
 			server_side = server_side + "\n\t\tvar client_2_start = Math.floor((Math.random()*" + number_starts + "));"
 			server_side = server_side + "\n\t}"

@@ -2,6 +2,7 @@
 var app = require('http').createServer(handler);
 // The socket.io WebSocket server, running with the node.js server.
 var io = require('socket.io').listen(app);
+io.set('log level', 1);
 // Allows access to local file system.
 var fs = require('fs');
 // Allows for parsing urls
@@ -78,7 +79,6 @@ function handler(request, response) {
 			}
 			response.writeHead(501);
 			return response.end('Can not handle ' + path);
-			break;
 	}
 }
 
@@ -169,7 +169,7 @@ maps.push(function(game_id) {
 	var client_1_start = Math.floor((Math.random()*3));
 	var client_2_start = Math.floor((Math.random()*3));
 	while(client_1_start == client_2_start) {
-		var client_2_start = Math.floor((Math.random()*3));
+		client_2_start = Math.floor((Math.random()*3));
 	}
 	
 	nodes[game_id][client_1_start].owner = client_1;
@@ -194,7 +194,7 @@ maps.push(function(game_id) {
 	var client_1_start = Math.floor((Math.random()*3));
 	var client_2_start = Math.floor((Math.random()*3));
 	while(client_1_start == client_2_start) {
-		var client_2_start = Math.floor((Math.random()*3));
+		client_2_start = Math.floor((Math.random()*3));
 	}
 	
 	nodes[game_id][client_1_start].owner = client_1;
@@ -234,7 +234,7 @@ maps.push(function(game_id) {
 	var client_1_start = Math.floor((Math.random()*3));
 	var client_2_start = Math.floor((Math.random()*3));
 	while(client_1_start == client_2_start) {
-		var client_2_start = Math.floor((Math.random()*3));
+		client_2_start = Math.floor((Math.random()*3));
 	}
 
 	nodes[game_id][client_1_start].owner = client_1;
@@ -321,10 +321,12 @@ var send_results = function(game_id, client_1_holds, client_2_holds) {
 	if(client_1_holds == 0) {
 		io.sockets.socket(client_1_socket_id[game_id]).emit('results', {results:"loser", updates:player_1_final_update});
 		io.sockets.socket(client_2_socket_id[game_id]).emit('results', {results:"winner", updates:player_2_final_update});
+        console.log('Game ' + game_id + ' ended because client ' + client_1 + ' was victorious');
 	}
 	else if(client_2_holds == 0) {
 		io.sockets.socket(client_1_socket_id[game_id]).emit('results', {results:"winner", updates:player_1_final_update});
 		io.sockets.socket(client_2_socket_id[game_id]).emit('results', {results:"loser", updates:player_2_final_update});
+		console.log('Game ' + game_id + ' ended because client ' + client_2 + ' was victorious');
 	}
 	nodes[game_id] = [];
 	
@@ -454,6 +456,7 @@ var movement_handler = function(movements) {
 	var game_id = this.store.data.game_id;
 	var client_id = this.store.data.client_id;
 	
+	console.log("movements recieved")
 	if(client_id == client_1) {
 		client_1_movements[game_id] = movements;
 	}
@@ -465,8 +468,8 @@ var movement_handler = function(movements) {
 		movements_recieved[game_id]++;
 	}
 	else {
+	    movements_recieved[game_id]--;
 		calculate_movements(game_id);
-		movements_recieved[game_id]--;
 	}
 }
 
@@ -475,11 +478,13 @@ var disconnect_handler = function() {
 	var client_id = this.store.data.client_id;
 	
 	if(game_state[game_id] == 0) {
+        console.log('Client ' + client_id + ' disconnected from pre-game ' + game_id);
 		num_connected_clients[game_id] = 0;
 		movements_recieved[game_id] = 0;
 		nodes[game_id] = [];
 	}
 	if(game_state[game_id] == 1) {
+        console.log('Game ' + game_id + ' ended because client ' + client_id + ' disconnected');
 		num_connected_clients[game_id] = 0;
 		movements_recieved[game_id] = 0;
 		var player_1_final_update = [];
@@ -508,9 +513,12 @@ var disconnect_handler = function() {
 		nodes[game_id] = [];
 	}
 	else if (game_state[game_id] == 2) {
+        console.log('Client ' + client_id + ' disconnected from finished game ' + game_id);
 		game_state[game_id] = 3;
 	}
 	else if (game_state[game_id] == 3) {
+        console.log('Client ' + client_id + ' disconnected from finished game ' + game_id);
+        console.log('Game ' + game_id + ' open for new clients');
 		game_state[game_id] = 0;
 	}
 }
@@ -567,4 +575,3 @@ var connection_handler = function(client) {
 }
 
 io.sockets.on('connection', connection_handler);
-
