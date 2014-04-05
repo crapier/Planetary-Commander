@@ -143,6 +143,9 @@ var destination_node_select = function(event) {
 	
 	if(selected != destination){
 		var send_units = Math.floor(percent.percent/100*nodes[selected].units);
+		if ( send_units == 0 ){
+			send_units = 1;
+		}
 		movements.push(new movement(selected, destination, send_units));
 		units_list.push(new units(selected, destination, send_units));
 		var update_source = {owner: -1, units: nodes[selected].units - send_units, visible: true};
@@ -258,7 +261,7 @@ var percent_wheel_listener = function(event) {
 		wheelinfo = event.wheelDelta;
 	}
 	if(wheelinfo < 0) {
-		if(percent.percent >= 10) {
+		if(percent.percent >= 20) {
 			percent.update(percent.percent-10);
 		}
 	}
