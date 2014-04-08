@@ -9,7 +9,7 @@ var fs = require('fs');
 var url = require('url');
 
 // Listen on a high port.
-var listen_port = 61111;
+var listen_port = 61112;
 app.listen(listen_port);
 console.log('Server is listening on port: ' + listen_port);
 
@@ -295,6 +295,8 @@ var send_updates = function(game_id) {
 	io.sockets.socket(client_1_socket_id[game_id]).emit('updates', client_1_updates);
 	io.sockets.socket(client_2_socket_id[game_id]).emit('updates', client_2_updates);
 }
+
+
 
 var send_results = function(game_id, client_1_holds, client_2_holds) {
 	num_connected_clients[game_id] = 0;
