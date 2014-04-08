@@ -458,7 +458,6 @@ var movement_handler = function(movements) {
 	var game_id = this.store.data.game_id;
 	var client_id = this.store.data.client_id;
 	
-	console.log("movements recieved")
 	if(client_id == client_1) {
 		client_1_movements[game_id] = movements;
 	}
