@@ -245,50 +245,6 @@ maps.push(function(game_id) {
 	nodes[game_id][client_2_start].generating = true;
 })
 
-maps.push(function(game_id) {
-	nodes[game_id].push(new node(20, large, [6, 24, 23]));
-	nodes[game_id].push(new node(20, large, [10, 17, 27]));
-	nodes[game_id].push(new node(20, large, [9, 16, 20]));
-	nodes[game_id].push(new node(20, large, [13, 14, 15]));
-	nodes[game_id].push(new node(5, small, [5, 15, 25]));
-	nodes[game_id].push(new node(5, small, [6, 4]));
-	nodes[game_id].push(new node(5, small, [5, 0]));
-	nodes[game_id].push(new node(5, small, [8, 14, 21]));
-	nodes[game_id].push(new node(5, small, [9, 7]));
-	nodes[game_id].push(new node(5, small, [8, 2]));
-	nodes[game_id].push(new node(5, small, [11, 1]));
-	nodes[game_id].push(new node(5, small, [10, 12]));
-	nodes[game_id].push(new node(5, small, [11, 13, 18]));
-	nodes[game_id].push(new node(10, medium, [12, 3]));
-	nodes[game_id].push(new node(10, medium, [7, 3]));
-	nodes[game_id].push(new node(10, medium, [4, 3]));
-	nodes[game_id].push(new node(5, small, [2, 19]));
-	nodes[game_id].push(new node(5, small, [18, 1]));
-	nodes[game_id].push(new node(10, medium, [19, 17, 12]));
-	nodes[game_id].push(new node(10, medium, [16, 18]));
-	nodes[game_id].push(new node(5, small, [21, 2]));
-	nodes[game_id].push(new node(10, medium, [22, 20, 7]));
-	nodes[game_id].push(new node(10, medium, [23, 21]));
-	nodes[game_id].push(new node(5, small, [0, 22]));
-	nodes[game_id].push(new node(5, small, [25, 0]));
-	nodes[game_id].push(new node(10, medium, [26, 24, 4]));
-	nodes[game_id].push(new node(10, medium, [27, 25]));
-	nodes[game_id].push(new node(5, small, [1, 26]));
-
-	var client_1_start = Math.floor((Math.random()*3));
-	client_2_start = Math.floor((Math.random()*3));
-	while(client_1_start == client_2_start) {
-		var client_2_start = Math.floor((Math.random()*3));
-	}
-	
-	nodes[game_id][client_1_start].owner = client_1;
-	nodes[game_id][client_1_start].units = 50;
-	nodes[game_id][client_1_start].generating = true;
-	nodes[game_id][client_2_start].owner = client_2;
-	nodes[game_id][client_2_start].units = 50;
-	nodes[game_id][client_2_start].generating = true;
-})
-
 var send_updates = function(game_id) {
 	var client_1_updates = [];
 	var client_2_updates = [];
