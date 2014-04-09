@@ -250,3 +250,34 @@ create_nodes.push (function() {
 	nodes.push(new node(small, 364, 22, [7]));
 	nodes.push(new node(small, 180, 576, [8]));
 })
+
+create_nodes.push (function() {
+	nodes.push(new node(large, 124, 136, [6, 24, 23]));
+	nodes.push(new node(large, 864, 134, [10, 17, 27]));
+	nodes.push(new node(large, 491, 605, [9, 16, 20]));
+	nodes.push(new node(large, 467, 295, [13, 14, 15]));
+	nodes.push(new node(small, 469, 209, [5, 15, 25]));
+	nodes.push(new node(small, 399, 224, [6, 4]));
+	nodes.push(new node(small, 368, 267, [5, 0]));
+	nodes.push(new node(small, 402, 363, [8, 14, 21]));
+	nodes.push(new node(small, 463, 378, [9, 7]));
+	nodes.push(new node(small, 520, 380, [8, 2]));
+	nodes.push(new node(small, 551, 210, [11, 1]));
+	nodes.push(new node(small, 564, 255, [10, 12]));
+	nodes.push(new node(small, 569, 298, [11, 13, 18]));
+	nodes.push(new node(medium, 886, 499, [12, 3]));
+	nodes.push(new node(medium, 66, 463, [7, 3]));
+	nodes.push(new node(medium, 515, 43, [4, 3]));
+	nodes.push(new node(small, 590, 570, [2, 19]));
+	nodes.push(new node(small, 837, 253, [18, 1]));
+	nodes.push(new node(medium, 781, 344, [19, 17, 12]));
+	nodes.push(new node(medium, 680, 488, [16, 18]));
+	nodes.push(new node(small, 332, 568, [21, 2]));
+	nodes.push(new node(medium, 186, 519, [22, 20, 7]));
+	nodes.push(new node(medium, 108, 344, [23, 21]));
+	nodes.push(new node(small, 104, 244, [0, 22]));
+	nodes.push(new node(small, 249, 96, [25, 0]));
+	nodes.push(new node(medium, 398, 65, [26, 24, 4]));
+	nodes.push(new node(medium, 614, 97, [27, 25]));
+	nodes.push(new node(small, 732, 102, [1, 26]));
+})
