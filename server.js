@@ -340,6 +340,8 @@ var send_updates = function(game_id) {
 	io.sockets.socket(client_2_socket_id[game_id]).emit('updates', client_2_updates);
 }
 
+
+
 var send_results = function(game_id, client_1_holds, client_2_holds) {
 	num_connected_clients[game_id] = 0;
 	movements_recieved[game_id] = 0;
@@ -500,7 +502,6 @@ var movement_handler = function(movements) {
 	var game_id = this.store.data.game_id;
 	var client_id = this.store.data.client_id;
 	
-	console.log("movements recieved")
 	if(client_id == client_1) {
 		client_1_movements[game_id] = movements;
 	}

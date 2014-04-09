@@ -22,16 +22,16 @@ var units = function(source, destination, units) {
 	this.img.y = this.y;
 	this.img.regY = this.img.image.height/2;
 	
-	if(this.x < nodes[destination].x && this.y < nodes[destination].y) {
+	if(this.x <= nodes[destination].x && this.y <= nodes[destination].y) {
 		this.img.rotation = Math.atan((nodes[destination].y - this.y)/(nodes[destination].x - this.x))*180/Math.PI;
 	}
-	else if(this.x < nodes[destination].x && this.y > nodes[destination].y) {
+	else if(this.x <= nodes[destination].x && this.y >= nodes[destination].y) {
 		this.img.rotation = -1 * Math.atan((this.y - nodes[destination].y)/(nodes[destination].x - this.x))*180/Math.PI;
 	}
-	else if(this.x > nodes[destination].x && this.y < nodes[destination].y) {
+	else if(this.x >= nodes[destination].x && this.y <= nodes[destination].y) {
 		this.img.rotation = 90 + Math.atan((this.x - nodes[destination].x)/(nodes[destination].y - this.y))*180/Math.PI;
 	}
-	else if(this.x > nodes[destination].x && this.y > nodes[destination].y) {
+	else if(this.x >= nodes[destination].x && this.y >= nodes[destination].y) {
 		this.img.rotation = -90 + -1 * Math.atan((this.x - nodes[destination].x)/(this.y - nodes[destination].y))*180/Math.PI;
 	}
 	
