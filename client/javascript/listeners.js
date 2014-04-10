@@ -92,10 +92,13 @@ var result_handler = function(message) {
 	}
 	for (var i = 0; i < units_list.length; i++) {
 		units_list[i].img.removeAllEventListeners();
+		stage.removeChild(units_list[i].img);
+		stage.removeChild(units_list[i].text);
 	}
 	finalize_button.removeAllEventListeners();
 	stage.removeChild(finalize_button);
 	stage.removeChild(waiting);
+	
 	
 	timer.started = false;
 	window.clearInterval(timer.interval);
@@ -119,6 +122,7 @@ var source_node_select = function(event) {
 	selected = event.currentTarget.node_id;
 	
 	nodes[selected].show_target();
+	stage.update();
 	nodes[selected].img.addEventListener("click", destination_node_select);
 	
 	for(var i = 0; i < nodes[selected].adjacent.length; i++){
