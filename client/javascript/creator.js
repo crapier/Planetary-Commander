@@ -13,7 +13,7 @@ var nodes = [];
 var lines = [];
 var selected = -1;
 
-var allow_starts = true;
+var insterting_starts = false;
 var number_starts = 0;
 
 var background = new createjs.Bitmap("/client/img/background1.png");
@@ -95,7 +95,7 @@ var add_node = function(event) {
 	
 	if (size == "large") {
 		if(number_starts >=2) {
-			allow_starts = false;
+			insterting_starts = true;
 			nodes.push(new node(large, event.stageX, event.stageY, []));
 			nodes[nodes.length-1].update({units:20, owner:none, visible:true});
 			if(selected == -1) {
@@ -113,7 +113,7 @@ var add_node = function(event) {
 	}
 	else if (size == "medium") {
 		if(number_starts >=2) {
-			allow_starts = false;
+			insterting_starts = true;
 			nodes.push(new node(medium, event.stageX, event.stageY, []));
 			nodes[nodes.length-1].update({units:10, owner:none, visible:true});
 			if(selected == -1) {
@@ -131,7 +131,7 @@ var add_node = function(event) {
 	}
 	else if (size == "small") {
 		if(number_starts >=2) {
-			allow_starts = false;
+			insterting_starts = true;
 			nodes.push(new node(small, event.stageX, event.stageY, []));
 			nodes[nodes.length-1].update({units:5, owner:none, visible:true});
 			if(selected == -1) {
@@ -144,11 +144,11 @@ var add_node = function(event) {
 			nodes[nodes.length-1].img.addEventListener("mouseout", node_out);
 		}
 		else {
-			alert("At least 2 start planets must be present.");
+			alert("At least 2 start planets must be added before adding other types.");
 		}
 	}
 	else if (size == "start") {
-		if(allow_starts == true) {
+		if(insterting_starts == false) {
 			number_starts++;
 			nodes.push(new node(large, event.stageX, event.stageY, []));
 			nodes[nodes.length-1].update({units:50, owner:player, visible:true});
@@ -162,7 +162,7 @@ var add_node = function(event) {
 			nodes[nodes.length-1].img.addEventListener("mouseout", node_out);
 		}
 		else {
-			alert("At least 2 Start planets must be added first.");
+			alert("Start planets must be added first.");
 		}
 	}
 	
@@ -293,7 +293,7 @@ var clear_button_listener = function(event) {
 		lines = [];
 		selected = -1;
 
-		allow_starts = true;
+		insterting_starts = false;
 		number_starts = 0;
 		
 		stage.addChild(background);

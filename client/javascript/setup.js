@@ -250,3 +250,47 @@ create_nodes.push (function() {
 	nodes.push(new node(small, 364, 22, [7]));
 	nodes.push(new node(small, 180, 576, [8]));
 })
+
+create_nodes.push (function() {
+	nodes.push(new node(large, 52, 57, [11, 18]));
+	nodes.push(new node(large, 51, 586, [10, 21]));
+	nodes.push(new node(large, 941, 596, [9, 20]));
+	nodes.push(new node(large, 936, 54, [8, 19]));
+	nodes.push(new node(large, 465, 146, [32, 33, 30]));
+	nodes.push(new node(large, 482, 522, [35, 34, 31]));
+	nodes.push(new node(large, 237, 306, [14, 32, 35, 37, 38]));
+	nodes.push(new node(large, 690, 316, [17, 33, 34, 39, 40]));
+	nodes.push(new node(medium, 821, 138, [3, 15, 40]));
+	nodes.push(new node(medium, 803, 479, [2, 16, 39]));
+	nodes.push(new node(medium, 186, 462, [1, 13, 38]));
+	nodes.push(new node(medium, 159, 169, [0, 12, 37]));
+	nodes.push(new node(small, 84, 252, [11, 14]));
+	nodes.push(new node(small, 85, 392, [10, 14]));
+	nodes.push(new node(medium, 150, 312, [12, 13, 6]));
+	nodes.push(new node(small, 901, 241, [17, 8]));
+	nodes.push(new node(small, 890, 388, [17, 9]));
+	nodes.push(new node(medium, 815, 322, [7, 16, 15]));
+	nodes.push(new node(medium, 232, 31, [0, 22]));
+	nodes.push(new node(medium, 726, 23, [3, 23]));
+	nodes.push(new node(medium, 702, 620, [2, 24]));
+	nodes.push(new node(medium, 218, 618, [1, 25]));
+	nodes.push(new node(small, 263, 121, [18, 26, 37]));
+	nodes.push(new node(small, 714, 121, [19, 27, 40]));
+	nodes.push(new node(small, 658, 535, [20, 28, 39]));
+	nodes.push(new node(small, 293, 543, [21, 29, 38]));
+	nodes.push(new node(small, 363, 70, [22, 30]));
+	nodes.push(new node(small, 621, 74, [23, 30]));
+	nodes.push(new node(small, 582, 590, [24, 31]));
+	nodes.push(new node(small, 359, 591, [25, 31]));
+	nodes.push(new node(medium, 477, 33, [27, 26, 4]));
+	nodes.push(new node(medium, 483, 656, [28, 29, 5]));
+	nodes.push(new node(medium, 390, 253, [6, 4, 36]));
+	nodes.push(new node(medium, 547, 264, [4, 7, 36]));
+	nodes.push(new node(medium, 533, 394, [7, 5, 36]));
+	nodes.push(new node(medium, 393, 380, [6, 5, 36]));
+	nodes.push(new node(large, 471, 319, [32, 35, 34, 33]));
+	nodes.push(new node(medium, 285, 201, [11, 22, 6]));
+	nodes.push(new node(medium, 299, 436, [10, 25, 6]));
+	nodes.push(new node(medium, 688, 419, [9, 24, 7]));
+	nodes.push(new node(medium, 757, 209, [8, 23, 7]));
+})
