@@ -3,17 +3,31 @@ var units = function(source, destination, units) {
 	this.destination = destination;
 	this.units = units;
 	
-	if(nodes[source].x <= nodes[destination].x) {
-		this.x = nodes[source].x + Math.floor((nodes[destination].x - nodes[source].x)/2);
+	var rotation;
+	if(nodes[source].x <= nodes[destination].x && nodes[source].y <= nodes[destination].y) {
+		rotation = Math.atan((nodes[destination].y - nodes[source].y)/(nodes[destination].x - nodes[source].x))*180/Math.PI;
 	}
-	else {
-		this.x = nodes[destination].x + Math.floor((nodes[source].x - nodes[destination].x)/2);
+	else if(nodes[source].x <= nodes[destination].x && nodes[source].y >= nodes[destination].y) {
+		rotation = -1 * Math.atan((nodes[source].y - nodes[destination].y)/(nodes[destination].x - nodes[source].x))*180/Math.PI;
 	}
-	if(nodes[source].y <= nodes[destination].y) {
-		this.y = nodes[source].y + Math.floor((nodes[destination].y - nodes[source].y)/2);
+	else if(nodes[source].x >= nodes[destination].x && nodes[source].y <= nodes[destination].y) {
+		rotation = 90 + Math.atan((nodes[source].x - nodes[destination].x)/(nodes[destination].y - nodes[source].y))*180/Math.PI;
 	}
-	else {
-		this.y = nodes[destination].y + Math.floor((nodes[source].y - nodes[destination].y)/2);
+	else if(nodes[source].x >= nodes[destination].x && nodes[source].y >= nodes[destination].y) {
+		rotation = -90 + -1 * Math.atan((nodes[source].x - nodes[destination].x)/(nodes[source].y - nodes[destination].y))*180/Math.PI;
+	}
+	
+	if(nodes[source].size == small) {
+		this.x = nodes[source].x + small_units_distance*Math.cos(rotation*Math.PI/180);
+		this.y = nodes[source].y + small_units_distance*Math.sin(rotation*Math.PI/180);
+	}
+	else if(nodes[source].size == medium) {
+		this.x = nodes[source].x + medium_units_distance*Math.cos(rotation*Math.PI/180);
+		this.y = nodes[source].y + medium_units_distance*Math.sin(rotation*Math.PI/180);
+	}
+	else if(nodes[source].size == large) {
+		this.x = nodes[source].x + large_units_distance*Math.cos(rotation*Math.PI/180);
+		this.y = nodes[source].y + large_units_distance*Math.sin(rotation*Math.PI/180);
 	}
 	
 	this.img = units_img.clone();
@@ -21,19 +35,7 @@ var units = function(source, destination, units) {
 	this.img.regX = this.img.image.width/2;
 	this.img.y = this.y;
 	this.img.regY = this.img.image.height/2;
-	
-	if(this.x <= nodes[destination].x && this.y <= nodes[destination].y) {
-		this.img.rotation = Math.atan((nodes[destination].y - this.y)/(nodes[destination].x - this.x))*180/Math.PI;
-	}
-	else if(this.x <= nodes[destination].x && this.y >= nodes[destination].y) {
-		this.img.rotation = -1 * Math.atan((this.y - nodes[destination].y)/(nodes[destination].x - this.x))*180/Math.PI;
-	}
-	else if(this.x >= nodes[destination].x && this.y <= nodes[destination].y) {
-		this.img.rotation = 90 + Math.atan((this.x - nodes[destination].x)/(nodes[destination].y - this.y))*180/Math.PI;
-	}
-	else if(this.x >= nodes[destination].x && this.y >= nodes[destination].y) {
-		this.img.rotation = -90 + -1 * Math.atan((this.x - nodes[destination].x)/(this.y - nodes[destination].y))*180/Math.PI;
-	}
+	this.img.rotation = rotation;
 	
 	this.img.units_id = units_list.length;
 	

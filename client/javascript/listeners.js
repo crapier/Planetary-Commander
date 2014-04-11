@@ -48,8 +48,8 @@ var update_handler = function(updates) {
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player && nodes[i].visible == true){
 			nodes[i].img.addEventListener("click", source_node_select);
-			nodes[i].img.addEventListener("mouseover", node_in);
-			nodes[i].img.addEventListener("mouseout", node_out);
+			nodes[i].img.addEventListener("mouseover", node_in_source);
+			nodes[i].img.addEventListener("mouseout", node_out_source);
 		}
 	}
 	
@@ -61,15 +61,27 @@ var update_handler = function(updates) {
 	}
 }
 
-var node_in = function(event) {
+var node_in_source = function(event) {
 	var hover = event.currentTarget.node_id;
-	nodes[hover].show_target();
+	nodes[hover].show_target_source();
 	stage.update();
 }
 
-var node_out = function(event) {
+var node_out_source = function(event) {
 	var hover = event.currentTarget.node_id;
-	nodes[hover].hide_target();
+	nodes[hover].hide_target_source();
+	stage.update();
+}
+
+var node_in_dest = function(event) {
+	var hover = event.currentTarget.node_id;
+	nodes[hover].show_target_dest();
+	stage.update();
+}
+
+var node_out_dest = function(event) {
+	var hover = event.currentTarget.node_id;
+	nodes[hover].hide_target_dest();
 	stage.update();
 }
 	
@@ -88,7 +100,7 @@ var result_handler = function(message) {
 	socket.disconnect();
 	
 	if(selected >= 0) {
-		nodes[selected].hide_target();
+		nodes[selected].hide_target_source();
 		nodes[selected].update({owner:player, units:selection_units.max, visible:true});
 		stage.removeChild(selection_units.img);
 		stage.removeChild(selection_units.text);
@@ -124,14 +136,12 @@ var result_handler = function(message) {
 var source_node_select = function(event) {
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player){
-			nodes[i].img.removeEventListener("click", source_node_select);
-			nodes[i].img.removeEventListener("mouseover", node_in);
-			nodes[i].img.removeEventListener("mouseout", node_out);
+			nodes[i].img.removeAllEventListeners();
 		}
 	}
 	selected = event.currentTarget.node_id;
 	
-	nodes[selected].show_target();
+	nodes[selected].show_target_source();
 	units_to_send = nodes[selected].units;
 	selection_units = new create_selection_units(selected, units_to_send);
 	nodes[selected].update({owner:player, units:0, visible:true});
@@ -142,23 +152,21 @@ var source_node_select = function(event) {
 	
 	for(var i = 0; i < nodes[selected].adjacent.length; i++){
 		nodes[nodes[selected].adjacent[i]].img.addEventListener("click", destination_node_select);
-		nodes[nodes[selected].adjacent[i]].img.addEventListener("mouseover", node_in);
-		nodes[nodes[selected].adjacent[i]].img.addEventListener("mouseout", node_out);
+		nodes[nodes[selected].adjacent[i]].img.addEventListener("mouseover", node_in_dest);
+		nodes[nodes[selected].adjacent[i]].img.addEventListener("mouseout", node_out_dest);
 	}
 }
 
 var destination_node_select = function(event) {
 	nodes[selected].img.removeEventListener("click", destination_node_select);
 	for(var i = 0; i < nodes[selected].adjacent.length; i++){
-		nodes[nodes[selected].adjacent[i]].img.removeEventListener("click", destination_node_select);
-		nodes[nodes[selected].adjacent[i]].img.removeEventListener("mouseover", node_in);
-		nodes[nodes[selected].adjacent[i]].img.removeEventListener("mouseout", node_out);
+		nodes[nodes[selected].adjacent[i]].img.removeAllEventListeners();
 	}
 	
 	var destination = event.currentTarget.node_id;
 	
-	nodes[selected].hide_target();
-	nodes[destination].hide_target();
+	nodes[selected].hide_target_source();
+	nodes[destination].hide_target_dest();
 	
 	if(selected != destination){
 		var send_units = units_to_send;
@@ -190,8 +198,8 @@ var destination_node_select = function(event) {
 			}
 			if(!movement_found){
 				nodes[i].img.addEventListener("click", source_node_select);
-				nodes[i].img.addEventListener("mouseover", node_in);
-				nodes[i].img.addEventListener("mouseout", node_out);
+				nodes[i].img.addEventListener("mouseover", node_in_source);
+				nodes[i].img.addEventListener("mouseout", node_out_source);
 			}
 		}
 	}
@@ -217,8 +225,8 @@ var units_click_listener = function(event) {
 	stage.update();
 	
 	nodes[units_list[unit_id].source].img.addEventListener("click", source_node_select);
-	nodes[units_list[unit_id].source].img.addEventListener("mouseover", node_in);
-	nodes[units_list[unit_id].source].img.addEventListener("mouseout", node_out);
+	nodes[units_list[unit_id].source].img.addEventListener("mouseover", node_in_source);
+	nodes[units_list[unit_id].source].img.addEventListener("mouseout", node_out_source);
 }
 
 var finish_click_listener = function(event) {
@@ -245,7 +253,7 @@ var end_turn = function() {
 	timer.already_finished = true;
 	
 	if(selected >= 0) {
-		nodes[selected].hide_target();
+		nodes[selected].hide_target_source();
 		nodes[selected].update({owner:player, units:selection_units.max, visible:true});
 		stage.removeChild(selection_units.img);
 		stage.removeChild(selection_units.text);
@@ -261,9 +269,7 @@ var end_turn = function() {
 	
 	for(var i = 0; i < nodes.length; i++) {
 		if(nodes[i].owner == player){
-			nodes[i].img.removeEventListener("click", source_node_select);
-			nodes[i].img.removeEventListener("mouseover", node_in);
-			nodes[i].img.removeEventListener("mouseout", node_out);
+			nodes[i].img.removeAllEventListeners();
 		}
 	}
 }

@@ -22,9 +22,12 @@ var play_button;
 var instruction_button;
 var finalize_button;
 
-var small_target = new createjs.Bitmap("/client/img/small_target.png");
-var medium_target = new createjs.Bitmap("/client/img/medium_target.png");
-var large_target = new createjs.Bitmap("/client/img/large_target.png");
+var small_target_source = new createjs.Bitmap("/client/img/small_target_source.png");
+var medium_target_source = new createjs.Bitmap("/client/img/medium_target_source.png");
+var large_target_source = new createjs.Bitmap("/client/img/large_target_source.png");
+var small_target_dest = new createjs.Bitmap("/client/img/small_target_dest.png");
+var medium_target_dest = new createjs.Bitmap("/client/img/medium_target_dest.png");
+var large_target_dest = new createjs.Bitmap("/client/img/large_target_dest.png");
 var visible_player_small_node = new createjs.Bitmap("/client/img/visible_small_player.png");
 var visible_player_medium_node = new createjs.Bitmap("/client/img/visible_medium_player.png");
 var visible_player_large_node = new createjs.Bitmap("/client/img/visible_large_player.png");
