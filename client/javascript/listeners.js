@@ -86,6 +86,16 @@ var result_handler = function(message) {
 	}
 	
 	socket.disconnect();
+	
+	if(selected >= 0) {
+		nodes[selected].hide_target();
+		nodes[selected].update({owner:player, units:selection_units.max, visible:true});
+		stage.removeChild(selection_units.img);
+		stage.removeChild(selection_units.text);
+		canvas.onmousemove = null;
+		selection_units = null;
+		selected = -1;
+	}
 
 	for (var i = 0; i < nodes.length; i++) {
 		nodes[i].img.removeAllEventListeners();
@@ -122,6 +132,11 @@ var source_node_select = function(event) {
 	selected = event.currentTarget.node_id;
 	
 	nodes[selected].show_target();
+	units_to_send = nodes[selected].units;
+	selection_units = new create_selection_units(selected, units_to_send);
+	nodes[selected].update({owner:player, units:0, visible:true});
+	canvas.onmousemove = units_track_mouse;
+	
 	stage.update();
 	nodes[selected].img.addEventListener("click", destination_node_select);
 	
@@ -146,15 +161,21 @@ var destination_node_select = function(event) {
 	nodes[destination].hide_target();
 	
 	if(selected != destination){
-		var send_units = Math.floor(percent.percent/100*nodes[selected].units);
+		var send_units = units_to_send;
 		if ( send_units == 0 ){
 			send_units = 1;
 		}
 		movements.push(new movement(selected, destination, send_units));
 		units_list.push(new units(selected, destination, send_units));
-		var update_source = {owner: -1, units: nodes[selected].units - send_units, visible: true};
-		nodes[selected].update(update_source);
 	}
+	else {
+		nodes[selected].update({owner:player, units:selection_units.max, visible:true});
+	}
+	
+	stage.removeChild(selection_units.img);
+	stage.removeChild(selection_units.text);
+	canvas.onmousemove = null;
+	selection_units = null;
 	
 	stage.update();
 	selected = -1;
@@ -225,6 +246,12 @@ var end_turn = function() {
 	
 	if(selected >= 0) {
 		nodes[selected].hide_target();
+		nodes[selected].update({owner:player, units:selection_units.max, visible:true});
+		stage.removeChild(selection_units.img);
+		stage.removeChild(selection_units.text);
+		canvas.onmousemove = null;
+		selection_units = null;
+		selected = -1;
 	}
 	stage.update();
 	
@@ -241,21 +268,27 @@ var end_turn = function() {
 	}
 }
 
-var percent_key_listener = function(event) {
+var key_listener = function(event) {
 	//Tested this, confirmed working in FireFox and Chrome Internet Explorer 11
 	var key_pressed = event.which;
 	
-	if(key_pressed >= 49 && key_pressed <= 57) {
-		percent.update((key_pressed-48)*10);
-		stage.update();
-	}
-	else if(key_pressed == 48) {
-		percent.update(100);
+	if(selected >= 0) {
+		if(key_pressed >= 49 && key_pressed <= 57) {
+			units_to_send = Math.floor(selection_units.max*(key_pressed-48)/10);
+		}
+		else if(key_pressed == 48) {
+			units_to_send = selection_units.max;
+		}
+		if(units_to_send == 0) {
+			units_to_send = 1;
+		}
+		selection_units.text.text = units_to_send;
+		nodes[selected].update({owner:player, units:selection_units.max-units_to_send, visible:true});
 		stage.update();
 	}
 }
 
-var percent_wheel_listener = function(event) {
+var wheel_listener = function(event) {
 	//wheelDelta is for chrome, detail is for firefox
 	var wheelinfo;
 	if(/Firefox/i.test(navigator.userAgent)) {
@@ -264,15 +297,22 @@ var percent_wheel_listener = function(event) {
 	else {
 		wheelinfo = event.wheelDelta;
 	}
-	if(wheelinfo < 0) {
-		if(percent.percent >= 20) {
-			percent.update(percent.percent-10);
+	
+	if(selected >= 0) {
+		if(wheelinfo < 0) {
+			if(units_to_send > 1) {
+				units_to_send--;
+				nodes[selected].update({owner:player, units:nodes[selected].units+1, visible:true});
+			}
 		}
-	}
-	else if(wheelinfo > 0) {
-		if(percent.percent <= 90) {
-			percent.update(percent.percent+10);
+		else if(wheelinfo > 0) {
+			if(units_to_send < selection_units.max) {
+				units_to_send++;
+				nodes[selected].update({owner:player, units:nodes[selected].units-1, visible:true});
+			}
 		}
+		selection_units.text.text = units_to_send;
+		
+		stage.update();
 	}
-	stage.update();
 }

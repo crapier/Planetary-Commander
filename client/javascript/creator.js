@@ -108,7 +108,7 @@ var add_node = function(event) {
 			nodes[nodes.length-1].img.addEventListener("mouseout", node_out);
 		}
 		else {
-			alert("At least 2 start planets must be present.");
+			alert("At least 2 start planets must be added before adding other types.");
 		}
 	}
 	else if (size == "medium") {
@@ -126,7 +126,7 @@ var add_node = function(event) {
 			nodes[nodes.length-1].img.addEventListener("mouseout", node_out);
 		}
 		else {
-			alert("At least 2 start planets must be present.");
+			alert("At least 2 start planets must be added before adding other types.");
 		}
 	}
 	else if (size == "small") {
@@ -162,7 +162,37 @@ var add_node = function(event) {
 			nodes[nodes.length-1].img.addEventListener("mouseout", node_out);
 		}
 		else {
-			alert("Start planets must be added first.");
+			number_starts++;
+			nodes.splice(number_starts-1, 0, new node(large, event.stageX, event.stageY, []));
+			nodes[number_starts-1].update({units:50, owner:player, visible:true});
+			if(selected == -1) {
+				nodes[number_starts-1].img.addEventListener("click", node_click_source);
+			}
+			else {
+				nodes[number_starts-1].img.addEventListener("click", adjacent_listener);
+			}
+			nodes[number_starts-1].img.addEventListener("mouseover", node_in);
+			nodes[number_starts-1].img.addEventListener("mouseout", node_out);
+			
+			for(var i = number_starts-1; i < nodes.length; i++) {
+				nodes[i].img.node_id = i;
+			}
+			
+			for(var i = 0; i < nodes.length; i++) {
+				for(var j = 0; j < nodes[i].adjacent.length; j++) {
+					if(nodes[i].adjacent[j] >= number_starts-1) {
+						nodes[i].adjacent[j]++;
+					}
+				}
+			}
+			for(var i = 0; i < lines.length; i++) {
+				if(lines[i].connected_nodes[0] >= number_starts-1) {
+					lines[i].connected_nodes[0]++;
+				}
+				if(lines[i].connected_nodes[1] >= number_starts-1) {
+					lines[i].connected_nodes[1]++;
+				}
+			}
 		}
 	}
 	

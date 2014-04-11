@@ -4,9 +4,10 @@ var nodes = [];
 var lines = [];
 var movements = [];
 var units_list = [];
-var percent;
 var socket;
 var selected;
+var selection_units;
+var units_to_send;
 
 var start_menu_background = new createjs.Bitmap("/client/img/start_menu_background.png");
 var game_background = new createjs.Bitmap("/client/img/background1.png");
@@ -46,6 +47,10 @@ var small = 0;
 var medium = 1;
 var large = 2;
 
+var small_units_distance = 45;
+var medium_units_distance = 50;
+var large_units_distance = 70;
+
 var none = 0;
 var player = 1;
 var opponent = 2;
@@ -53,15 +58,12 @@ var opponent = 2;
 var node_font = "20px Arial";
 var node_font_color = "#FFFFFF";
 
-var percent_font = "50px Arial";
-var percent_font_color = "#FFFFFF";
-
 var units_font = "20px Arial";
 var units_font_color = "#FFFFFF";
 
 var timer_font = "50px Arial";
 var timer_font_color = "#FFFFFF";
-var timer_x = 450;
+var timer_x = 10;
 var timer_y = 640
 var time_limit = 180;
 
@@ -143,7 +145,6 @@ var start_game = function() {
 	
 	lines = [];
 	
-	percent = new percent_display(50, 10, 640);
 	stage.addChild(player_match_message);
 	
 	stage.update();
@@ -152,9 +153,9 @@ var start_game = function() {
 	socket.on("map_select", draw_map);
 	
 	
-	document.onkeydown = percent_key_listener;
+	document.onkeydown = key_listener;
 	var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel";
-	document.addEventListener(mousewheelevt, percent_wheel_listener);
+	document.addEventListener(mousewheelevt, wheel_listener);
 }
 
 var create_lines = function() {
