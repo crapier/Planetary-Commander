@@ -14,9 +14,6 @@ var play_button_listener = function(event) {
 	} 
 	// Remove the start menu, play a sound and start the game on click
 	else if(event.type == 'click') {
-		stage.removeChild(start_menu_background);
-		stage.removeChild(play_button);
-		stage.removeChild(instructions_button);
 		start_game();
 		var click_sound_instance = createjs.Sound.play("button_click");
 		click_sound_instance.volume = 0.1;
@@ -43,6 +40,20 @@ var instruction_button_listener = function(event) {
 		var click_sound_instance = createjs.Sound.play("button_click");
 		click_sound_instance.volume = 0.1;
 	}
+}
+
+var bgm_control = function(event) {
+	if(bgm_button.playing == true) {
+		bgm_button.playing = false;
+		bgm_button.image = bgm_mute_img.image;
+		bgm_loop.pause();
+	}
+	else {
+		bgm_button.playing = true;
+		bgm_button.image = bgm_play_img.image;
+		bgm_loop.resume();
+	}
+	stage.update();
 }
 
 // Handles update messages from the server

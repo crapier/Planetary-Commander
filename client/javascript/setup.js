@@ -38,12 +38,15 @@ var instructions_button_img = new createjs.Bitmap("/client/img/instructions_butt
 var instructions_button_hover_img = new createjs.Bitmap("/client/img/instructions_button_hover.png");
 var finalize_button_img = new createjs.Bitmap("/client/img/finalize_button.png");
 var finalize_button_hover_img = new createjs.Bitmap("/client/img/finalize_button_hover.png");
+var bgm_mute_img = new createjs.Bitmap("/client/img/sound_mute.png");
+var bgm_play_img = new createjs.Bitmap("/client/img/sound_high.png");
 
 // The actual buttons to use for the above button images, so that the image can be switched
 //		for different states (hover or normal)
 var play_button;
 var instruction_button;
 var finalize_button;
+var bgm_buton;
 
 var small_target_source = new createjs.Bitmap("/client/img/small_target_source.png");
 var medium_target_source = new createjs.Bitmap("/client/img/medium_target_source.png");
@@ -144,6 +147,8 @@ var initialize = function() {
 	play_button = play_button_img.clone();
 	instructions_button = instructions_button_img.clone();
 	finalize_button = finalize_button_img.clone();
+	bgm_button = bgm_play_img.clone();
+	bgm_button.playing = true;
 	
 	play_button.x = 500;
 	play_button.regX = play_button.image.width/2;
@@ -159,6 +164,13 @@ var initialize = function() {
 	finalize_button.regX = finalize_button.image.width/2;
 	finalize_button.y = 670;
 	finalize_button.regY = finalize_button.image.height/2;
+	
+	bgm_button.scaleX = .5;
+	bgm_button.scaleY = .5;
+	bgm_button.x = 980;
+	bgm_button.regX = bgm_button.image.width/2;
+	bgm_button.y = 20;
+	bgm_button.regY = bgm_button.image.height/2;
 
 	// Get a easlejs reference to the canvas
 	stage = new createjs.Stage("pcgame");
@@ -174,6 +186,7 @@ var initialize = function() {
 	stage.addChild(start_menu_background);
 	stage.addChild(play_button);
 	stage.addChild(instructions_button);
+	stage.addChild(bgm_button);
 	stage.update();
 	
 	// Add appropriate listeners for the buttons
@@ -183,6 +196,7 @@ var initialize = function() {
 	instructions_button.addEventListener("mouseover", instruction_button_listener);
 	instructions_button.addEventListener("click", instruction_button_listener);
 	instructions_button.addEventListener("mouseout", instruction_button_listener);
+	bgm_button.addEventListener("click", bgm_control);
 	finalize_button.addEventListener("mouseover", finish_click_listener);
 	finalize_button.addEventListener("click", finish_click_listener);
 	finalize_button.addEventListener("mouseout", finish_click_listener);
@@ -214,6 +228,9 @@ var start_game = function() {
 	
 	// Add the background for gameplay
 	stage.addChild(game_background);
+	
+	// Add back the music button
+	stage.addChild(bgm_button);
 	
 	// Clear the nodes and lines
 	nodes = [];
