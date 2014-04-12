@@ -2,7 +2,8 @@ var play_button_listener = function(event) {
 	if(event.type == 'mouseover') {
 		play_button.image = play_button_hover_img.image;
 		stage.update();
-		
+		var over_sound_instance = createjs.Sound.play("button_over");
+		over_sound_instance.volume = 0.1;
 	} else if(event.type == 'mouseout') {
 		play_button.image = play_button_img.image;
 		stage.update();
@@ -11,6 +12,8 @@ var play_button_listener = function(event) {
 		stage.removeChild(play_button);
 		stage.removeChild(instructions_button);
 		start_game();
+		var click_sound_instance = createjs.Sound.play("button_click");
+		click_sound_instance.volume = 0.1;
 	}
 }
 
@@ -18,12 +21,15 @@ var instruction_button_listener = function(event) {
 	if(event.type == 'mouseover') {
 		instructions_button.image = instructions_button_hover_img.image;
 		stage.update();
-		
+		var over_sound_instance = createjs.Sound.play("button_over");
+		over_sound_instance.volume = 0.1;
 	} else if(event.type == 'mouseout') {
 		instructions_button.image = instructions_button_img.image;
 		stage.update();
 	} else if(event.type == 'click') {
 		window.open("http://" + window.location.hostname + ":" + window.location.port + "/client/instructions.html");
+		var click_sound_instance = createjs.Sound.play("button_click");
+		click_sound_instance.volume = 0.1;
 	}
 }
 
@@ -233,12 +239,15 @@ var finish_click_listener = function(event) {
 	if(event.type == 'mouseover') {
 		finalize_button.image = finalize_button_hover_img.image;
 		stage.update();
-		
+		var over_sound_instance = createjs.Sound.play("button_over");
+		over_sound_instance.volume = 0.1;
 	} else if(event.type == 'mouseout') {
 		finalize_button.image = finalize_button_img.image;
 		stage.update();
 	} else if(event.type == 'click') {
 		end_turn();
+		var click_sound_instance = createjs.Sound.play("button_click");
+		click_sound_instance.volume = 0.1;
 	}
 }
 

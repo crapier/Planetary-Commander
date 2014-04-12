@@ -46,6 +46,9 @@ var hidden_opponent_large_node = new createjs.Bitmap("/client/img/hidden_large_o
 
 var units_img = new createjs.Bitmap("/client/img/units.png");
 
+createjs.Sound.registerSound("client/sound/button_over.mp3", "button_over");
+createjs.Sound.registerSound("client/sound/button_click.mp3", "button_click");
+
 var small = 0;
 var medium = 1;
 var large = 2;

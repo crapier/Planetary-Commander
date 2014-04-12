@@ -77,6 +77,18 @@ function handler(request, response) {
 					});
 				break;
 			}
+			if (/\.(mp3)$/.test(path)) {
+				fs.readFile(__dirname + path,
+					function(err, content) {
+						if (err) {
+							response.writeHead(404);
+							return response.end('Could not find file ' + path);
+						}
+						response.writeHead(200, {'Content-Type': 'Sound'});
+						response.end(content);
+					});
+				break;
+			}
 			response.writeHead(501);
 			return response.end('Can not handle ' + path);
 	}
