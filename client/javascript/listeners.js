@@ -151,7 +151,7 @@ var result_handler = function(message) {
 		nodes[selected].update({owner:player, units:selection_units.max, visible:true});
 		stage.removeChild(selection_units.img);
 		stage.removeChild(selection_units.text);
-		canvas.onmousemove = null;
+		stage.removeEventListener("stagemousemove", units_track_mouse);
 		selection_units = null;
 		selected = -1;
 	}
@@ -201,7 +201,7 @@ var source_node_select = function(event) {
 	units_to_send = nodes[selected].units;
 	selection_units = new create_selection_units(selected, units_to_send);
 	nodes[selected].update({owner:player, units:0, visible:true});
-	canvas.onmousemove = units_track_mouse;
+	stage.addEventListener("stagemousemove", units_track_mouse);
 	
 	stage.update();
 	
@@ -247,7 +247,7 @@ var destination_node_select = function(event) {
 	// Remove the selection units and clear it for future use
 	stage.removeChild(selection_units.img);
 	stage.removeChild(selection_units.text);
-	canvas.onmousemove = null;
+	stage.removeEventListener("stagemousemove", units_track_mouse);
 	selection_units = null;
 	
 	stage.update();
@@ -342,7 +342,7 @@ var end_turn = function() {
 		nodes[selected].update({owner:player, units:selection_units.max, visible:true});
 		stage.removeChild(selection_units.img);
 		stage.removeChild(selection_units.text);
-		canvas.onmousemove = null;
+		stage.removeEventListener("stagemousemove", units_track_mouse);
 		selection_units = null;
 		selected = -1;
 	}

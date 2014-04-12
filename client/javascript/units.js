@@ -94,8 +94,8 @@ var create_selection_units = function(source, units) {
 //		above create_selection_units constructor
 var units_track_mouse = function(event) {
 	// The position of the mouse
-	var mouse_x = event.clientX;
-	var mouse_y = event.clientY;
+	var mouse_x = event.stageX;
+	var mouse_y = event.stageY;
 	
 	// Calculate the rotation of the visual
 	var rotation;
