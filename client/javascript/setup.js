@@ -1,14 +1,34 @@
+// ----------------
+// GLOBAL VARIABLES
+// ----------------
+
+// easeljs stage
 var stage;
+// HTML reference to the stage
 var canvas;
+// Array of the current nodes on the screen
 var nodes = [];
+// Array of the current lines on the screen, lines are drawn behind nodes
 var lines = [];
+// Array of current movements to send to the server on end of turn
 var movements = [];
+// Array of current units that represent movements on the screen
 var units_list = [];
+// Current socket.io socket reference
 var socket;
+// ID of the currently selected node if there is one, -1 if no node is selected
 var selected;
+// If a node is selected this is the visible reprentation of how many units will be sent
+// 		if a destination node is selected, trackes the mouse around selected node
 var selection_units;
+// The current number of units to send from the selected node, starts at max currently
 var units_to_send;
 
+// ------
+// IMAGES
+// ------
+
+//These are all preloaded at before the game appears on the stage
 var start_menu_background = new createjs.Bitmap("/client/img/start_menu_background.png");
 var game_background = new createjs.Bitmap("/client/img/background1.png");
 
@@ -18,6 +38,9 @@ var instructions_button_img = new createjs.Bitmap("/client/img/instructions_butt
 var instructions_button_hover_img = new createjs.Bitmap("/client/img/instructions_button_hover.png");
 var finalize_button_img = new createjs.Bitmap("/client/img/finalize_button.png");
 var finalize_button_hover_img = new createjs.Bitmap("/client/img/finalize_button_hover.png");
+
+// The actual buttons to use for the above button images, so that the image can be switched
+//		for different states (hover or normal)
 var play_button;
 var instruction_button;
 var finalize_button;
@@ -46,8 +69,20 @@ var hidden_opponent_large_node = new createjs.Bitmap("/client/img/hidden_large_o
 
 var units_img = new createjs.Bitmap("/client/img/units.png");
 
+// ------
+// SOUNDS
+// ------
+
+// Register all the sounds for later use
 createjs.Sound.registerSound("client/sound/button_over.mp3", "button_over");
 createjs.Sound.registerSound("client/sound/button_click.mp3", "button_click");
+createjs.Sound.registerSound("client/sound/bgm1.mp3", "bgm1");
+// To be used as the sound instance to play the bgm
+var bgm_loop;
+
+// ---------
+// CONSTANTS
+// ---------
 
 var small = 0;
 var medium = 1;
@@ -75,6 +110,10 @@ var time_limit = 180;
 
 var line_color = "#FFFFFF";
 
+// --------
+// MESSAGES (easlejs Text)
+// --------
+
 var waiting = new createjs.Text("Waiting for other Player", "30px Arial", "#FFFFFF");
 waiting.x = 830;
 waiting.regX = waiting.getMeasuredWidth()/2;
@@ -99,8 +138,9 @@ player_match_message.regX = player_match_message.getMeasuredWidth()/2;
 player_match_message.y = 350;
 player_match_message.regY = player_match_message.getMeasuredHeight()/2;
 
+// Initializes the stage and shows the main menu
 var initialize = function() {
-	
+	// Prepare all the button instances
 	play_button = play_button_img.clone();
 	instructions_button = instructions_button_img.clone();
 	finalize_button = finalize_button_img.clone();
@@ -120,54 +160,89 @@ var initialize = function() {
 	finalize_button.y = 670;
 	finalize_button.regY = finalize_button.image.height/2;
 
+	// Get a easlejs reference to the canvas
 	stage = new createjs.Stage("pcgame");
 	stage.enableMouseOver();
 	
+	// Diable right clicking
 	canvas = document.getElementById("pcgame");
 	canvas.oncontextmenu = function() {
 		return false;  
 	} 
 
+	// Add and show the main menu to the stage
 	stage.addChild(start_menu_background);
 	stage.addChild(play_button);
 	stage.addChild(instructions_button);
-	
 	stage.update();
 	
+	// Add appropriate listeners for the instruction buttons
 	play_button.addEventListener("mouseover", play_button_listener);
 	play_button.addEventListener("click", play_button_listener);
 	play_button.addEventListener("mouseout", play_button_listener);
 	instructions_button.addEventListener("mouseover", instruction_button_listener);
 	instructions_button.addEventListener("click", instruction_button_listener);
 	instructions_button.addEventListener("mouseout", instruction_button_listener);
+	
+	// Try to begin playing the bgm music
+	bgm_loop = createjs.Sound.play("bgm1", {loop:-1});
+	// Set the volume of the bgm music
+	bgm_loop.volume = 0.1;
+	// If the music is not loaded and didn't try to play again after a second
+	if(bgm_loop.playState == "playFailed"){
+		setTimeout(start_music, 100);
+	}
+	
 }
 
+// Keeps trying to start the bgm until it is loaded
+var start_music = function() {
+	bgm_loop.play({loop:-1});
+	// Keep trying to play until the music is loaded
+	if(bgm_loop.playState == "playFailed"){
+		setTimeout(start_music, 100);
+	}
+}
+
+// Called by hitting the play button
 var start_game = function() {
+	// Clear the stage
 	stage.removeAllChildren();
 	
+	// Add the background for gameplay
 	stage.addChild(game_background);
 	
+	// Clear the nodes and lines
 	nodes = [];
 	
 	lines = [];
 	
+	// Add the waiting for other player message
 	stage.addChild(player_match_message);
 	
 	stage.update();
 	
+	// Connect to the server, forces new connection
 	socket = io.connect('http://' + document.location.host, {'force new connection':true});
+	// Wait for the server to send which map is being played this game
 	socket.on("map_select", draw_map);
 	
-	
+	// Add listeners for keyboard and mousewheel events, used to control units being sent
 	document.onkeydown = key_listener;
 	var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel";
 	document.addEventListener(mousewheelevt, wheel_listener);
 }
 
+// Creates lines based on the current nodes
 var create_lines = function() {
+	// Index to edit and create the new line in the lines array
 	index = 0;
+	// Go through all the nodes and draw lines to any adjacent nodes
 	for(var i = 0; i < nodes.length; i++) {
+		// Go through the adjacent nodes
 		for(var j = 0; j < nodes[i].adjacent.length; j++) {
+			// Only need to draw a line if the node ID is greater than current
+			//		to prevent repeate lines
 			if(nodes[i].adjacent[j] > i) {
 				lines.push(new createjs.Shape());
 				lines[index].graphics.setStrokeStyle(1).beginStroke(line_color).moveTo(nodes[i].x, nodes[i].y).lineTo(nodes[nodes[i].adjacent[j]].x, nodes[nodes[i].adjacent[j]].y).endStroke();
@@ -179,17 +254,28 @@ var create_lines = function() {
 	
 }
 
+// Draws the map element for a certain map id from the sever
 var draw_map = function(map_id) {
+	// Remove matchmaking message
 	stage.removeChild(player_match_message);
 	
+	// Draw appropriate nodes for map id
 	create_nodes[map_id]();
+	// Draw the lines for the nodes
 	create_lines();
 	
+	// Add listeners for updates and results messages from the server for this match
 	socket.on("updates", update_handler);
 	socket.on("results", result_handler);
 }
 
+// Array of different nodes for map creation
 var create_nodes = []
+
+// ----
+// MAPS
+// ----
+// Each of the following creates a different map
 
 create_nodes.push (function() {
 	nodes.push(new node(large, 200, 150, [4, 6, 8, 14, 15]));
