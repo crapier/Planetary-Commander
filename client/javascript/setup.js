@@ -46,7 +46,7 @@ var bgm_play_img = new createjs.Bitmap("/client/img/sound_high.png");
 var play_button;
 var instruction_button;
 var finalize_button;
-var bgm_buton;
+var bgm_button;
 
 var small_target_source = new createjs.Bitmap("/client/img/small_target_source.png");
 var medium_target_source = new createjs.Bitmap("/client/img/medium_target_source.png");
