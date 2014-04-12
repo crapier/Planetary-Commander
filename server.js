@@ -11,16 +11,20 @@ var url = require('url');
 // Listen on a high port.
 var listen_port = 61111;
 app.listen(listen_port);
+// Log to the console so see what port the server is running on
 console.log('Server is listening on port: ' + listen_port);
 
 // Handles HTTP requests.
 function handler(request, response) {
+	// Parse the url to get the path
 	var path = url.parse(request.url).pathname;
 	switch (path) {
+		// Return the index page for the client
 		case '/':
 			fs.readFile(__dirname + '/client/index.html',
 				function(err, content) {
 					if (err) {
+						// The client requested a file we couldn't find
 						response.writeHead(404);
 						return response.end('Could not find file' + path);
 					}
@@ -29,10 +33,12 @@ function handler(request, response) {
 				});
 			break;
 		default:
+			// Handle html requests
 			if (/\.(html)$/.test(path)) {
 				fs.readFile(__dirname + path,
 					function(err, content) {
 						if (err) {
+							// The client requested a file we couldn't find
 							response.writeHead(404);
 							return response.end('Could not find file ' + path);
 						}
@@ -41,10 +47,12 @@ function handler(request, response) {
 					});
 				break;
 			}
+			// Handle css requests
 			if (/\.(css)$/.test(path)) {
 				fs.readFile(__dirname + path,
 					function(err, content) {
 						if (err) {
+							// The client requested a file we couldn't find
 							response.writeHead(404);
 							return response.end('Could not find file ' + path);
 						}
@@ -53,10 +61,12 @@ function handler(request, response) {
 					});
 				break;
 			}
+			// Handle javascript requests
 			if (/\.(js)$/.test(path)) {
 				fs.readFile(__dirname + path,
 					function(err, content) {
 						if (err) {
+							// The client requested a file we couldn't find
 							response.writeHead(404);
 							return response.end('Could not find file ' + path);
 						}
@@ -65,10 +75,12 @@ function handler(request, response) {
 					});
 				break;
 			}
+			// Handle image requests (only png support added at the momment)
 			if (/\.(png)$/.test(path)) {
 				fs.readFile(__dirname + path,
 					function(err, content) {
 						if (err) {
+							// The client requested a file we couldn't find
 							response.writeHead(404);
 							return response.end('Could not find file ' + path);
 						}
@@ -77,10 +89,12 @@ function handler(request, response) {
 					});
 				break;
 			}
+			// Handle sound request (only mp3 suport added at the momment)
 			if (/\.(mp3)$/.test(path)) {
 				fs.readFile(__dirname + path,
 					function(err, content) {
 						if (err) {
+							// The client requested a file we couldn't find
 							response.writeHead(404);
 							return response.end('Could not find file ' + path);
 						}
@@ -89,10 +103,15 @@ function handler(request, response) {
 					});
 				break;
 			}
+			// The client requested a file type we don't handle
 			response.writeHead(501);
 			return response.end('Can not handle ' + path);
 	}
 }
+// ---------
+// CONSTANTS
+// ---------
+
 
 var large = 10;
 var medium = 5;
@@ -104,52 +123,87 @@ var opponent = 2;
 
 var client_1 = 1;
 var client_2 = 2;
+
+// -------
+// GLOBALS (each is an array and the index of the array is the game_id
+// -------
+
+// Socket id's for the two different players, so different messages can be sent 
+// 		individualy to each client
 var client_1_socket_id = [];
 var client_2_socket_id = [];
 
+// Node array for the current game
 var nodes = [];
+// Number of clients in the game (should be 0-2)
 var num_connected_clients = [];
+// Number of movements recieved (should be 0-2)
 var movements_recieved = [];
+// Game state (0 - pregame, 1 -  mid-game, 
+//		2 - after-game(waiting for both clients to disconnect), 
+//		3 - after-game(waiting for last player to disconnect))
 var game_state = [];
 
+// Recieved movements arrays from each player
 var client_1_movements = [];
 var client_2_movements = [];
 
+// Node class for the server
 var node = function(units, size, adjacent) {
+	// The number of units on the node
 	this.units = units;
+	// Who owns the node, uses constants above (none, client_1,, client_2)
 	this.owner = none;
+	// The size of the node (small, medium, large)
 	this.size = size;
+	// Array of adjacent node_ids (index in nodes [] array)
 	this.adjacent = adjacent;
+	// Wether or not this node will generate units this turn
 	this.generating = false;
 }
 
+// Generate new units function for nodes
 node.prototype.generate = function() {
+	// Only player owned nodes generate
 	if(this.owner == client_1 || this.owner == client_2) {
+		// Check to see if the node is generating this turn
 		if(this.generating) {
 			this.units = this.units + this.size;
 		}
+		// If it isn't it will next turn
 		else {
 			this.generating = true;
 		}
 	}
 }
 
+// Update class for sending to the clients
 var update = function(owner, units, visible) {
 	this.owner = owner;
 	this.units = units;
 	this.visible = visible;
 }
 
+// Set up the game once two clients are connected
 var game_setup = function(game_id) {
+	// Pick a random map id
 	var map_id = Math.floor((Math.random()*maps.length));
+	// Create the map for this game
 	maps[map_id](game_id);
 	
+	// Send the map id to the clients
 	io.sockets.socket(client_1_socket_id[game_id]).emit('map_select', map_id);
 	io.sockets.socket(client_2_socket_id[game_id]).emit('map_select', map_id);
+	// First updates to clients
 	send_updates(game_id);
 }
 
+// Array of functions that create each different map
 var maps = [];
+
+// ----
+// MAPS
+// ----
 
 maps.push(function(game_id) {
 	nodes[game_id].push(new node(20, large, [4, 6, 8, 14, 15]));
@@ -314,7 +368,14 @@ maps.push(function(game_id) {
 	nodes[game_id][client_2_start].generating = true;
 })
 
+
+// ^^^^^^^^^^^^^^
+// NEW MAPS ABOVE
+// --------------
+
+// Creates and sends updates to the two clients for a game, called after calculating movements
 var send_updates = function(game_id) {
+	// Create and populate client arrays with empty updates
 	var client_1_updates = [];
 	var client_2_updates = [];
 	for(var i = 0; i < nodes[game_id].length; i++) {
@@ -322,12 +383,17 @@ var send_updates = function(game_id) {
 		client_2_updates.push(new update(-1, -1, false));
 	}
 	
+	// Check each node to see if an update should be non empty
 	for(var i = 0; i < nodes[game_id].length; i++) {
+		// If the node is player owned create an update
+		// If owned by client 1
 		if (nodes[game_id][i].owner == client_1) {
 			client_1_updates[i].owner = player;
 			client_1_updates[i].units = nodes[game_id][i].units;
 			client_1_updates[i].visible = true;
+			// Create updates for all adjacent nodes to the player node
 			for(var j = 0; j < nodes[game_id][i].adjacent.length; j++) {
+				// Set the appropriate owner for client 1
 				if (nodes[game_id][nodes[game_id][i].adjacent[j]].owner == client_1) {
 					client_1_updates[nodes[game_id][i].adjacent[j]].owner = player;
 				}
@@ -341,11 +407,14 @@ var send_updates = function(game_id) {
 				client_1_updates[nodes[game_id][i].adjacent[j]].visible = true;
 			}
 		}
+		// If owned by client 2
 		else if (nodes[game_id][i].owner == client_2) {
 			client_2_updates[i].owner = player;
 			client_2_updates[i].units = nodes[game_id][i].units;
 			client_2_updates[i].visible = true;
+			// Create updates for all adjacent nodes to the player node
 			for(var j = 0; j < nodes[game_id][i].adjacent.length; j++) {
+				// Set the appropriate owner for client 2
 				if (nodes[game_id][nodes[game_id][i].adjacent[j]].owner == client_2) {
 					client_2_updates[nodes[game_id][i].adjacent[j]].owner = player;
 				}
@@ -361,20 +430,24 @@ var send_updates = function(game_id) {
 		}
 	}
 	
+	// Send the updates to the clients
 	io.sockets.socket(client_1_socket_id[game_id]).emit('updates', client_1_updates);
 	io.sockets.socket(client_2_socket_id[game_id]).emit('updates', client_2_updates);
 }
 
-
-
+// Generates and sends results at the end of the game, resets game variables
 var send_results = function(game_id, client_1_holds, client_2_holds) {
+	// Reset game variables
 	num_connected_clients[game_id] = 0;
 	movements_recieved[game_id] = 0;
 	game_state[game_id] = 2;
 	
+	// Create final updates to reveal the entire map for both players
 	var player_1_final_update = [];
 	var player_2_final_update = [];
+	// Go through all the nodes
 	for(var i = 0; i < nodes[game_id].length; i++) {
+		// Set the appropriate owner for each client
 		if(nodes[game_id][i].owner == client_1) {
 			player_1_final_update.push(new update(player, nodes[game_id][i].units, true));
 			player_2_final_update.push(new update(opponent, nodes[game_id][i].units, true));
@@ -389,6 +462,7 @@ var send_results = function(game_id, client_1_holds, client_2_holds) {
 		}
 	}
 	
+	// Send winner or lower message based on who no longer holds and nodes
 	if(client_1_holds == 0) {
 		io.sockets.socket(client_1_socket_id[game_id]).emit('results', {results:"loser", updates:player_1_final_update});
 		io.sockets.socket(client_2_socket_id[game_id]).emit('results', {results:"winner", updates:player_2_final_update});
@@ -403,19 +477,25 @@ var send_results = function(game_id, client_1_holds, client_2_holds) {
 	
 }
 
+// Update all the nodes with both players movements, and then generate new units
 var calculate_movements = function(game_id){
+	// Check for illegal moves
 	for(var i = 0; i < client_1_movements[game_id].length; i++){
+		// Check that the owner of the node is the user who sent the movement
 		if(nodes[game_id][client_1_movements[game_id][i].source].owner != client_1) {
 			client_1_movements[game_id][i].units = 0;
 		}
+		// Check that only the number of units on the node are being sent at maximum
 		if(nodes[game_id][client_1_movements[game_id][i].source].units < client_1_movements[game_id][i].units) {
 			client_1_movements[game_id][i].units = nodes[game_id][client_1_movements[game_id][i].source].units;
 		}
+		// Check that only 1 movement is originating from each node
 		for (var j = 0; j < i; j++) {
 			if (client_1_movements[game_id][j].units != 0 && client_1_movements[game_id][j].source == client_1_movements[game_id][i].source) {
 				client_1_movements[game_id][j].units = 0;
 			}
 		}
+		// Check that the destination is an adjacent node
 		var destination_adjacent = false;
 		for (var j = 0; j < nodes[game_id][client_1_movements[game_id][i].source].adjacent.length; j++) {
 			if (client_1_movements[game_id][i].destination == nodes[game_id][client_1_movements[game_id][i].source].adjacent[j]) {
@@ -428,17 +508,21 @@ var calculate_movements = function(game_id){
 		}
 	}
 	for(var i = 0; i < client_2_movements[game_id].length; i++){
+		// Check that the owner of the node is the user who sent the movement
 		if(nodes[game_id][client_2_movements[game_id][i].source].owner != client_2) {
 			client_2_movements[game_id][i].units = 0;
 		}
+		// Check that only the number of units on the node are being sent at maximum
 		if(nodes[game_id][client_2_movements[game_id][i].source].units < client_2_movements[game_id][i].units) {
 			client_2_movements[game_id][i].units = nodes[game_id][client_2_movements[game_id][i].source].units;
 		}
+		// Check that only 1 movement is originating from each node
 		for (var j = 0; j < i; j++) {
 			if (client_2_movements[game_id][j].units != 0 && client_2_movements[game_id][j].source == client_2_movements[game_id][i].source) {
 				client_2_movements[game_id][j].units = 0;
 			}
 		}
+		// Check that the destination is an adjacent node
 		var destination_adjacent = false;
 		for (var j = 0; j < nodes[game_id][client_2_movements[game_id][i].source].adjacent.length; j++) {
 			if (client_2_movements[game_id][i].destination == nodes[game_id][client_2_movements[game_id][i].source].adjacent[j]) {
@@ -451,6 +535,7 @@ var calculate_movements = function(game_id){
 		}
 	}
 	
+	// Subtract all leaving units from their source node (they have left the node)
 	for(var i = 0; i < client_1_movements[game_id].length; i++){
 		nodes[game_id][client_1_movements[game_id][i].source].units -= client_1_movements[game_id][i].units;
 	}
@@ -458,53 +543,75 @@ var calculate_movements = function(game_id){
 		nodes[game_id][client_2_movements[game_id][i].source].units -= client_2_movements[game_id][i].units;
 	}
 	
+	// Calculate the results of movements for each node
 	for(var i = 0; i < nodes[game_id].length; i++){
+		// Totals for incoming for each node, from each client
 		var client_1_incoming = 0;
 		var client_2_incoming = 0;
+		// Calclutate client 1 total for this node
 		for(var j = 0; j < client_1_movements[game_id].length; j++) {
 			if(client_1_movements[game_id][j].destination == i) {
 				client_1_incoming += client_1_movements[game_id][j].units;
 			}
 		}
+		// Calculate client 2 total for this node
 		for(var j = 0; j < client_2_movements[game_id].length; j++) {
 			if(client_2_movements[game_id][j].destination == i) {
 				client_2_incoming += client_2_movements[game_id][j].units;
 			}
 		}
+		// If client 1 sent more units
 		if(client_1_incoming >= client_2_incoming) {
+			// Client 1 loses units equal to client 2's fleet
 			client_1_incoming -= client_2_incoming;
+			
+			// If the destination node is owned by client 1, just add remaining fleet to nodes units
 			if (nodes[game_id][i].owner == client_1) {
 				nodes[game_id][i].units += client_1_incoming;
 			}
+			// If its not client 1 owned, and the fleet is larger than the nodes units
+			// 		client 1 captures the planet
 			else if (client_1_incoming > nodes[game_id][i].units) {
 				nodes[game_id][i].units = client_1_incoming - nodes[game_id][i].units;
 				nodes[game_id][i].owner = client_1;
 				nodes[game_id][i].generating = false;
 			}
+			// If its not client 1 owned, and the fleet is smaller than the nodes units
+			// 		client 1 weakens the planet
 			else {
 				nodes[game_id][i].units = nodes[game_id][i].units - client_1_incoming;
 			}	
 		}
+		// If client 2 sent more units
 		else {
+			// Client 2 loses units equal to client 1's fleet
 			client_2_incoming -= client_1_incoming;
+			
+			// If the destination node is owned by client 2, just add remaining fleet to nodes units
 			if (nodes[game_id][i].owner == client_2) {
 				nodes[game_id][i].units += client_2_incoming;
 			}
+			// If its not client 2 owned, and the fleet is larger than the nodes units
+			// 		client 2 captures the planet
 			else if (client_2_incoming > nodes[game_id][i].units) {
 				nodes[game_id][i].units = client_2_incoming - nodes[game_id][i].units;
 				nodes[game_id][i].owner = client_2;
 				nodes[game_id][i].generating = false;
 			}
+			// If its not client 2 owned, and the fleet is smaller than the nodes units
+			// 		client 2 weakens the planet
 			else {
 				nodes[game_id][i].units = nodes[game_id][i].units - client_2_incoming;
 			}	
 		}
 	}
 	
+	// Generate units on each node
 	for(var i = 0; i < nodes[game_id].length; i++){
 		nodes[game_id][i].generate();
 	}
 	
+	// Count each players holdings
 	var client_1_holds = 0;
 	var client_2_holds = 0;
 	for(var i = 0; i < nodes[game_id].length; i++){
@@ -515,18 +622,23 @@ var calculate_movements = function(game_id){
 			client_2_holds++;
 		}
 	}
+	// If either player has 0 nodes the game is over and send the results
 	if (client_1_holds == 0 || client_2_holds == 0) {
 		send_results(game_id, client_1_holds, client_2_holds);
 	}
+	// If neither player is out yet, just send the updates
 	else {
 		send_updates(game_id);
 	}
 }
 
+// Handles movement messages from the clients
 var movement_handler = function(movements) {
+	// Get game and client id from client data store (sever side)
 	var game_id = this.store.data.game_id;
 	var client_id = this.store.data.client_id;
 	
+	// Save the movements for use in calulation based on the client id
 	if(client_id == client_1) {
 		client_1_movements[game_id] = movements;
 	}
@@ -534,6 +646,7 @@ var movement_handler = function(movements) {
 		client_2_movements[game_id] = movements;
 	}
 	
+	// If both players movements are recieved calculate movements, else do nothing
 	if(movements_recieved[game_id] == 0) {
 		movements_recieved[game_id]++;
 	}
@@ -543,16 +656,20 @@ var movement_handler = function(movements) {
 	}
 }
 
+// Handles disconnection from the clients in various game states
 var disconnect_handler = function() {
+	// Get game and client id from client data store (sever side)
 	var game_id = this.store.data.game_id;
 	var client_id = this.store.data.client_id;
 	
+	// If a client disconnects pre game nothing really happens
 	if(game_state[game_id] == 0) {
         console.log('Client ' + client_id + ' disconnected from pre-game ' + game_id);
 		num_connected_clients[game_id] = 0;
 		movements_recieved[game_id] = 0;
 		nodes[game_id] = [];
 	}
+	// If a client disconnects mid game a win message is generated for the other player
 	if(game_state[game_id] == 1) {
         console.log('Game ' + game_id + ' ended because client ' + client_id + ' disconnected');
 		num_connected_clients[game_id] = 0;
@@ -582,10 +699,12 @@ var disconnect_handler = function() {
 		game_state[game_id] = 3;
 		nodes[game_id] = [];
 	}
+	// After a game the following two states are used to track if both players have left yet
 	else if (game_state[game_id] == 2) {
         console.log('Client ' + client_id + ' disconnected from finished game ' + game_id);
 		game_state[game_id] = 3;
 	}
+	// Game is ready for new players after state 3 disconnect
 	else if (game_state[game_id] == 3) {
         console.log('Client ' + client_id + ' disconnected from finished game ' + game_id);
         console.log('Game ' + game_id + ' open for new clients');
@@ -593,14 +712,18 @@ var disconnect_handler = function() {
 	}
 }
 
+// Hanndles connections of clients to match them with another player
 var connection_handler = function(client) {
+	// First try to find an game to join
 	var game_id = -1;
+	// Check for a game with a player wating
 	for(var i = 0; i < num_connected_clients.length; i++) {
 		if(num_connected_clients[i] == 1 && game_state[i] == 0) {
 			game_id = i;
 			break;
 		}
 	}
+	// Check for a game with no players if no games with player waitng available
 	if(game_id == -1) {
 		for(var i = 0; i < num_connected_clients.length; i++) {
 			if(num_connected_clients[i] == 0 && game_state[i] == 0) {
@@ -609,6 +732,7 @@ var connection_handler = function(client) {
 			}
 		}
 	}
+	// As a last resort create a new game and initialize its variables
 	if(game_id == -1) {
 		game_id = num_connected_clients.length;
 		num_connected_clients.push(0);
@@ -622,6 +746,7 @@ var connection_handler = function(client) {
 		client_2_socket_id.push(0);
 	}
 	
+	// If they are the first player to connect set their listeners, id's and wait
 	if(num_connected_clients[game_id] == 0) {
 		console.log("New client joined game " + game_id + " as client " + client_1);
 		client.set("game_id", game_id);
@@ -631,6 +756,7 @@ var connection_handler = function(client) {
 		client.on('movements', movement_handler);
 		client.on('disconnect', disconnect_handler);
 	}
+	// If they are the second player to connect set their listeners, id's and start the game
 	else if (num_connected_clients[game_id] == 1) {
 		console.log("New client joined game " + game_id + " as client " + client_2);	
 		client.set("game_id", game_id);
@@ -644,4 +770,5 @@ var connection_handler = function(client) {
 	}
 }
 
+// Set the listener for connections
 io.sockets.on('connection', connection_handler);

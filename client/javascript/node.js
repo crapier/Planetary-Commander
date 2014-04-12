@@ -1,3 +1,4 @@
+// Node class for display and interactivity
 var node = function(size, x, y, adjacent) {
 	this.units = -1;
 	this.owner = none;
@@ -9,6 +10,7 @@ var node = function(size, x, y, adjacent) {
 	this.targeted_source = false;
 	this.targeted_dest = false;
 	
+	// Set image based on size
 	switch(this.size) {
 		case small:
 			this.img = hidden_unknown_small_node.clone();
@@ -27,11 +29,14 @@ var node = function(size, x, y, adjacent) {
 			break;
 		default:
 	}
+	// Place image based on position
 	this.img.x = this.x;
 	this.img.regX = this.img.image.width/2;
 	this.img.y = this.y;
 	this.img.regY = this.img.image.width/2;
 	stage.addChild(this.img);
+	
+	// Create the target rings for future use
 	
 	this.target_source.x = this.x;
 	this.target_source.regX = this.target_source.image.width/2;
@@ -43,8 +48,10 @@ var node = function(size, x, y, adjacent) {
 	this.target_dest.y = this.y;
 	this.target_dest.regY = this.target_dest.image.width/2;
 	
+	//Assign the id to the visual so that the click listener will no the node id
 	this.img.node_id = nodes.length;
 	
+	// Create the text visual for units
 	this.text = new createjs.Text(this.units, node_font, node_font_color);
 	this.text.x = this.x;
 	this.text.regX = this.text.getMeasuredWidth()/2;
@@ -52,6 +59,7 @@ var node = function(size, x, y, adjacent) {
 	this.text.regY = this.text.getMeasuredHeight()/2;
 }
 
+// Show the source target if it isn't already shown
 node.prototype.show_target_source = function() {
 	if(this.targeted_source == false) {
 		this.targeted_source = true;
@@ -59,6 +67,7 @@ node.prototype.show_target_source = function() {
 	}
 }
 
+// Hide the source target if it isn't already hidden
 node.prototype.hide_target_source = function() {
 	if(this.targeted_source == true) {
 		this.targeted_source = false;
@@ -66,6 +75,7 @@ node.prototype.hide_target_source = function() {
 	}
 }
 
+// Show the destination target if it isn't already shown
 node.prototype.show_target_dest = function() {
 	if(this.targeted_dest == false) {
 		this.targeted_dest = true;
@@ -73,6 +83,7 @@ node.prototype.show_target_dest = function() {
 	}
 }
 
+// Hide the destination target if it isn't already hidden
 node.prototype.hide_target_dest = function() {
 	if(this.targeted_dest == true) {
 		this.targeted_dest = false;
@@ -80,7 +91,9 @@ node.prototype.hide_target_dest = function() {
 	}
 }
 
+// Update the node with an instance of the update class from the server
 node.prototype.update = function(update) {
+	// Update owner and units if not -1 (the unchanged value)
 	if(update.owner != -1) {
 		this.owner = update.owner;
 	}
@@ -88,6 +101,7 @@ node.prototype.update = function(update) {
 		this.units = update.units;
 	}
 	
+	// Update the units text
 	this.text.text = this.units;
 	this.text.x = this.x;
 	this.text.regX = this.text.getMeasuredWidth()/2;
@@ -95,8 +109,11 @@ node.prototype.update = function(update) {
 	this.text.regY = this.text.getMeasuredHeight()/2;
 	
 	this.visible = update.visible;
+	// If the node is not visible update the the nodes image appropiately and hide the text
 	if(this.visible == false) {
+		// remove the text
 		stage.removeChild(this.text);
+		// set image based on the owner
 		switch(this.owner) {
 			case none:
 				switch(this.size) {
@@ -143,8 +160,11 @@ node.prototype.update = function(update) {
 			default:
 		}
 	}
+	// If the node is visible update the the nodes image appropiately and show the text
 	else if(this.visible == true) {
+		// add back the text
 		stage.addChild(this.text);
+		// set image based on the owner
 		switch(this.owner) {
 			case none:
 				switch(this.size) {

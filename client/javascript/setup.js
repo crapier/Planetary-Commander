@@ -176,13 +176,16 @@ var initialize = function() {
 	stage.addChild(instructions_button);
 	stage.update();
 	
-	// Add appropriate listeners for the instruction buttons
+	// Add appropriate listeners for the buttons
 	play_button.addEventListener("mouseover", play_button_listener);
 	play_button.addEventListener("click", play_button_listener);
 	play_button.addEventListener("mouseout", play_button_listener);
 	instructions_button.addEventListener("mouseover", instruction_button_listener);
 	instructions_button.addEventListener("click", instruction_button_listener);
 	instructions_button.addEventListener("mouseout", instruction_button_listener);
+	finalize_button.addEventListener("mouseover", finish_click_listener);
+	finalize_button.addEventListener("click", finish_click_listener);
+	finalize_button.addEventListener("mouseout", finish_click_listener);
 	
 	// Try to begin playing the bgm music
 	bgm_loop = createjs.Sound.play("bgm1", {loop:-1});
@@ -387,3 +390,8 @@ create_nodes.push (function() {
 	nodes.push(new node(medium, 688, 419, [9, 24, 7]));
 	nodes.push(new node(medium, 757, 209, [8, 23, 7]));
 })
+
+
+// ^^^^^^^^^^^^^^
+// NEW MAPS ABOVE
+// --------------

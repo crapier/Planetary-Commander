@@ -1,8 +1,10 @@
+// Units class for showing current movements
 var units = function(source, destination, units) {
 	this.source = source;
 	this.destination = destination;
 	this.units = units;
 	
+	// Calculate the roatation for the unit visual
 	var rotation;
 	if(nodes[source].x <= nodes[destination].x && nodes[source].y <= nodes[destination].y) {
 		rotation = Math.atan((nodes[destination].y - nodes[source].y)/(nodes[destination].x - nodes[source].x))*180/Math.PI;
@@ -17,6 +19,7 @@ var units = function(source, destination, units) {
 		rotation = -90 + -1 * Math.atan((nodes[source].x - nodes[destination].x)/(nodes[source].y - nodes[destination].y))*180/Math.PI;
 	}
 	
+	// Calcualte the position for the unit visual
 	if(nodes[source].size == small) {
 		this.x = nodes[source].x + small_units_distance*Math.cos(rotation*Math.PI/180);
 		this.y = nodes[source].y + small_units_distance*Math.sin(rotation*Math.PI/180);
@@ -30,6 +33,7 @@ var units = function(source, destination, units) {
 		this.y = nodes[source].y + large_units_distance*Math.sin(rotation*Math.PI/180);
 	}
 	
+	// Create and place the unit visual based on position and roation above
 	this.img = units_img.clone();
 	this.img.x = this.x;
 	this.img.regX = this.img.image.width/2;
@@ -49,11 +53,13 @@ var units = function(source, destination, units) {
 	stage.addChild(this.text);
 }
 
+// Unit class for showing current number of units to be sent from current selection
 var create_selection_units = function(source, units) {
 	this.source = source;
 	this.units = units;
 	this.max = nodes[source].units;
 	
+	// Calcualte the default position
 	if(nodes[source].size == small) {
 		this.x = nodes[source].x + small_units_distance;
 		this.y = nodes[source].y;
@@ -67,6 +73,7 @@ var create_selection_units = function(source, units) {
 		this.y = nodes[source].y;
 	}
 	
+	// Create unit visual and place according to above position
 	this.img = units_img.clone();
 	this.img.x = this.x;
 	this.img.regX = this.img.image.width/2;
@@ -83,10 +90,14 @@ var create_selection_units = function(source, units) {
 	stage.addChild(this.text);
 }
 
+// Tracks the mouse and moves the selection_units which is an instance created fromt the
+//		above create_selection_units constructor
 var units_track_mouse = function(event) {
+	// The position of the mouse
 	var mouse_x = event.clientX;
 	var mouse_y = event.clientY;
 	
+	// Calculate the rotation of the visual
 	var rotation;
 	if(nodes[selection_units.source].x <= mouse_x && nodes[selection_units.source].y <= mouse_y) {
 		rotation = Math.atan((mouse_y - nodes[selection_units.source].y)/(mouse_x - nodes[selection_units.source].x))*180/Math.PI;
@@ -102,6 +113,8 @@ var units_track_mouse = function(event) {
 	}
 	
 	selection_units.img.rotation = rotation;
+	
+	// Calculate the position of the visual
 	if(nodes[selected].size == small) {
 		selection_units.x = nodes[selection_units.source].x + small_units_distance*Math.cos(rotation*Math.PI/180);
 		selection_units.y = nodes[selection_units.source].y + small_units_distance*Math.sin(rotation*Math.PI/180);
@@ -115,6 +128,7 @@ var units_track_mouse = function(event) {
 		selection_units.y = nodes[selection_units.source].y + large_units_distance*Math.sin(rotation*Math.PI/180);
 	}
 	
+	// Update the position of the visual
 	selection_units.img.x = selection_units.x;
 	selection_units.img.y = selection_units.y;
 	selection_units.text.x = selection_units.x;
