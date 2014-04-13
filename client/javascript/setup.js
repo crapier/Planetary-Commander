@@ -24,22 +24,27 @@ var selection_units;
 // The current number of units to send from the selected node, starts at max currently
 var units_to_send;
 
+// Manifest for preloading
+var manifest;
+// Preloader
+var preload;
+
 // ------
 // IMAGES
 // ------
 
-//These are all preloaded at before the game appears on the stage
-var start_menu_background = new createjs.Bitmap("/client/img/start_menu_background.png");
-var game_background = new createjs.Bitmap("/client/img/background1.png");
+//These are all preloaded before the game appears on the stage
+var start_menu_background;
+var game_background;
 
-var play_button_img = new createjs.Bitmap("/client/img/play_button.png");
-var play_button_hover_img = new createjs.Bitmap("/client/img/play_button_hover.png");
-var instructions_button_img = new createjs.Bitmap("/client/img/instructions_button.png");
-var instructions_button_hover_img = new createjs.Bitmap("/client/img/instructions_button_hover.png");
-var finalize_button_img = new createjs.Bitmap("/client/img/finalize_button.png");
-var finalize_button_hover_img = new createjs.Bitmap("/client/img/finalize_button_hover.png");
-var bgm_mute_img = new createjs.Bitmap("/client/img/sound_mute.png");
-var bgm_play_img = new createjs.Bitmap("/client/img/sound_high.png");
+var play_button_img;
+var play_button_hover_img;
+var instructions_button_img;
+var instructions_button_hover_img;
+var finalize_button_img;
+var finalize_button_hover_img;
+var bgm_mute_img;
+var bgm_play_img;
 
 // The actual buttons to use for the above button images, so that the image can be switched
 //		for different states (hover or normal)
@@ -48,38 +53,34 @@ var instruction_button;
 var finalize_button;
 var bgm_button;
 
-var small_target_source = new createjs.Bitmap("/client/img/small_target_source.png");
-var medium_target_source = new createjs.Bitmap("/client/img/medium_target_source.png");
-var large_target_source = new createjs.Bitmap("/client/img/large_target_source.png");
-var small_target_dest = new createjs.Bitmap("/client/img/small_target_dest.png");
-var medium_target_dest = new createjs.Bitmap("/client/img/medium_target_dest.png");
-var large_target_dest = new createjs.Bitmap("/client/img/large_target_dest.png");
-var visible_player_small_node = new createjs.Bitmap("/client/img/visible_small_player.png");
-var visible_player_medium_node = new createjs.Bitmap("/client/img/visible_medium_player.png");
-var visible_player_large_node = new createjs.Bitmap("/client/img/visible_large_player.png");
-var visible_opponent_small_node = new createjs.Bitmap("/client/img/visible_small_opponent.png");
-var visible_opponent_medium_node = new createjs.Bitmap("/client/img/visible_medium_opponent.png");
-var visible_opponent_large_node = new createjs.Bitmap("/client/img/visible_large_opponent.png");
-var visible_unowned_small_node = new createjs.Bitmap("/client/img/visible_small_unowned.png");
-var visible_unowned_medium_node = new createjs.Bitmap("/client/img/visible_medium_unowned.png");
-var visible_unowned_large_node = new createjs.Bitmap("/client/img/visible_large_unowned.png");
-var hidden_unknown_small_node = new createjs.Bitmap("/client/img/hidden_small_unknown.png");
-var hidden_unknown_medium_node = new createjs.Bitmap("/client/img/hidden_medium_unknown.png");
-var hidden_unknown_large_node = new createjs.Bitmap("/client/img/hidden_large_unknown.png");
-var hidden_opponent_small_node = new createjs.Bitmap("/client/img/hidden_small_opponent.png");
-var hidden_opponent_medium_node = new createjs.Bitmap("/client/img/hidden_medium_opponent.png");
-var hidden_opponent_large_node = new createjs.Bitmap("/client/img/hidden_large_opponent.png");
+var small_target_source;
+var medium_target_source;
+var large_target_source;
+var small_target_dest;
+var medium_target_dest;
+var large_target_dest;
+var visible_player_small_node;
+var visible_player_medium_node;
+var visible_player_large_node;
+var visible_opponent_small_node;
+var visible_opponent_medium_node;
+var visible_opponent_large_node;
+var visible_unowned_small_node;
+var visible_unowned_medium_node;
+var visible_unowned_large_node;
+var hidden_unknown_small_node;
+var hidden_unknown_medium_node;
+var hidden_unknown_large_node;
+var hidden_opponent_small_node;
+var hidden_opponent_medium_node;
+var hidden_opponent_large_node;
 
-var units_img = new createjs.Bitmap("/client/img/units.png");
+var units_img;
 
 // ------
 // SOUNDS
 // ------
 
-// Register all the sounds for later use
-createjs.Sound.registerSound("client/sound/button_over.mp3", "button_over");
-createjs.Sound.registerSound("client/sound/button_click.mp3", "button_click");
-createjs.Sound.registerSound("client/sound/bgm1.mp3", "bgm1");
 // To be used as the sound instance to play the bgm
 var bgm_loop;
 
@@ -117,6 +118,12 @@ var line_color = "#FFFFFF";
 // MESSAGES (easlejs Text)
 // --------
 
+var loading_message = new createjs.Text("Loading", "50px Arial", "#FFFFFF");
+loading_message.x = 500;
+loading_message.regX = loading_message.getMeasuredWidth()/2;
+loading_message.y = 350;
+loading_message.regY = loading_message.getMeasuredHeight()/2;
+
 var waiting = new createjs.Text("Waiting for other Player", "30px Arial", "#FFFFFF");
 waiting.x = 830;
 waiting.regX = waiting.getMeasuredWidth()/2;
@@ -141,8 +148,117 @@ player_match_message.regX = player_match_message.getMeasuredWidth()/2;
 player_match_message.y = 350;
 player_match_message.regY = player_match_message.getMeasuredHeight()/2;
 
-// Initializes the stage and shows the main menu
 var initialize = function() {
+	// Get a easlejs reference to the canvas
+	stage = new createjs.Stage("pcgame");
+	stage.enableMouseOver();
+	
+	// Diable right clicking
+	canvas = document.getElementById("pcgame");
+	canvas.oncontextmenu = function() {
+		return false;  
+	} 
+	
+	// Show loading message while preloading
+	var black_background = new createjs.Shape();
+	black_background.graphics.beginFill("#000000").drawRect(0, 0, 1000, 700);
+	stage.addChild(black_background);
+	stage.addChild(loading_message);
+	stage.update();
+	
+	// Manifest to load
+	manifest = [
+		//Images
+		{src:"/client/img/start_menu_background.png", id:"bgs"},
+		{src:"/client/img/background1.png", id:"bg1"},
+		{src:"/client/img/play_button.png", id:"pb"},
+		{src:"/client/img/play_button_hover.png", id:"pbh"},
+		{src:"/client/img/instructions_button.png", id:"ib"},
+		{src:"/client/img/instructions_button_hover.png", id:"ibh"},
+		{src:"/client/img/finalize_button.png", id:"fb"},
+		{src:"/client/img/finalize_button_hover.png", id:"fbh"},
+		{src:"/client/img/sound_mute.png", id:"sm"},
+		{src:"/client/img/sound_high.png", id:"sp"},
+		{src:"/client/img/small_target_source.png", id:"sts"},
+		{src:"/client/img/medium_target_source.png", id:"mts"},
+		{src:"/client/img/large_target_source.png", id:"lts"},
+		{src:"/client/img/small_target_dest.png", id:"std"},
+		{src:"/client/img/medium_target_dest.png", id:"mtd"},
+		{src:"/client/img/large_target_dest.png", id:"ltd"},
+		{src:"/client/img/visible_small_player.png", id:"vsp"},
+		{src:"/client/img/visible_medium_player.png", id:"vmp"},
+		{src:"/client/img/visible_large_player.png", id:"vlp"},
+		{src:"/client/img/visible_small_opponent.png", id:"vso"},
+		{src:"/client/img/visible_medium_opponent.png", id:"vmo"},
+		{src:"/client/img/visible_large_opponent.png", id:"vlo"},
+		{src:"/client/img/visible_small_unowned.png", id:"vsu"},
+		{src:"/client/img/visible_medium_unowned.png", id:"vmu"},
+		{src:"/client/img/visible_large_unowned.png", id:"vlu"},
+		{src:"/client/img/hidden_small_unknown.png", id:"hsu"},
+		{src:"/client/img/hidden_medium_unknown.png", id:"hmu"},
+		{src:"/client/img/hidden_large_unknown.png", id:"hlu"},
+		{src:"/client/img/hidden_small_opponent.png", id:"hso"},
+		{src:"/client/img/hidden_medium_opponent.png", id:"hmo"},
+		{src:"/client/img/hidden_large_opponent.png", id:"hlo"},
+		{src:"/client/img/units.png", id:"u"},
+		//Sounds
+		{src:"client/sound/button_over.mp3", id:"button_over"},
+		{src:"client/sound/button_click.mp3", id:"button_click"},
+		{src:"client/sound/bgm1.mp3", id:"bgm1"}
+	]
+	
+	// Preloader
+	preload = new createjs.LoadQueue(true);
+	preload.installPlugin(createjs.Sound)
+	preload.addEventListener("complete", completeHandler);
+	preload.loadManifest(manifest);
+}
+
+var completeHandler = function() {
+	// Assigned loaded images
+	start_menu_background = new createjs.Bitmap(preload.getResult("bgs"));
+	game_background = new createjs.Bitmap(preload.getResult("bg1"));
+	play_button_img = new createjs.Bitmap(preload.getResult("pb"));
+	play_button_hover_img = new createjs.Bitmap(preload.getResult("pbh"));
+	instructions_button_img = new createjs.Bitmap(preload.getResult("ib"));
+	instructions_button_hover_img = new createjs.Bitmap(preload.getResult("ibh"));
+	finalize_button_img = new createjs.Bitmap(preload.getResult("fb"));
+	finalize_button_hover_img = new createjs.Bitmap(preload.getResult("fbh"));
+	bgm_mute_img = new createjs.Bitmap(preload.getResult("sm"));
+	bgm_play_img = new createjs.Bitmap(preload.getResult("sp"));
+	small_target_source = new createjs.Bitmap(preload.getResult("sts"));
+	medium_target_source = new createjs.Bitmap(preload.getResult("mts"));
+	large_target_source = new createjs.Bitmap(preload.getResult("lts"));
+	small_target_dest = new createjs.Bitmap(preload.getResult("std"));
+	medium_target_dest = new createjs.Bitmap(preload.getResult("mtd"));
+	large_target_dest = new createjs.Bitmap(preload.getResult("ltd"));
+	visible_player_small_node = new createjs.Bitmap(preload.getResult("vsp"));
+	visible_player_medium_node = new createjs.Bitmap(preload.getResult("vmp"));
+	visible_player_large_node = new createjs.Bitmap(preload.getResult("vlp"));
+	visible_opponent_small_node = new createjs.Bitmap(preload.getResult("vso"));
+	visible_opponent_medium_node = new createjs.Bitmap(preload.getResult("vmo"));
+	visible_opponent_large_node = new createjs.Bitmap(preload.getResult("vlo"));
+	visible_unowned_small_node = new createjs.Bitmap(preload.getResult("vsu"));
+	visible_unowned_medium_node = new createjs.Bitmap(preload.getResult("vmu"));
+	visible_unowned_large_node = new createjs.Bitmap(preload.getResult("vlu"));
+	hidden_unknown_small_node = new createjs.Bitmap(preload.getResult("hsu"));
+	hidden_unknown_medium_node = new createjs.Bitmap(preload.getResult("hmu"));
+	hidden_unknown_large_node = new createjs.Bitmap(preload.getResult("hlu"));
+	hidden_opponent_small_node = new createjs.Bitmap(preload.getResult("hso"));
+	hidden_opponent_medium_node = new createjs.Bitmap(preload.getResult("hmo"));
+	hidden_opponent_large_node = new createjs.Bitmap(preload.getResult("hlo"));
+	units_img = new createjs.Bitmap(preload.getResult("u"));
+	
+	// Clear the screen
+	stage.removeAllChildren();
+	stage.update();
+	
+	// Show the start menu
+	start_menu();
+}
+
+// Shows the main menu
+var start_menu = function() {
 	// Prepare all the button instances
 	play_button = play_button_img.clone();
 	instructions_button = instructions_button_img.clone();
@@ -172,16 +288,6 @@ var initialize = function() {
 	bgm_button.y = 20;
 	bgm_button.regY = bgm_button.image.height/2;
 
-	// Get a easlejs reference to the canvas
-	stage = new createjs.Stage("pcgame");
-	stage.enableMouseOver();
-	
-	// Diable right clicking
-	canvas = document.getElementById("pcgame");
-	canvas.oncontextmenu = function() {
-		return false;  
-	} 
-
 	// Add and show the main menu to the stage
 	stage.addChild(start_menu_background);
 	stage.addChild(play_button);
@@ -205,20 +311,6 @@ var initialize = function() {
 	bgm_loop = createjs.Sound.play("bgm1", {loop:-1});
 	// Set the volume of the bgm music
 	bgm_loop.volume = 0.1;
-	// If the music is not loaded and didn't try to play again after a second
-	if(bgm_loop.playState == "playFailed"){
-		setTimeout(start_music, 100);
-	}
-	
-}
-
-// Keeps trying to start the bgm until it is loaded
-var start_music = function() {
-	bgm_loop.play({loop:-1});
-	// Keep trying to play until the music is loaded
-	if(bgm_loop.playState == "playFailed"){
-		setTimeout(start_music, 100);
-	}
 }
 
 // Called by hitting the play button
