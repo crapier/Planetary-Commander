@@ -6,6 +6,10 @@ canvas {
     display: block;
 }
 
+body {
+	margin: 0;
+}
+
 .page {
 	background: #000000 url('/client/img/background1.png') top repeat-y;
 	position: relative;

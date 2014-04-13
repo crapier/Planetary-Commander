@@ -155,6 +155,34 @@ player_match_message.regX = player_match_message.getMeasuredWidth()/2;
 player_match_message.y = 350;
 player_match_message.regY = player_match_message.getMeasuredHeight()/2;
 
+var handle_resize = function(event) {
+	if(window.innerWidth < canvas.width && window.innerHeight < canvas.height) {
+		var width_scale = window.innerWidth/canvas.width;
+		var height_scale = window.innerHeight/canvas.height;
+		if(width_scale < height_scale) {
+			stage.scaleX = width_scale;
+			stage.scaleY = width_scale;
+		}
+		else {
+			stage.scaleX = height_scale;
+			stage.scaleY = height_scale;
+		}
+	}
+	else if(window.innerWidth < canvas.width) {
+		stage.scaleX = window.innerWidth/canvas.width;
+		stage.scaleY = window.innerWidth/canvas.width;
+	}
+	else if(window.innerHeight < canvas.height) {
+		stage.scaleX = window.innerHeight/canvas.height;
+		stage.scaleY = window.innerHeight/canvas.height;
+	}
+	else {
+		stage.scaleX = 1;
+		stage.scaleY = 1;
+	}	
+	stage.update();
+}
+
 var initialize = function() {
 	// Get a easlejs reference to the canvas
 	stage = new createjs.Stage("pcgame");
@@ -165,6 +193,9 @@ var initialize = function() {
 	canvas.oncontextmenu = function() {
 		return false;  
 	} 
+	
+	handle_resize();
+	window.onresize = handle_resize;
 	
 	// Show loading message while preloading
 	var black_background = new createjs.Shape();
