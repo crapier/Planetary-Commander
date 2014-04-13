@@ -42,12 +42,15 @@ var instruction_button_listener = function(event) {
 	}
 }
 
+// Click listener for bgm control
 var bgm_control = function(event) {
+	// If playing stop and change to muted icon
 	if(bgm_button.playing == true) {
 		bgm_button.playing = false;
 		bgm_button.image = bgm_mute_img.image;
 		bgm_loop.pause();
 	}
+	// Else start and change to playing icon
 	else {
 		bgm_button.playing = true;
 		bgm_button.image = bgm_play_img.image;
@@ -87,7 +90,9 @@ var animation_handler = function(movements_to_animate) {
 	animation_interval = setInterval(call_animations, 1);
 }
 
+// Finished animating so remove animation objects and tell the server
 var done_animating = function() {
+	// Tell the server done, wait for update
 	socket.emit("animation_done");
 	
 	for(var i = 0; i < animation_list.length; i++) {

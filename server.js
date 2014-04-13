@@ -538,6 +538,7 @@ var send_animations = function(game_id) {
 	var client_1_animations = [];
 	var client_2_animations = [];
 	
+	// Checking all client 1 movements
 	for(var i = 0; i < client_1_movements[game_id].length; i++){
 		var visible_to_client_1 = false;
 		var visible_to_client_2 = false;
@@ -579,6 +580,7 @@ var send_animations = function(game_id) {
 			client_2_animations.push(client_1_movements[game_id][i]);
 		}
 	}
+	// Checking all client 2 movments
 	for(var i = 0; i < client_2_movements[game_id].length; i++){
 		var visible_to_client_1 = false;
 		var visible_to_client_2 = false;
@@ -725,6 +727,7 @@ var calculate_movements = function(game_id){
 	}
 }
 
+// Handles sending movements after receiving animation done from both clients
 var send_movements = function(message) {
 	// Get game and client id from client data store (sever side)
 	var game_id = this.store.data.game_id;

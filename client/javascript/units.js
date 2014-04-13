@@ -90,7 +90,7 @@ var create_selection_units = function(source, units) {
 	stage.addChild(this.text);
 }
 
-// Tracks the mouse and moves the selection_units which is an instance created fromt the
+// Tracks the mouse and moves the selection_units which is an instance created from the
 //		above create_selection_units constructor
 var units_track_mouse = function(event) {
 	// The position of the mouse
@@ -136,11 +136,13 @@ var units_track_mouse = function(event) {
 	stage.update();
 }
 
+// Class for animation object
 var animation_unit = function(movement) {
 	this.source = movement.source;
 	this.destination = movement.destination;
 	this.units = movement.units;
 	
+	// Calculate rotation
 	var rotation;
 	if(nodes[this.source].x <= nodes[this.destination].x && nodes[this.source].y <= nodes[this.destination].y) {
 		rotation = Math.atan((nodes[this.destination].y - nodes[this.source].y)/(nodes[this.destination].x - nodes[this.source].x))*180/Math.PI;
@@ -155,12 +157,14 @@ var animation_unit = function(movement) {
 		rotation = -90 + -1 * Math.atan((nodes[this.source].x - nodes[this.destination].x)/(nodes[this.source].y - nodes[this.destination].y))*180/Math.PI;
 	}
 	
+	// Set start and stop positions
 	this.start_x = nodes[this.source].x;
 	this.start_y = nodes[this.source].y;
 	
 	this.end_x = nodes[this.destination].x;
 	this.end_y = nodes[this.destination].y;
 	
+	// Set image based on owner of source planet
 	if(nodes[this.source].owner == player) {
 		this.img = units_img.clone();
 	}
@@ -170,22 +174,26 @@ var animation_unit = function(movement) {
 			nodes[this.source].update({owner:opponent, units:nodes[this.source].units-this.units, visible:true});
 		}
 	}
+	// Set image location and rotation
 	this.img.x = this.start_x;
 	this.img.y = this.start_y;
 	this.img.regX = this.img.image.width/2
 	this.img.regY = this.img.image.height/2
 	this.img.rotation = rotation;
 	
+	// Set text, text location
 	this.text = new createjs.Text(this.units, units_font, units_font_color);
 	this.text.x = this.start_x;
 	this.text.regX = this.text.getMeasuredWidth()/2;
 	this.text.y = this.start_y;
 	this.text.regY = this.text.getMeasuredHeight()/2;
 	
+	// Add to stage below nodes
 	stage.addChildAt(this.img, stage.getChildIndex(nodes[0].img));
 	stage.addChildAt(this.text, stage.getChildIndex(nodes[0].img));
 }
 
+// Moves the animation object to correct spot for animation time
 animation_unit.prototype.animate = function(time) {
 	this.img.x = (this.end_x - this.start_x)/500 * time + this.start_x;
 	this.img.y = (this.end_y - this.start_y)/500 * time + this.start_y;
@@ -193,7 +201,7 @@ animation_unit.prototype.animate = function(time) {
 	this.text.y = (this.end_y - this.start_y)/500 * time + this.start_y;
 }
 
-
+// Calls animations on an interval
 var call_animations = function() {
 	for(var i = 0; i < animation_list.length; i++) {
 		animation_list[i].animate(animation_time);
