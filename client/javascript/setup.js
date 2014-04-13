@@ -28,6 +28,8 @@ var units_to_send;
 var manifest;
 // Preloader
 var preload;
+// Count of things loaded
+var load_count = 0;
 
 // ------
 // IMAGES
@@ -118,7 +120,7 @@ var line_color = "#FFFFFF";
 // MESSAGES (easlejs Text)
 // --------
 
-var loading_message = new createjs.Text("Loading", "50px Arial", "#FFFFFF");
+var loading_message = new createjs.Text("Loading - 0%", "50px Arial", "#FFFFFF");
 loading_message.x = 500;
 loading_message.regX = loading_message.getMeasuredWidth()/2;
 loading_message.y = 350;
@@ -210,11 +212,21 @@ var initialize = function() {
 	// Preloader
 	preload = new createjs.LoadQueue(true);
 	preload.installPlugin(createjs.Sound)
-	preload.addEventListener("complete", completeHandler);
+	preload.addEventListener("complete", complete_handler);
+	preload.addEventListener("progress", progress_handler);
 	preload.loadManifest(manifest);
 }
 
-var completeHandler = function() {
+// Updates the loading message percentage
+var progress_handler = function(event) {
+	load_count+=0.5;
+	loading_message.text = "Loading - " + Math.ceil(load_count/manifest.length*100) + "%";
+	loading_message.regX = loading_message.getMeasuredWidth()/2;
+	loading_message.regY = loading_message.getMeasuredHeight()/2; 
+	stage.update();
+}
+
+var complete_handler = function(event) {
 	// Assigned loaded images
 	start_menu_background = new createjs.Bitmap(preload.getResult("bgs"));
 	game_background = new createjs.Bitmap(preload.getResult("bg1"));
