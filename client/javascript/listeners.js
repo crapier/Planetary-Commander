@@ -112,6 +112,9 @@ var update_handler = function(updates) {
 	stage.addChild(finalize_button);
 	finalize_button.image = finalize_button_img.image;
 	
+	// Add back the timer
+	stage.addChild(timer.text);
+	
 	// Clear the movements arrary
 	movements = [];
 	

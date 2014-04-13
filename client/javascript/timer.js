@@ -48,6 +48,9 @@ timer.restart = function(time) {
 		this.text.text =  min + ":0" + sec;
 	}
 	stage.update();
+	
+	// Set the timer to update every second with the interval function
+	this.interval = window.setInterval(function(){timer.count_down()}, 1000);
 }
 
 timer.count_down = function() {
