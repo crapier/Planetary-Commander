@@ -10,8 +10,13 @@ canvas {
 	background: #000000 url('/client/img/background1.png') top repeat-y;
 	position: relative;
 	width: 1000px;
-	height: 3200px;
+	height: 700px;
 	margin: 0px auto 0px auto;
+}
+
+img {
+	position:absolute;
+	clip:rect(0px,1000px,700px,0px);
 }
 
 p {
@@ -24,11 +29,54 @@ h2 {
 
 #container {
 	position:absolute;
-	top: 300px;
+	top: 0px;
 	left: 50px;
-	width: 900px;
+	width: 800px;
 	color: white;
 	font: 40px arial,sans-serif;
+}
+
+.next_button {
+	height: 55px;
+	width: 220px;
+	position: absolute;
+	top:640px;
+	left:780px;
+	background-image: url('/client/img/next_button.png');
+}
+
+.next_button:hover {
+	background-image: url('/client/img/next_button_hover.png');
+}
+
+.prev_button {
+	height: 55px;
+	width: 220px;
+	position: absolute;
+	top:640px;
+	left:3px;
+	background-image: url('/client/img/previous_button.png');
+}
+
+.prev_button:hover {
+	background-image: url('/client/img/previous_button_hover.png');
+}
+
+.arrow {
+	position:absolute;
+	height:150px;
+	width:200px;
+	z-index:8;
+}
+
+.arrow_words {
+	padding: 3px;
+	position:absolute;
+	z-index:5;
+	border: 3px solid #5EA0FD;
+	box-shadow: 0px 0px 10px #5EA0FD;
+	-webkit-box-shadow: 0px 0px 10px #5EA0FD;
+	-moz-box-shadow: 0px 0px 10px #5EA0FD;
 }
 
 textarea {
