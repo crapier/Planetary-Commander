@@ -34,8 +34,6 @@ var animation_interval;
 var manifest;
 // Preloader
 var preload;
-// Count of things loaded
-var load_count = 0;
 
 // ------
 // IMAGES
@@ -227,8 +225,7 @@ var initialize = function() {
 
 // Updates the loading message percentage
 var progress_handler = function(event) {
-	load_count+=0.5;
-	loading_message.text = "Loading - " + Math.ceil(load_count/manifest.length*100) + "%";
+	loading_message.text = "Loading - " + Math.ceil(event.progress*100) + "%";
 	loading_message.regX = loading_message.getMeasuredWidth()/2;
 	loading_message.regY = loading_message.getMeasuredHeight()/2; 
 	stage.update();
