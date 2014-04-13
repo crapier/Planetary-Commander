@@ -477,8 +477,8 @@ var send_results = function(game_id, client_1_holds, client_2_holds) {
 	
 }
 
-// Update all the nodes with both players movements, and then generate new units
-var calculate_movements = function(game_id){
+// Sends visible animations to each client
+var send_animations = function(game_id) {
 	// Check for illegal moves
 	for(var i = 0; i < client_1_movements[game_id].length; i++){
 		// Check that the owner of the node is the user who sent the movement
@@ -535,6 +535,99 @@ var calculate_movements = function(game_id){
 		}
 	}
 	
+	var client_1_animations = [];
+	var client_2_animations = [];
+	
+	for(var i = 0; i < client_1_movements[game_id].length; i++){
+		var visible_to_client_1 = false;
+		var visible_to_client_2 = false;
+		// Check to see if any units are actually being sent
+		if(client_1_movements[game_id][i].units != 0) {
+			// All valid client 1 movements visible to client 1
+			visible_to_client_1 = true;
+			// Check to see if visible to client 2 because of a movement
+			for(var j = 0; j < client_2_movements[game_id].length; j++){
+				if(client_2_movements[game_id][j].destination == client_1_movements[game_id][i].destination) {
+					visible_to_client_2 = true;
+					break;
+				}
+			}
+			// Check to see if visible to client 2 because of fog of war
+			if(!visible_to_client_2) {
+				for(var j = 0; j < nodes[game_id].length; j++) {
+					if(nodes[game_id][j].owner == client_2) {
+						if(client_1_movements[game_id][i].destination == j) {
+							visible_to_client_2 = true;
+							break;
+						}
+						else {
+							for(var k = 0; k < nodes[game_id][j].adjacent.length; k++) {
+								if(client_1_movements[game_id][i].destination == nodes[game_id][j].adjacent[k]) {
+									visible_to_client_2 = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if(visible_to_client_1) {
+			client_1_animations.push(client_1_movements[game_id][i]);
+		}
+		if(visible_to_client_2) {
+			client_2_animations.push(client_1_movements[game_id][i]);
+		}
+	}
+	for(var i = 0; i < client_2_movements[game_id].length; i++){
+		var visible_to_client_1 = false;
+		var visible_to_client_2 = false;
+		// Check to see if any units are actually being sent
+		if(client_2_movements[game_id][i].units != 0) {
+			// All valid client 1 movements visible to client 2
+			visible_to_client_2 = true;
+			// Check to see if visible to client 1 because of a movement
+			for(var j = 0; j < client_1_movements[game_id].length; j++){
+				if(client_1_movements[game_id][j].destination == client_2_movements[game_id][i].destination) {
+					visible_to_client_1 = true;
+					break;
+				}
+			}
+			// Check to see if visible to client 1 because of fog of war
+			if(!visible_to_client_1) {
+				for(var j = 0; j < nodes[game_id].length; j++) {
+					if(nodes[game_id][j].owner == client_1) {
+						if(client_2_movements[game_id][i].destination == j) {
+							visible_to_client_1 = true;
+							break;
+						}
+						else {
+							for(var k = 0; k < nodes[game_id][j].adjacent.length; k++) {
+								if(client_2_movements[game_id][i].destination == nodes[game_id][j].adjacent[k]) {
+									visible_to_client_1 = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if(visible_to_client_1) {
+			client_1_animations.push(client_2_movements[game_id][i]);
+		}
+		if(visible_to_client_2) {
+			client_2_animations.push(client_2_movements[game_id][i]);
+		}
+	}
+	
+	// Send the updates to the clients
+	io.sockets.socket(client_1_socket_id[game_id]).emit('animations', client_1_animations);
+	io.sockets.socket(client_2_socket_id[game_id]).emit('animations', client_2_animations);
+}
+
+// Update all the nodes with both players movements, and then generate new units
+var calculate_movements = function(game_id){
 	// Subtract all leaving units from their source node (they have left the node)
 	for(var i = 0; i < client_1_movements[game_id].length; i++){
 		nodes[game_id][client_1_movements[game_id][i].source].units -= client_1_movements[game_id][i].units;
@@ -632,6 +725,21 @@ var calculate_movements = function(game_id){
 	}
 }
 
+var send_movements = function(message) {
+	// Get game and client id from client data store (sever side)
+	var game_id = this.store.data.game_id;
+	var client_id = this.store.data.client_id;
+	
+	// If both players are done animating calculate movements, else do nothing
+	if(movements_recieved[game_id] == 0) {
+		movements_recieved[game_id]++;
+	}
+	else {
+	    movements_recieved[game_id]--;
+		calculate_movements(game_id);
+	}
+}
+
 // Handles movement messages from the clients
 var movement_handler = function(movements) {
 	// Get game and client id from client data store (sever side)
@@ -646,13 +754,13 @@ var movement_handler = function(movements) {
 		client_2_movements[game_id] = movements;
 	}
 	
-	// If both players movements are recieved calculate movements, else do nothing
+	// If both players movements are recieved send animations, else do nothing
 	if(movements_recieved[game_id] == 0) {
 		movements_recieved[game_id]++;
 	}
 	else {
 	    movements_recieved[game_id]--;
-		calculate_movements(game_id);
+		send_animations(game_id);
 	}
 }
 
@@ -754,6 +862,7 @@ var connection_handler = function(client) {
 		client_1_socket_id[game_id] = client.id;
 		num_connected_clients[game_id]++;
 		client.on('movements', movement_handler);
+		client.on('animation_done', send_movements);
 		client.on('disconnect', disconnect_handler);
 	}
 	// If they are the second player to connect set their listeners, id's and start the game
@@ -765,6 +874,7 @@ var connection_handler = function(client) {
 		game_setup(game_id);
 		num_connected_clients[game_id]++
 		client.on('movements', movement_handler);
+		client.on('animation_done', send_movements);
 		client.on('disconnect', disconnect_handler);
 		game_state[game_id] = 1;
 	}

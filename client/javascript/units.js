@@ -135,3 +135,73 @@ var units_track_mouse = function(event) {
 	selection_units.text.y = selection_units.y;
 	stage.update();
 }
+
+var animation_unit = function(movement) {
+	this.source = movement.source;
+	this.destination = movement.destination;
+	this.units = movement.units;
+	
+	var rotation;
+	if(nodes[this.source].x <= nodes[this.destination].x && nodes[this.source].y <= nodes[this.destination].y) {
+		rotation = Math.atan((nodes[this.destination].y - nodes[this.source].y)/(nodes[this.destination].x - nodes[this.source].x))*180/Math.PI;
+	}
+	else if(nodes[this.source].x <= nodes[this.destination].x && nodes[this.source].y >= nodes[this.destination].y) {
+		rotation = -1 * Math.atan((nodes[this.source].y - nodes[this.destination].y)/(nodes[this.destination].x - nodes[this.source].x))*180/Math.PI;
+	}
+	else if(nodes[this.source].x >= nodes[this.destination].x && nodes[this.source].y <= nodes[this.destination].y) {
+		rotation = 90 + Math.atan((nodes[this.source].x - nodes[this.destination].x)/(nodes[this.destination].y - nodes[this.source].y))*180/Math.PI;
+	}
+	else if(nodes[this.source].x >= nodes[this.destination].x && nodes[this.source].y >= nodes[this.destination].y) {
+		rotation = -90 + -1 * Math.atan((nodes[this.source].x - nodes[this.destination].x)/(nodes[this.source].y - nodes[this.destination].y))*180/Math.PI;
+	}
+	
+	this.start_x = nodes[this.source].x;
+	this.start_y = nodes[this.source].y;
+	
+	this.end_x = nodes[this.destination].x;
+	this.end_y = nodes[this.destination].y;
+	
+	if(nodes[this.source].owner == player) {
+		this.img = units_img.clone();
+	}
+	else {
+		this.img = units_opponent_img.clone();
+		if(nodes[this.source].visible == true) {
+			nodes[this.source].update({owner:opponent, units:nodes[this.source].units-this.units, visible:true});
+		}
+	}
+	this.img.x = this.start_x;
+	this.img.y = this.start_y;
+	this.img.regX = this.img.image.width/2
+	this.img.regY = this.img.image.height/2
+	this.img.rotation = rotation;
+	
+	this.text = new createjs.Text(this.units, units_font, units_font_color);
+	this.text.x = this.start_x;
+	this.text.regX = this.text.getMeasuredWidth()/2;
+	this.text.y = this.start_y;
+	this.text.regY = this.text.getMeasuredHeight()/2;
+	
+	stage.addChildAt(this.img, stage.getChildIndex(nodes[0].img));
+	stage.addChildAt(this.text, stage.getChildIndex(nodes[0].img));
+}
+
+animation_unit.prototype.animate = function(time) {
+	this.img.x = (this.end_x - this.start_x)/500 * time + this.start_x;
+	this.img.y = (this.end_y - this.start_y)/500 * time + this.start_y;
+	this.text.x = (this.end_x - this.start_x)/500 * time + this.start_x;
+	this.text.y = (this.end_y - this.start_y)/500 * time + this.start_y;
+}
+
+
+var call_animations = function() {
+	for(var i = 0; i < animation_list.length; i++) {
+		animation_list[i].animate(animation_time);
+	}
+	stage.update();
+	animation_time++;
+	if(animation_time > 500) {
+		clearInterval(animation_interval);
+		done_animating();
+	}
+}

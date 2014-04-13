@@ -56,6 +56,47 @@ var bgm_control = function(event) {
 	stage.update();
 }
 
+// Handles animate messages from the server
+var animation_handler = function(movements_to_animate) {
+	// Remove waiting message
+	stage.removeChild(waiting);
+	
+	// Stop timer
+	clearInterval(timer.interval);
+	stage.removeChild(timer.text);
+	
+	// Remove units from the stage
+	for(var i = 0; i < units_list.length; i++){
+		stage.removeChild(units_list[i].img);
+		stage.removeChild(units_list[i].text);
+	}
+	stage.update();
+	
+	// Clear the units list array
+	units_list = [];
+	
+	// Clear the animation list
+	animation_list = []
+	
+	// Create the new unit animations
+	for(var i = 0; i < movements_to_animate.length; i++) {
+		animation_list.push(new animation_unit(movements_to_animate[i]));
+	}
+	// Animate
+	animation_time = 0;
+	animation_interval = setInterval(call_animations, 1);
+}
+
+var done_animating = function() {
+	socket.emit("animation_done");
+	
+	for(var i = 0; i < animation_list.length; i++) {
+		stage.removeChild(animation_list[i].img);
+		stage.removeChild(animation_list[i].text);
+	}
+	stage.update();
+}
+
 // Handles update messages from the server
 var update_handler = function(updates) {
 	// Apply updates from the server
@@ -65,21 +106,12 @@ var update_handler = function(updates) {
 	// Add back the finalize button
 	stage.addChild(finalize_button);
 	finalize_button.image = finalize_button_img.image;
-	// Remove waiting message
-	stage.removeChild(waiting);
-
+	
 	// Clear the movements arrary
 	movements = [];
-	// Remove units from the stage
-	for(var i = 0; i < units_list.length; i++){
-		stage.removeChild(units_list[i].img);
-		stage.removeChild(units_list[i].text);
-	}
 	
+	// Show updates
 	stage.update();
-	
-	// Clear the units list array
-	units_list = [];
 	
 	// Add listeners for owned nodes
 	for(var i = 0; i < nodes.length; i++) {

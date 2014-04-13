@@ -23,6 +23,12 @@ var selected;
 var selection_units;
 // The current number of units to send from the selected node, starts at max currently
 var units_to_send;
+// The time in milliseconds of the current animation if animating
+var animation_time;
+// List of units to be animating
+var animation_list = [];
+// Time interval for animations
+var animation_interval;
 
 // Manifest for preloading
 var manifest;
@@ -78,6 +84,7 @@ var hidden_opponent_medium_node;
 var hidden_opponent_large_node;
 
 var units_img;
+var units_opponent_img;
 
 // ------
 // SOUNDS
@@ -203,6 +210,7 @@ var initialize = function() {
 		{src:"/client/img/hidden_medium_opponent.png", id:"hmo"},
 		{src:"/client/img/hidden_large_opponent.png", id:"hlo"},
 		{src:"/client/img/units.png", id:"u"},
+		{src:"/client/img/units_opponent.png", id:"uo"},
 		//Sounds
 		{src:"client/sound/button_over.mp3", id:"button_over"},
 		{src:"client/sound/button_click.mp3", id:"button_click"},
@@ -260,7 +268,7 @@ var complete_handler = function(event) {
 	hidden_opponent_medium_node = new createjs.Bitmap(preload.getResult("hmo"));
 	hidden_opponent_large_node = new createjs.Bitmap(preload.getResult("hlo"));
 	units_img = new createjs.Bitmap(preload.getResult("u"));
-	
+	units_opponent_img = new createjs.Bitmap(preload.getResult("uo"));
 	// Clear the screen
 	stage.removeAllChildren();
 	stage.update();
@@ -389,6 +397,7 @@ var draw_map = function(map_id) {
 	create_lines();
 	
 	// Add listeners for updates and results messages from the server for this match
+	socket.on("animations", animation_handler);
 	socket.on("updates", update_handler);
 	socket.on("results", result_handler);
 }
