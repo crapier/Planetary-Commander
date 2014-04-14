@@ -237,8 +237,8 @@ var initialize = function() {
 		{src:"/client/img/next_button_hover.png", id:"nbh"},
 		{src:"/client/img/previous_button.png", id:"prb"},
 		{src:"/client/img/previous_button_hover.png", id:"prbh"},
-		{src:"/client/img/next_button.png", id:"bkb"},
-		{src:"/client/img/next_button_hover.png", id:"bkbh"},
+		{src:"/client/img/back_button.png", id:"bkb"},
+		{src:"/client/img/back_button_hover.png", id:"bkbh"},
 		{src:"/client/img/sound_mute.png", id:"sm"},
 		{src:"/client/img/sound_high.png", id:"sp"},
 		{src:"/client/img/small_target_source.png", id:"sts"},
@@ -266,18 +266,17 @@ var initialize = function() {
 		{src:"/client/img/units_opponent.png", id:"uo"},
 		//instruction images
 		
-		{src:"/client/img/instruction_page1.png", id:"p1"},
-		{src:"/client/img/instruction_page2.png", id:"p2"},
-		/*{src:"/client/img/page3.png", id:"p3"},
-		{src:"/client/img/page4.png", id:"p4"},
-		{src:"/client/img/page5.png", id:"p5"},
-		{src:"/client/img/page6.png", id:"p6"},
-		{src:"/client/img/page7.png", id:"p7"},
-		{src:"/client/img/page8.png", id:"p8"},
-		{src:"/client/img/page9.png", id:"p9"},
-		{src:"/client/img/page10.png", id:"p10"},
-		{src:"/client/img/page11.png", id:"p11"},
-		{src:"/client/img/page12.png", id:"p12"},*/
+		{src:"/client/img/instruction1.png", id:"p1"},
+		{src:"/client/img/instruction2.png", id:"p2"},
+		{src:"/client/img/instruction3.png", id:"p3"},
+		{src:"/client/img/instruction4.png", id:"p4"},
+		{src:"/client/img/instruction5.png", id:"p5"},
+		{src:"/client/img/instruction6.png", id:"p6"},
+		{src:"/client/img/instruction7.png", id:"p7"},
+		{src:"/client/img/instruction8.png", id:"p8"},
+		{src:"/client/img/instruction9.png", id:"p9"},
+		{src:"/client/img/instruction10.png", id:"p10"},
+		{src:"/client/img/instruction11.png", id:"p11"},
 	
 		//Sounds
 		{src:"client/sound/button_over.mp3", id:"button_over"},
@@ -347,7 +346,7 @@ var complete_handler = function(event) {
 	
 	page1= new createjs.Bitmap(preload.getResult("p1"));
 	page2= new createjs.Bitmap(preload.getResult("p2"));
-	/*page3= new createjs.Bitmap(preload.getResult("p3"));
+	page3= new createjs.Bitmap(preload.getResult("p3"));
 	page4= new createjs.Bitmap(preload.getResult("p4"));
 	page5= new createjs.Bitmap(preload.getResult("p5"));
 	page6= new createjs.Bitmap(preload.getResult("p6"));
@@ -356,7 +355,7 @@ var complete_handler = function(event) {
 	page9= new createjs.Bitmap(preload.getResult("p9"));
 	page10= new createjs.Bitmap(preload.getResult("p10"));
 	page11= new createjs.Bitmap(preload.getResult("p11"));
-	page12= new createjs.Bitmap(preload.getResult("p12"));*/
+	page12= new createjs.Bitmap(preload.getResult("p12"));
 	
 	// Clear the screen
 	stage.removeAllChildren();
@@ -376,8 +375,6 @@ var start_menu = function() {
 	finalize_button = finalize_button_img.clone();
 	next_button = next_button_img.clone();
 	previous_button= previous_button_img.clone();
-	bgm_button = bgm_play_img.clone();
-	//page1_img=page1.clone(); 
 	back_button = back_button_img.clone();
 	bgm_button = bgm_play_img.clone();
 	bgm_button.playing = true;
@@ -412,15 +409,7 @@ var start_menu = function() {
 	back_button.regX = back_button.image.width/2;
 	back_button.y = 670;
 	back_button.regY = back_button.image.height/2;
-	
-	//indiviuals
-	//page1_img.scaleX = 0.5;
-	//page1_img.scaleY = 0.5;
-	
-	//page1_img.x= 200;
-	//page1_img.regX = page1_img.image.width/2;;
-	//page1_img.y = 500;
-	//page1_img.regY = page1_img.image.height/2;
+
 		
 	bgm_button.scaleX = .5;
 	bgm_button.scaleY = .5;
@@ -473,7 +462,6 @@ var check_next= function(counter){
 	stage.addChild(bgm_button);
 	stage.update();
 	if(counters==1){
-	
 		stage.addChild(page1);
 		stage.addChild(next_button);
 		stage.addChild(back_button);
@@ -489,100 +477,91 @@ var check_next= function(counter){
 		previous_button.image= previous_button.image;
 	}	
 	else if(counters ==3){
+		stage.addChild(page3);
 		stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page3);
 		stage.addChild(back_button);
 		next_button.image = next_button_img.image;
 		previous_button.image= previous_button.image;
 	
 	}
 	else if(counters ==4){
+		stage.addChild(page4);
 		stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page4);
 		stage.addChild(back_button);
 		next_button.image = next_button_img.image;
 		previous_button.image= previous_button.image;
 	
 	}
 	else if(counters ==5){
+		stage.addChild(page5);
 		stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page5);
 		stage.addChild(back_button);
 		next_button.image = next_button_img.image;
 		previous_button.image= previous_button.image;
 	}
 	else if(counters ==6){
+		stage.addChild(page6);
 		stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page6);
 		stage.addChild(back_button);
 		next_button.image = next_button_img.image;
 		previous_button.image= previous_button.image;
 	}
 	else if(counters ==7){
+		stage.addChild(page7);
 		stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page7);
 		stage.addChild(back_button);
 		next_button.image = next_button_img.image;
 		previous_button.image= previous_button.image;
 	}
 	else if(counters ==8){
+		stage.addChild(page8);
 		stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page8);
 		stage.addChild(back_button);
 		next_button.image = next_button_img.image;
 		previous_button.image= previous_button.image;
 	}
 	else if(counters ==9){
+		stage.addChild(page9);
 		stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page9);
 		stage.addChild(back_button);
 		next_button.image = next_button_img.image;
 		previous_button.image= previous_button.image;
 	}
 	else if(counters ==10){
+		stage.addChild(page10);
 		stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page10);
 		stage.addChild(back_button);
 		next_button.image = next_button_img.image;
 		previous_button.image= previous_button.image;
 		
 	}
 	else if(counters ==11){
-		stage.addChild(next_button);
-		stage.addChild(previous_button);
 		stage.addChild(page11);
-		stage.addChild(back_button);
-		next_button.image = next_button_img.image;
-		previous_button.image= previous_button.image;
-	}
-	else if(counters ==12){
-		//stage.addChild(next_button);
 		stage.addChild(previous_button);
-		stage.addChild(page12);
 		stage.addChild(back_button);
 		previous_button.image= previous_button.image;
 	}
 	stage.update();
 	
-	console.log(counters);
 }
+
 var start_instruction= function(){
 
 	stage.removeAllChildren();
 	stage.addChild(page1);
-	console.log(page1);
+
 	stage.addChild(bgm_button);
 	stage.addChild(next_button);
 	stage.addChild(back_button);
-	//stage.addChild(page1);
+
 	back_button.image= back_button_img.image;
 	next_button.image = next_button_img.image;
 	stage.update();

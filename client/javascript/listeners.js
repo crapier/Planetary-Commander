@@ -384,7 +384,7 @@ var next_click_listener = function(event) {
 	// Call the end turn function and play a sound
 	else if(event.type == 'click') {
 		counters++;
-		if( counters==13)
+		if( counters==12)
 			counters=1;
 			
 		check_next(counters);
