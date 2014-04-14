@@ -173,6 +173,9 @@ var animation_unit = function(movement) {
 		if(nodes[this.source].visible == true) {
 			nodes[this.source].update({owner:opponent, units:nodes[this.source].units-this.units, visible:true});
 		}
+		else {
+			nodes[this.source].update({owner:opponent, units:-1, visible:false});
+		}
 	}
 	// Set image location and rotation
 	this.img.x = this.start_x;
