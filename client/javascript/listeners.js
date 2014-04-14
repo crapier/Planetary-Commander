@@ -64,6 +64,8 @@ var animation_handler = function(movements_to_animate) {
 	// Remove waiting message
 	stage.removeChild(waiting);
 	
+	stage.addChild(sending);
+	
 	// Stop timer
 	clearInterval(timer.interval);
 	stage.removeChild(timer.text);
@@ -100,6 +102,9 @@ var done_animating = function() {
 		stage.removeChild(animation_list[i].img);
 		stage.removeChild(animation_list[i].text);
 	}
+	
+	stage.removeChild(sending);
+	
 	stage.update();
 }
 
@@ -202,7 +207,7 @@ var result_handler = function(message) {
 	for (var i = 0; i < nodes.length; i++) {
 		nodes[i].img.removeAllEventListeners();
 	}
-	// Remove listenersa for units as well as removeing them fromt he stage
+	// Remove listeners for units as well as removing them from the stage
 	for (var i = 0; i < units_list.length; i++) {
 		units_list[i].img.removeAllEventListeners();
 		stage.removeChild(units_list[i].img);
@@ -217,7 +222,7 @@ var result_handler = function(message) {
 	timer.started = false;
 	window.clearInterval(timer.interval);
 	stage.removeChild(timer.text);
-	stage.addChild(timer.img);
+	stage.removeChild(timer.img);
 	
 	// Add back the play button and reposition it where the finish button was
 	stage.addChild(play_button);
@@ -238,7 +243,7 @@ var source_node_select = function(event) {
 	// Set selected to the node id of the selected node
 	selected = event.currentTarget.node_id;
 	
-	// Show source target if not alreay shown
+	// Show source target if not already shown
 	nodes[selected].show_target_source();
 	// Set up selection units and units to send
 	units_to_send = nodes[selected].units;
@@ -327,14 +332,14 @@ var units_click_listener = function(event) {
 	stage.removeChild(units_list[unit_id].img);
 	stage.removeChild(units_list[unit_id].text);
 	
-	// Find the coresponding movement and clear it
+	// Find the corresponding movement and clear it
 	for(var i = 0; i < movements.length; i++) {
 		if(movements[i].source == units_list[unit_id].source){
 			movements[i].units = 0;
 		}
 	}
 	
-	// Update the source with its correct amount of units after cancelation
+	// Update the source with its correct amount of units after cancellation
 	var update_source = {owner: -1, units:nodes[units_list[unit_id].source].units + units_list[unit_id].units, visible: true};
 	nodes[units_list[unit_id].source].update(update_source);
 	stage.update();
@@ -427,7 +432,7 @@ var key_listener = function(event) {
 	}
 }
 
-// Handels mouse wheel events
+// Handles mouse wheel events
 var wheel_listener = function(event) {
 	//wheelDelta is for chrome, detail is for firefox
 	var wheelinfo;

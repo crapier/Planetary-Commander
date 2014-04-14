@@ -267,6 +267,18 @@ var call_animations = function() {
 	for(var i = 0; i < animation_list.length; i++) {
 		animation_list[i].animate(animation_time);
 	}
+	if(animation_time == 100) {
+		stage.removeChild(sending);
+	}
+	else if(animation_time == 200) {
+		stage.addChild(sending);
+	}
+	else if(animation_time == 300) {
+		stage.removeChild(sending);
+	}
+	else if(animation_time == 400) {
+		stage.addChild(sending);
+	}
 	stage.update();
 	animation_time++;
 	if(animation_time > 500) {

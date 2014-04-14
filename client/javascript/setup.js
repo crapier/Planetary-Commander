@@ -125,17 +125,23 @@ var line_color = "#FFFFFF";
 // MESSAGES (easlejs Text)
 // --------
 
-var loading_message = new createjs.Text("Loading - 0%", "50px Arial", "#FFFFFF");
+var loading_message = new createjs.Text("Loading - 0%", "50px Arial", "#006cff");
 loading_message.x = 500;
 loading_message.regX = loading_message.getMeasuredWidth()/2;
 loading_message.y = 350;
 loading_message.regY = loading_message.getMeasuredHeight()/2;
 
-var waiting = new createjs.Text("Waiting for other Player", "30px Arial", "#FFFFFF");
+var waiting = new createjs.Text("Waiting for other Player", "30px Arial", "#006cff");
 waiting.x = 830;
 waiting.regX = waiting.getMeasuredWidth()/2;
 waiting.y = 670;
 waiting.regY = waiting.getMeasuredHeight()/2;
+
+var sending = new createjs.Text("Sending units", "30px Arial", "#006cff");
+sending.x = 890;
+sending.regX = sending.getMeasuredWidth()/2;
+sending.y = 670;
+sending.regY = sending.getMeasuredHeight()/2;
 
 var win_message = new createjs.Text("You Won!", "100px Arial", "#0000FF");
 win_message.x = 500;
@@ -149,7 +155,7 @@ lose_message.regX = lose_message.getMeasuredWidth()/2;
 lose_message.y = 350;
 lose_message.regY = lose_message.getMeasuredHeight()/2;
 
-var player_match_message = new createjs.Text("Waiting for another Player.", "50px Arial", "#FFFFFF");
+var player_match_message = new createjs.Text("Waiting for another Player.", "50px Arial", "#006cff");
 player_match_message.x = 500;
 player_match_message.regX = player_match_message.getMeasuredWidth()/2;
 player_match_message.y = 350;
