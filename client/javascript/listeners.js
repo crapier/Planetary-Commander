@@ -1,4 +1,5 @@
 // Listener for the play button
+var counters= 1;
 var play_button_listener = function(event) {
 	// Change to hover image on mouse over and play sound
 	if(event.type == 'mouseover') {
@@ -36,7 +37,8 @@ var instruction_button_listener = function(event) {
 	} 
 	// Open the instructions in a new window and play a sound on click
 	else if(event.type == 'click') {
-		window.open("http://" + window.location.hostname + ":" + window.location.port + "/client/instructions.html");
+	//	window.open("http://" + window.location.hostname + ":" + window.location.port + "/client/instructions.html");
+	start_instruction();
 		var click_sound_instance = createjs.Sound.play("button_click");
 		click_sound_instance.volume = 0.1;
 	}
@@ -363,6 +365,79 @@ var finish_click_listener = function(event) {
 		click_sound_instance.volume = 0.1;
 	}
 }
+
+
+var next_click_listener = function(event) {
+	
+	// Change to hover image on mouse over and play sound
+	if(event.type == 'mouseover') {
+		next_button.image = next_button_hover_img.image;
+		stage.update();
+		var over_sound_instance = createjs.Sound.play("button_over");
+		over_sound_instance.volume = 0.1;
+	} 
+	// Change to normal image on mouse out
+	else if(event.type == 'mouseout') {
+		next_button.image = next_button_img.image;
+		stage.update();
+	}
+	// Call the end turn function and play a sound
+	else if(event.type == 'click') {
+		counters++;
+		if( counters==13)
+			counters=1;
+			
+		check_next(counters);
+		var click_sound_instance = createjs.Sound.play("button_click");
+		click_sound_instance.volume = 0.1;
+	}
+}
+
+var previous_click_listener = function(event) {
+	// Change to hover image on mouse over and play sound
+	if(event.type == 'mouseover') {
+		previous_button.image = previous_button_hover_img.image;
+		stage.update();
+		var over_sound_instance = createjs.Sound.play("button_over");
+		over_sound_instance.volume = 0.1;
+	} 
+	// Change to normal image on mouse out
+	else if(event.type == 'mouseout') {
+		previous_button.image = previous_button_img.image;
+		stage.update();
+	}
+	// Call the end turn function and play a sound
+	else if(event.type == 'click') {
+		counters--;
+		if( counters==0)
+			counters=1;
+		check_next(counters);
+		var click_sound_instance = createjs.Sound.play("button_click");
+		click_sound_instance.volume = 0.1;
+	}
+}
+
+var back_click_listener = function(event) {
+	// Change to hover image on mouse over and play sound
+	if(event.type == 'mouseover') {
+		back_button.image = back_button_hover_img.image;
+		stage.update();
+		var over_sound_instance = createjs.Sound.play("button_over");
+		over_sound_instance.volume = 0.1;
+	} 
+	// Change to normal image on mouse out
+	else if(event.type == 'mouseout') {
+		back_button.image = back_button_img.image;
+		stage.update();
+	}
+	// Call the end turn function and play a sound
+	else if(event.type == 'click') {
+		start_menu();
+		var click_sound_instance = createjs.Sound.play("button_click");
+		click_sound_instance.volume = 0.1;
+	}
+}
+
 
 // Called by the timer or by clicking on the finalize button to end a turn
 var end_turn = function() {

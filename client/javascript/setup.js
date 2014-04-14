@@ -34,6 +34,7 @@ var animation_interval;
 var manifest;
 // Preloader
 var preload;
+var counters;
 
 // ------
 // IMAGES
@@ -51,6 +52,14 @@ var finalize_button_img;
 var finalize_button_hover_img;
 var bgm_mute_img;
 var bgm_play_img;
+var next_button_img;
+var next_button_hover_img;
+var previous_button_img;
+var previous_button_hover_img;
+
+var back_button_img;
+var back_button_hover_img;
+
 
 // The actual buttons to use for the above button images, so that the image can be switched
 //		for different states (hover or normal)
@@ -58,6 +67,13 @@ var play_button;
 var instruction_button;
 var finalize_button;
 var bgm_button;
+var next_button;
+var previous_button;
+var back_button;
+
+//pages
+var page1,page2,page3,page4,page5,page6,page7,page8,page9,page10,page11,page12;
+var page1_img,page2_img,page3_img,page4_img,page5_img,page6_img,page7_img,page8_img,page9_img,page10_img,page11_img,page12_img;
 
 var small_target_source;
 var medium_target_source;
@@ -102,6 +118,8 @@ var large = 2;
 var small_units_distance = 45;
 var medium_units_distance = 50;
 var large_units_distance = 70;
+
+
 
 var none = 0;
 var player = 1;
@@ -215,6 +233,12 @@ var initialize = function() {
 		{src:"/client/img/instructions_button_hover.png", id:"ibh"},
 		{src:"/client/img/finalize_button.png", id:"fb"},
 		{src:"/client/img/finalize_button_hover.png", id:"fbh"},
+		{src:"/client/img/next_button.png", id:"nb"},
+		{src:"/client/img/next_button_hover.png", id:"nbh"},
+		{src:"/client/img/previous_button.png", id:"prb"},
+		{src:"/client/img/previous_button_hover.png", id:"prbh"},
+		{src:"/client/img/next_button.png", id:"bkb"},
+		{src:"/client/img/next_button_hover.png", id:"bkbh"},
 		{src:"/client/img/sound_mute.png", id:"sm"},
 		{src:"/client/img/sound_high.png", id:"sp"},
 		{src:"/client/img/small_target_source.png", id:"sts"},
@@ -240,6 +264,21 @@ var initialize = function() {
 		{src:"/client/img/hidden_large_opponent.png", id:"hlo"},
 		{src:"/client/img/units.png", id:"u"},
 		{src:"/client/img/units_opponent.png", id:"uo"},
+		//instruction images
+		
+		{src:"/client/img/instruction_page1.png", id:"p1"},
+		{src:"/client/img/instruction_page2.png", id:"p2"},
+		/*{src:"/client/img/page3.png", id:"p3"},
+		{src:"/client/img/page4.png", id:"p4"},
+		{src:"/client/img/page5.png", id:"p5"},
+		{src:"/client/img/page6.png", id:"p6"},
+		{src:"/client/img/page7.png", id:"p7"},
+		{src:"/client/img/page8.png", id:"p8"},
+		{src:"/client/img/page9.png", id:"p9"},
+		{src:"/client/img/page10.png", id:"p10"},
+		{src:"/client/img/page11.png", id:"p11"},
+		{src:"/client/img/page12.png", id:"p12"},*/
+	
 		//Sounds
 		{src:"client/sound/button_over.mp3", id:"button_over"},
 		{src:"client/sound/button_click.mp3", id:"button_click"},
@@ -272,6 +311,13 @@ var complete_handler = function(event) {
 	instructions_button_hover_img = new createjs.Bitmap(preload.getResult("ibh"));
 	finalize_button_img = new createjs.Bitmap(preload.getResult("fb"));
 	finalize_button_hover_img = new createjs.Bitmap(preload.getResult("fbh"));
+	next_button_img = new createjs.Bitmap(preload.getResult("nb"));
+	next_button_hover_img = new createjs.Bitmap(preload.getResult("nbh"));
+	back_button_img= new createjs.Bitmap(preload.getResult("bkb"));
+	back_button_hover_img= new createjs.Bitmap(preload.getResult("bkbh"));
+	
+	previous_button_img = new createjs.Bitmap(preload.getResult("prb"));
+	previous_button_hover_img = new createjs.Bitmap(preload.getResult("prbh"));	
 	bgm_mute_img = new createjs.Bitmap(preload.getResult("sm"));
 	bgm_play_img = new createjs.Bitmap(preload.getResult("sp"));
 	small_target_source = new createjs.Bitmap(preload.getResult("sts"));
@@ -297,6 +343,21 @@ var complete_handler = function(event) {
 	hidden_opponent_large_node = new createjs.Bitmap(preload.getResult("hlo"));
 	units_img = new createjs.Bitmap(preload.getResult("u"));
 	units_opponent_img = new createjs.Bitmap(preload.getResult("uo"));
+	//pages
+	
+	page1= new createjs.Bitmap(preload.getResult("p1"));
+	page2= new createjs.Bitmap(preload.getResult("p2"));
+	/*page3= new createjs.Bitmap(preload.getResult("p3"));
+	page4= new createjs.Bitmap(preload.getResult("p4"));
+	page5= new createjs.Bitmap(preload.getResult("p5"));
+	page6= new createjs.Bitmap(preload.getResult("p6"));
+	page7= new createjs.Bitmap(preload.getResult("p7"));
+	page8= new createjs.Bitmap(preload.getResult("p8"));
+	page9= new createjs.Bitmap(preload.getResult("p9"));
+	page10= new createjs.Bitmap(preload.getResult("p10"));
+	page11= new createjs.Bitmap(preload.getResult("p11"));
+	page12= new createjs.Bitmap(preload.getResult("p12"));*/
+	
 	// Clear the screen
 	stage.removeAllChildren();
 	stage.update();
@@ -305,12 +366,19 @@ var complete_handler = function(event) {
 	start_menu();
 }
 
+
+
 // Shows the main menu
 var start_menu = function() {
 	// Prepare all the button instances
 	play_button = play_button_img.clone();
 	instructions_button = instructions_button_img.clone();
 	finalize_button = finalize_button_img.clone();
+	next_button = next_button_img.clone();
+	previous_button= previous_button_img.clone();
+	bgm_button = bgm_play_img.clone();
+	//page1_img=page1.clone(); 
+	back_button = back_button_img.clone();
 	bgm_button = bgm_play_img.clone();
 	bgm_button.playing = true;
 	
@@ -329,6 +397,31 @@ var start_menu = function() {
 	finalize_button.y = 670;
 	finalize_button.regY = finalize_button.image.height/2;
 	
+	next_button.x = 890;
+	next_button.regX = next_button.image.width/2;
+	next_button.y = 670;
+	next_button.regY = next_button.image.height/2;
+	
+	previous_button.x = 150;
+	previous_button.regX = previous_button.image.width/2;
+	previous_button.y = 670;
+	previous_button.regY = previous_button.image.height/2;
+	
+	
+	back_button.x = 510;
+	back_button.regX = back_button.image.width/2;
+	back_button.y = 670;
+	back_button.regY = back_button.image.height/2;
+	
+	//indiviuals
+	//page1_img.scaleX = 0.5;
+	//page1_img.scaleY = 0.5;
+	
+	//page1_img.x= 200;
+	//page1_img.regX = page1_img.image.width/2;;
+	//page1_img.y = 500;
+	//page1_img.regY = page1_img.image.height/2;
+		
 	bgm_button.scaleX = .5;
 	bgm_button.scaleY = .5;
 	bgm_button.x = 980;
@@ -355,10 +448,145 @@ var start_menu = function() {
 	finalize_button.addEventListener("click", finish_click_listener);
 	finalize_button.addEventListener("mouseout", finish_click_listener);
 	
+	next_button.addEventListener("mouseover", next_click_listener);
+	next_button.addEventListener("click", next_click_listener);
+	next_button.addEventListener("mouseout", next_click_listener);
+	
+	previous_button.addEventListener("mouseover", previous_click_listener);
+	previous_button.addEventListener("click", previous_click_listener);
+	previous_button.addEventListener("mouseout", previous_click_listener);
+	
+	back_button.addEventListener("mouseover", back_click_listener);
+	back_button.addEventListener("click", back_click_listener);
+	back_button.addEventListener("mouseout", back_click_listener);
 	// Try to begin playing the bgm music
 	bgm_loop = createjs.Sound.play("bgm1", {loop:-1});
 	// Set the volume of the bgm music
 	bgm_loop.volume = 0.1;
+}
+// check next image for instruction
+var check_next= function(counter){
+
+	counters=counter;
+	stage.removeAllChildren();
+	//stage.addChild(game_background);
+	stage.addChild(bgm_button);
+	stage.update();
+	if(counters==1){
+	
+		stage.addChild(page1);
+		stage.addChild(next_button);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+	
+	}
+	else if(counters == 2){
+		stage.addChild(page2);
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	}	
+	else if(counters ==3){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page3);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	
+	}
+	else if(counters ==4){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page4);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	
+	}
+	else if(counters ==5){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page5);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	}
+	else if(counters ==6){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page6);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	}
+	else if(counters ==7){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page7);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	}
+	else if(counters ==8){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page8);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	}
+	else if(counters ==9){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page9);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	}
+	else if(counters ==10){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page10);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+		
+	}
+	else if(counters ==11){
+		stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page11);
+		stage.addChild(back_button);
+		next_button.image = next_button_img.image;
+		previous_button.image= previous_button.image;
+	}
+	else if(counters ==12){
+		//stage.addChild(next_button);
+		stage.addChild(previous_button);
+		stage.addChild(page12);
+		stage.addChild(back_button);
+		previous_button.image= previous_button.image;
+	}
+	stage.update();
+	
+	console.log(counters);
+}
+var start_instruction= function(){
+
+	stage.removeAllChildren();
+	stage.addChild(page1);
+	console.log(page1);
+	stage.addChild(bgm_button);
+	stage.addChild(next_button);
+	stage.addChild(back_button);
+	//stage.addChild(page1);
+	back_button.image= back_button_img.image;
+	next_button.image = next_button_img.image;
+	stage.update();
+
 }
 
 // Called by hitting the play button
