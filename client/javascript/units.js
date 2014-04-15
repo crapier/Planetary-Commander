@@ -202,31 +202,31 @@ var animation_unit = function(movement) {
 			this.img = five_units_opponentimg.clone();
 		}
 		else if(this.units > 7 && this.units <= 12) {
-			this.img = ten_units_opponentimg.clone();
+			this.img = ten_units_opponent_img.clone();
 		}
 		else if(this.units > 12 && this.units <= 17) {
-			this.img = fifteen_units_opponentimg.clone();
+			this.img = fifteen_units_opponent_img.clone();
 		}
 		else if(this.units > 17 && this.units <= 22) {
-			this.img = twenty_units_opponentimg.clone();
+			this.img = twenty_units_opponent_img.clone();
 		}
 		else if(this.units > 22 && this.units <= 27) {
-			this.img = twentyfive_units_opponentimg.clone();
+			this.img = twentyfive_units_opponent_img.clone();
 		}
 		else if(this.units > 27 && this.units <= 32) {
-			this.img = thirty_units_opponentimg.clone();
+			this.img = thirty_units_opponent_img.clone();
 		}
 		else if(this.units > 32 && this.units <= 37) {
-			this.img = thirtyfive_units_opponentimg.clone();
+			this.img = thirtyfive_units_opponent_img.clone();
 		}
 		else if(this.units > 37 && this.units <= 42) {
-			this.img = forty_units_opponentimg.clone();
+			this.img = forty_units_opponent_img.clone();
 		}
 		else if(this.units > 42 && this.units <= 47) {
-			this.img = forty_units_opponentimg.clone();
+			this.img = forty_units_opponent_img.clone();
 		}
 		else if(this.units > 47) {
-			this.img = fortyfive_units_opponentimg.clone();
+			this.img = fortyfive_units_opponent_img.clone();
 		}
 		if(nodes[this.source].visible == true) {
 			nodes[this.source].update({owner:opponent, units:nodes[this.source].units-this.units, visible:true});

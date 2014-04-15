@@ -36,7 +36,8 @@ var instruction_button_listener = function(event) {
 	} 
 	// Open the instructions in a new window and play a sound on click
 	else if(event.type == 'click') {
-		window.open("http://" + window.location.hostname + ":" + window.location.port + "/client/instructions.html");
+		counters = 1;
+		start_instruction();
 		var click_sound_instance = createjs.Sound.play("button_click");
 		click_sound_instance.volume = 0.1;
 	}

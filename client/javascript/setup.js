@@ -30,6 +30,9 @@ var animation_list = [];
 // Time interval for animations
 var animation_interval;
 
+// Counter for instruction pages
+var counters = 1;
+
 // Manifest for preloading
 var manifest;
 // Preloader
@@ -95,9 +98,29 @@ var hidden_unknown_large_node;
 var hidden_opponent_small_node;
 var hidden_opponent_medium_node;
 var hidden_opponent_large_node;
-
+var timer_background;
 var units_img;
 var units_opponent_img;
+var five_units_img;
+var ten_units_img;
+var fifteen_units_img;
+var twenty_units_img;
+var twentyfive_units_img;
+var thirty_units_img;
+var thirtyfive_units_img;
+var forty_units_img;
+var fortyfive_units_img;
+var fifty_units_img;
+var five_units_opponent_img;
+var ten_units_opponent_img;
+var fifteen_units_opponent_img;
+var twenty_units_opponent_img;
+var twentyfive_units_opponent_img;
+var thirty_units_opponent_img;
+var thirtyfive_units_opponent_img;
+var forty_units_opponent_img;
+var fortyfive_units_opponent_img;
+var fifty_units_opponent_img;
 
 // ------
 // SOUNDS
@@ -267,6 +290,7 @@ var initialize = function() {
 		{src:"/client/img/hidden_small_opponent.png", id:"hso"},
 		{src:"/client/img/hidden_medium_opponent.png", id:"hmo"},
 		{src:"/client/img/hidden_large_opponent.png", id:"hlo"},
+		{src:"/client/img/timer_background.png", id:"tb"},
 		{src:"/client/img/units.png", id:"u"},
 		{src:"/client/img/units_opponent.png", id:"uo"},
 		{src:"/client/img/five_units.png", id:"5u"},
@@ -365,6 +389,7 @@ var complete_handler = function(event) {
 	hidden_opponent_small_node = new createjs.Bitmap(preload.getResult("hso"));
 	hidden_opponent_medium_node = new createjs.Bitmap(preload.getResult("hmo"));
 	hidden_opponent_large_node = new createjs.Bitmap(preload.getResult("hlo"));
+	timer_background = new createjs.Bitmap(preload.getResult("tb"));
 	units_img = new createjs.Bitmap(preload.getResult("u"));
 	units_opponent_img = new createjs.Bitmap(preload.getResult("uo"));
 	five_units_img = new createjs.Bitmap(preload.getResult("5u"));
@@ -377,16 +402,16 @@ var complete_handler = function(event) {
 	forty_units_img = new createjs.Bitmap(preload.getResult("40u"));
 	fortyfive_units_img = new createjs.Bitmap(preload.getResult("45u"));
 	fifty_units_img = new createjs.Bitmap(preload.getResult("50u"));
-	five_units_opponentimg = new createjs.Bitmap(preload.getResult("5uo"));
-	ten_units_opponentimg = new createjs.Bitmap(preload.getResult("10uo"));
-	fifteen_units_opponentimg = new createjs.Bitmap(preload.getResult("15uo"));
-	twenty_units_opponentimg = new createjs.Bitmap(preload.getResult("20uo"));
-	twentyfive_units_opponentimg = new createjs.Bitmap(preload.getResult("25uo"));
-	thirty_units_opponentimg = new createjs.Bitmap(preload.getResult("30uo"));
-	thirtyfive_units_opponentimg = new createjs.Bitmap(preload.getResult("35uo"));
-	forty_units_opponentimg = new createjs.Bitmap(preload.getResult("40uo"));
-	fortyfive_units_opponentimg = new createjs.Bitmap(preload.getResult("45uo"));
-	fifty_units_opponentimg = new createjs.Bitmap(preload.getResult("50uo"));
+	five_units_opponent_img = new createjs.Bitmap(preload.getResult("5uo"));
+	ten_units_opponent_img = new createjs.Bitmap(preload.getResult("10uo"));
+	fifteen_units_opponent_img = new createjs.Bitmap(preload.getResult("15uo"));
+	twenty_units_opponent_img = new createjs.Bitmap(preload.getResult("20uo"));
+	twentyfive_units_opponent_img = new createjs.Bitmap(preload.getResult("25uo"));
+	thirty_units_opponent_img = new createjs.Bitmap(preload.getResult("30uo"));
+	thirtyfive_units_opponent_img = new createjs.Bitmap(preload.getResult("35uo"));
+	forty_units_opponent_img = new createjs.Bitmap(preload.getResult("40uo"));
+	fortyfive_units_opponent_img = new createjs.Bitmap(preload.getResult("45uo"));
+	fifty_units_opponent_img = new createjs.Bitmap(preload.getResult("50uo"));
 	//pages
 	
 	page1= new createjs.Bitmap(preload.getResult("p1"));

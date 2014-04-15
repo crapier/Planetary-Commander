@@ -7,7 +7,9 @@ var timer = {
 
 // Set up the timer and start it with a certain time
 timer.setup = function(time) {
-	this.img = timer_background.clone();
+	if(!this.img) {
+		this.img = timer_background.clone();
+	}
 	this.img.x = timer_x - 30;
 	this.img.y = timer_y - 15;
 	stage.addChild(this.img);
