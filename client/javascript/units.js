@@ -166,10 +166,68 @@ var animation_unit = function(movement) {
 	
 	// Set image based on owner of source planet
 	if(nodes[this.source].owner == player) {
-		this.img = units_img.clone();
+		if(this.units <= 7) {
+			this.img = five_units_img.clone();
+		}
+		else if(this.units > 7 && this.units <= 12) {
+			this.img = ten_units_img.clone();
+		}
+		else if(this.units > 12 && this.units <= 17) {
+			this.img = fifteen_units_img.clone();
+		}
+		else if(this.units > 17 && this.units <= 22) {
+			this.img = twenty_units_img.clone();
+		}
+		else if(this.units > 22 && this.units <= 27) {
+			this.img = twentyfive_units_img.clone();
+		}
+		else if(this.units > 27 && this.units <= 32) {
+			this.img = thirty_units_img.clone();
+		}
+		else if(this.units > 32 && this.units <= 37) {
+			this.img = thirtyfive_units_img.clone();
+		}
+		else if(this.units > 37 && this.units <= 42) {
+			this.img = forty_units_img.clone();
+		}
+		else if(this.units > 42 && this.units <= 47) {
+			this.img = forty_units_img.clone();
+		}
+		else if(this.units > 47) {
+			this.img = fortyfive_units_img.clone();
+		}
 	}
 	else {
-		this.img = units_opponent_img.clone();
+		if(this.units <= 7) {
+			this.img = five_units_opponentimg.clone();
+		}
+		else if(this.units > 7 && this.units <= 12) {
+			this.img = ten_units_opponentimg.clone();
+		}
+		else if(this.units > 12 && this.units <= 17) {
+			this.img = fifteen_units_opponentimg.clone();
+		}
+		else if(this.units > 17 && this.units <= 22) {
+			this.img = twenty_units_opponentimg.clone();
+		}
+		else if(this.units > 22 && this.units <= 27) {
+			this.img = twentyfive_units_opponentimg.clone();
+		}
+		else if(this.units > 27 && this.units <= 32) {
+			this.img = thirty_units_opponentimg.clone();
+		}
+		else if(this.units > 32 && this.units <= 37) {
+			this.img = thirtyfive_units_opponentimg.clone();
+		}
+		else if(this.units > 37 && this.units <= 42) {
+			this.img = forty_units_opponentimg.clone();
+		}
+		else if(this.units > 42 && this.units <= 47) {
+			this.img = forty_units_opponentimg.clone();
+		}
+		else if(this.units > 47) {
+			this.img = fortyfive_units_opponentimg.clone();
+		}
 		if(nodes[this.source].visible == true) {
 			nodes[this.source].update({owner:opponent, units:nodes[this.source].units-this.units, visible:true});
 		}
@@ -208,6 +266,18 @@ animation_unit.prototype.animate = function(time) {
 var call_animations = function() {
 	for(var i = 0; i < animation_list.length; i++) {
 		animation_list[i].animate(animation_time);
+	}
+	if(animation_time == 100) {
+		stage.removeChild(sending);
+	}
+	else if(animation_time == 200) {
+		stage.addChild(sending);
+	}
+	else if(animation_time == 300) {
+		stage.removeChild(sending);
+	}
+	else if(animation_time == 400) {
+		stage.addChild(sending);
 	}
 	stage.update();
 	animation_time++;

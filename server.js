@@ -272,46 +272,6 @@ maps.push(function(game_id) {
 })
 
 maps.push(function(game_id) {
-	nodes[game_id].push(new node(20, large, [1, 2, 4]));
-	nodes[game_id].push(new node(20, large, [2, 0, 5]));
-	nodes[game_id].push(new node(20, large, [1, 0, 3]));
-	nodes[game_id].push(new node(5, small, [2, 9, 10, 16]));
-	nodes[game_id].push(new node(5, small, [11, 0, 12, 15]));
-	nodes[game_id].push(new node(5, small, [1, 13, 14, 17]));
-	nodes[game_id].push(new node(20, large, [9, 10, 21]));
-	nodes[game_id].push(new node(20, large, [11, 12, 22]));
-	nodes[game_id].push(new node(20, large, [13, 14, 23]));
-	nodes[game_id].push(new node(5, small, [3, 6, 16]));
-	nodes[game_id].push(new node(10, medium, [6, 3, 18]));
-	nodes[game_id].push(new node(5, small, [7, 4, 15]));
-	nodes[game_id].push(new node(10, medium, [7, 4, 20]));
-	nodes[game_id].push(new node(5, small, [5, 8, 17]));
-	nodes[game_id].push(new node(10, medium, [8, 5, 19]));
-	nodes[game_id].push(new node(5, small, [11, 4, 18]));
-	nodes[game_id].push(new node(5, small, [3, 9, 19]));
-	nodes[game_id].push(new node(5, small, [5, 13, 20]));
-	nodes[game_id].push(new node(5, small, [15, 10]));
-	nodes[game_id].push(new node(5, small, [16, 14]));
-	nodes[game_id].push(new node(5, small, [12, 17]));
-	nodes[game_id].push(new node(5, small, [6]));
-	nodes[game_id].push(new node(5, small, [7]));
-	nodes[game_id].push(new node(5, small, [8]));
-
-	var client_1_start = Math.floor((Math.random()*3));
-	var client_2_start = Math.floor((Math.random()*3));
-	while(client_1_start == client_2_start) {
-		client_2_start = Math.floor((Math.random()*3));
-	}
-
-	nodes[game_id][client_1_start].owner = client_1;
-	nodes[game_id][client_1_start].units = 50;
-	nodes[game_id][client_1_start].generating = true;
-	nodes[game_id][client_2_start].owner = client_2;
-	nodes[game_id][client_2_start].units = 50;
-	nodes[game_id][client_2_start].generating = true;
-})
-
-maps.push(function(game_id) {
 	nodes[game_id].push(new node(20, large, [11, 18]));
 	nodes[game_id].push(new node(20, large, [10, 21]));
 	nodes[game_id].push(new node(20, large, [9, 20]));
@@ -368,6 +328,111 @@ maps.push(function(game_id) {
 	nodes[game_id][client_2_start].generating = true;
 })
 
+maps.push(function(game_id) {
+	nodes[game_id].push(new node(50, large, [5, 7, 29]));
+	nodes[game_id].push(new node(50, large, [4, 8, 23]));
+	nodes[game_id].push(new node(50, large, [3, 6, 28]));
+	nodes[game_id].push(new node(5, small, [2, 19]));
+	nodes[game_id].push(new node(5, small, [1, 31]));
+	nodes[game_id].push(new node(5, small, [0, 21]));
+	nodes[game_id].push(new node(10, medium, [2, 10]));
+	nodes[game_id].push(new node(10, medium, [0, 9]));
+	nodes[game_id].push(new node(10, medium, [1, 11]));
+	nodes[game_id].push(new node(5, small, [7, 18]));
+	nodes[game_id].push(new node(5, small, [6, 16]));
+	nodes[game_id].push(new node(5, small, [8, 17]));
+	nodes[game_id].push(new node(10, medium, [13, 15, 14, 26, 27]));
+	nodes[game_id].push(new node(5, small, [12, 17, 22]));
+	nodes[game_id].push(new node(5, small, [12, 18, 20]));
+	nodes[game_id].push(new node(5, small, [12, 16, 25]));
+	nodes[game_id].push(new node(5, small, [15, 10]));
+	nodes[game_id].push(new node(5, small, [13, 11]));
+	nodes[game_id].push(new node(5, small, [9, 14]));
+	nodes[game_id].push(new node(10, medium, [3, 20]));
+	nodes[game_id].push(new node(10, medium, [19, 14, 32]));
+	nodes[game_id].push(new node(10, medium, [5, 22]));
+	nodes[game_id].push(new node(10, medium, [21, 13, 31]));
+	nodes[game_id].push(new node(5, small, [24, 1]));
+	nodes[game_id].push(new node(10, medium, [25, 23]));
+	nodes[game_id].push(new node(10, medium, [15, 24, 30]));
+	nodes[game_id].push(new node(20, large, [12]));
+	nodes[game_id].push(new node(20, large, [12]));
+	nodes[game_id].push(new node(5, small, [2, 30]));
+	nodes[game_id].push(new node(5, small, [0, 32]));
+	nodes[game_id].push(new node(5, small, [28, 25]));
+	nodes[game_id].push(new node(5, small, [22, 4]));
+	nodes[game_id].push(new node(5, small, [29, 20]));
+
+	var client_1_start = Math.floor((Math.random()*3));
+	client_2_start = Math.floor((Math.random()*3));
+	while(client_1_start == client_2_start) {
+		var client_2_start = Math.floor((Math.random()*3));
+	}
+	
+	nodes[game_id][client_1_start].owner = client_1;
+	nodes[game_id][client_1_start].units = 50;
+	nodes[game_id][client_1_start].generating = true;
+	nodes[game_id][client_2_start].owner = client_2;
+	nodes[game_id][client_2_start].units = 50;
+	nodes[game_id][client_2_start].generating = true;
+})
+
+maps.push(function(game_id) {
+	nodes[game_id].push(new node(50, large, [18, 17]));
+	nodes[game_id].push(new node(50, large, [15, 16]));
+	nodes[game_id].push(new node(50, large, [19, 22]));
+	nodes[game_id].push(new node(50, large, [20, 21]));
+	nodes[game_id].push(new node(20, large, [12, 9, 10, 5, 11]));
+	nodes[game_id].push(new node(20, large, [4, 10, 11, 14, 32, 31]));
+	nodes[game_id].push(new node(20, large, [9, 10, 23, 26, 25]));
+	nodes[game_id].push(new node(20, large, [12, 11, 24, 28, 27]));
+	nodes[game_id].push(new node(20, large, [12, 9, 13, 29, 30]));
+	nodes[game_id].push(new node(10, medium, [4, 8, 6]));
+	nodes[game_id].push(new node(10, medium, [6, 4, 5]));
+	nodes[game_id].push(new node(10, medium, [5, 4, 7]));
+	nodes[game_id].push(new node(10, medium, [8, 4, 7]));
+	nodes[game_id].push(new node(10, medium, [8, 16]));
+	nodes[game_id].push(new node(10, medium, [5, 35, 40]));
+	nodes[game_id].push(new node(10, medium, [1, 29]));
+	nodes[game_id].push(new node(10, medium, [1, 13]));
+	nodes[game_id].push(new node(10, medium, [0, 27]));
+	nodes[game_id].push(new node(10, medium, [0, 28]));
+	nodes[game_id].push(new node(10, medium, [2, 31]));
+	nodes[game_id].push(new node(10, medium, [3, 23]));
+	nodes[game_id].push(new node(10, medium, [3, 26]));
+	nodes[game_id].push(new node(10, medium, [2, 32]));
+	nodes[game_id].push(new node(10, medium, [6, 20]));
+	nodes[game_id].push(new node(10, medium, [7, 39, 36]));
+	nodes[game_id].push(new node(10, medium, [6, 38, 34]));
+	nodes[game_id].push(new node(10, medium, [6, 21]));
+	nodes[game_id].push(new node(10, medium, [7, 17]));
+	nodes[game_id].push(new node(10, medium, [7, 18]));
+	nodes[game_id].push(new node(10, medium, [15, 8]));
+	nodes[game_id].push(new node(10, medium, [8, 37, 33]));
+	nodes[game_id].push(new node(10, medium, [5, 19]));
+	nodes[game_id].push(new node(10, medium, [5, 22]));
+	nodes[game_id].push(new node(5, small, [36, 30]));
+	nodes[game_id].push(new node(5, small, [25, 35]));
+	nodes[game_id].push(new node(5, small, [34, 14]));
+	nodes[game_id].push(new node(5, small, [24, 33]));
+	nodes[game_id].push(new node(5, small, [30, 38]));
+	nodes[game_id].push(new node(5, small, [37, 25]));
+	nodes[game_id].push(new node(5, small, [40, 24]));
+	nodes[game_id].push(new node(5, small, [14, 39]));
+
+	var client_1_start = Math.floor((Math.random()*4));
+	client_2_start = Math.floor((Math.random()*4));
+	while(client_1_start == client_2_start) {
+		var client_2_start = Math.floor((Math.random()*4));
+	}
+	
+	nodes[game_id][client_1_start].owner = client_1;
+	nodes[game_id][client_1_start].units = 50;
+	nodes[game_id][client_1_start].generating = true;
+	nodes[game_id][client_2_start].owner = client_2;
+	nodes[game_id][client_2_start].units = 50;
+	nodes[game_id][client_2_start].generating = true;
+})
 
 // ^^^^^^^^^^^^^^
 // NEW MAPS ABOVE

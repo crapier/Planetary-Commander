@@ -18,9 +18,12 @@ var number_starts = 0;
 
 var background = new createjs.Bitmap("/client/img/background1.png");
 
-var small_target = new createjs.Bitmap("/client/img/small_target.png");
-var medium_target = new createjs.Bitmap("/client/img/medium_target.png");
-var large_target = new createjs.Bitmap("/client/img/large_target.png");
+var small_target_source = new createjs.Bitmap("/client/img/small_target_source.png");
+var medium_target_source = new createjs.Bitmap("/client/img/medium_target_source.png");
+var large_target_source = new createjs.Bitmap("/client/img/large_target_source.png");
+var small_target_dest = new createjs.Bitmap("/client/img/small_target_dest.png");
+var medium_target_dest = new createjs.Bitmap("/client/img/medium_target_dest.png");
+var large_target_dest = new createjs.Bitmap("/client/img/large_target_dest.png");
 var visible_player_small_node = new createjs.Bitmap("/client/img/visible_small_player.png");
 var visible_player_medium_node = new createjs.Bitmap("/client/img/visible_medium_player.png");
 var visible_player_large_node = new createjs.Bitmap("/client/img/visible_large_player.png");
@@ -208,7 +211,7 @@ var node_click_source = function(event) {
 			nodes[i].img.removeAllEventListeners();
 		}
 		selected = event.currentTarget.node_id;
-		nodes[selected].show_target();
+		nodes[selected].show_target_source();
 		stage.update();
 		
 		nodes[selected].img.addEventListener("click", adjacent_listener);
@@ -246,13 +249,13 @@ var delete_all_adjacent = function(node_id) {
 
 var node_in = function(event) {
 	var hover = event.currentTarget.node_id;
-	nodes[hover].show_target();
+	nodes[hover].show_target_source();
 	stage.update();
 }
 
 var node_out = function(event) {
 	var hover = event.currentTarget.node_id;
-	nodes[hover].hide_target();
+	nodes[hover].hide_target_source();
 	stage.update();
 }
 
@@ -283,12 +286,12 @@ var adjacent_listener = function(event) {
 			stage.addChildAt(lines[lines.length-1], 1);
 		}
 		
-		nodes[selected].hide_target();
+		nodes[selected].hide_target_source();
 		selected = -1;
 		event.stopPropagation();
 	}
 	else {
-		nodes[selected].hide_target();
+		nodes[selected].hide_target_source();
 		selected = -1;
 		for(var i = 0; i < nodes.length; i++) {
 			nodes[i].img.removeAllEventListeners();
@@ -406,28 +409,28 @@ var key_listener = function(event) {
 				nodes[selected].y = nodes[selected].y - 5;
 				nodes[selected].img.y = nodes[selected].y;
 				nodes[selected].text.y = nodes[selected].y;
-				nodes[selected].target.y = nodes[selected].y;
+				nodes[selected].target_source.y = nodes[selected].y;
 			}
 			//down arrow key
 			else if(key_pressed == 40) {
 				nodes[selected].y = nodes[selected].y + 5;
 				nodes[selected].img.y = nodes[selected].y;
 				nodes[selected].text.y = nodes[selected].y;
-				nodes[selected].target.y = nodes[selected].y;
+				nodes[selected].target_source.y = nodes[selected].y;
 			}
 			//left arrow key
 			else if(key_pressed == 37) {
 				nodes[selected].x = nodes[selected].x - 5;
 				nodes[selected].img.x = nodes[selected].x;
 				nodes[selected].text.x = nodes[selected].x;
-				nodes[selected].target.x = nodes[selected].x;
+				nodes[selected].target_source.x = nodes[selected].x;
 			}
 			//right arrow key
 			else if(key_pressed == 39) {
 				nodes[selected].x = nodes[selected].x + 5;
 				nodes[selected].img.x = nodes[selected].x;
 				nodes[selected].text.x = nodes[selected].x;
-				nodes[selected].target.x = nodes[selected].x;
+				nodes[selected].target_source.x = nodes[selected].x;
 			}
 			
 			for(var i = 0; i < lines.length; i++) {
@@ -451,7 +454,7 @@ var key_listener = function(event) {
 				
 				stage.removeChild(nodes[selected].img);
 				stage.removeChild(nodes[selected].text);
-				stage.removeChild(nodes[selected].target);
+				stage.removeChild(nodes[selected].target_source);
 				nodes.splice(selected, 1);
 				
 				for(var i = 0; i < nodes.length; i++) {

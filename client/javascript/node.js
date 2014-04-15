@@ -15,17 +15,17 @@ var node = function(size, x, y, adjacent) {
 		case small:
 			this.img = hidden_unknown_small_node.clone();
 			this.target_source = small_target_source.clone();
-			this.target_dest = small_target_source.clone();
+			this.target_dest = small_target_dest.clone();
 			break;
 		case medium:
 			this.img = hidden_unknown_medium_node.clone();
 			this.target_source = medium_target_source.clone();
-			this.target_dest = medium_target_source.clone();
+			this.target_dest = medium_target_dest.clone();
 			break;
 		case large:
 			this.img = hidden_unknown_large_node.clone();		
 			this.target_source = large_target_source.clone();
-			this.target_dest = large_target_source.clone();
+			this.target_dest = large_target_dest.clone();
 			break;
 		default:
 	}

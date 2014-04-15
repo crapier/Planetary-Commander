@@ -34,7 +34,6 @@ var animation_interval;
 var manifest;
 // Preloader
 var preload;
-var counters;
 
 // ------
 // IMAGES
@@ -125,16 +124,16 @@ var none = 0;
 var player = 1;
 var opponent = 2;
 
-var node_font = "20px Arial";
+var node_font = "18px Arial";
 var node_font_color = "#FFFFFF";
 
-var units_font = "20px Arial";
+var units_font = "18px Arial";
 var units_font_color = "#FFFFFF";
 
 var timer_font = "50px Arial";
-var timer_font_color = "#FFFFFF";
-var timer_x = 10;
-var timer_y = 640
+var timer_font_color = "#006cff";
+var timer_x = 30;
+var timer_y = 625
 var time_limit = 180;
 
 var line_color = "#FFFFFF";
@@ -143,17 +142,23 @@ var line_color = "#FFFFFF";
 // MESSAGES (easlejs Text)
 // --------
 
-var loading_message = new createjs.Text("Loading - 0%", "50px Arial", "#FFFFFF");
+var loading_message = new createjs.Text("Loading - 0%", "50px Arial", "#006cff");
 loading_message.x = 500;
 loading_message.regX = loading_message.getMeasuredWidth()/2;
 loading_message.y = 350;
 loading_message.regY = loading_message.getMeasuredHeight()/2;
 
-var waiting = new createjs.Text("Waiting for other Player", "30px Arial", "#FFFFFF");
+var waiting = new createjs.Text("Waiting for other Player", "30px Arial", "#006cff");
 waiting.x = 830;
 waiting.regX = waiting.getMeasuredWidth()/2;
 waiting.y = 670;
 waiting.regY = waiting.getMeasuredHeight()/2;
+
+var sending = new createjs.Text("Sending units", "30px Arial", "#006cff");
+sending.x = 890;
+sending.regX = sending.getMeasuredWidth()/2;
+sending.y = 670;
+sending.regY = sending.getMeasuredHeight()/2;
 
 var win_message = new createjs.Text("You Won!", "100px Arial", "#0000FF");
 win_message.x = 500;
@@ -167,7 +172,7 @@ lose_message.regX = lose_message.getMeasuredWidth()/2;
 lose_message.y = 350;
 lose_message.regY = lose_message.getMeasuredHeight()/2;
 
-var player_match_message = new createjs.Text("Waiting for another Player.", "50px Arial", "#FFFFFF");
+var player_match_message = new createjs.Text("Waiting for another Player.", "50px Arial", "#006cff");
 player_match_message.x = 500;
 player_match_message.regX = player_match_message.getMeasuredWidth()/2;
 player_match_message.y = 350;
@@ -264,6 +269,26 @@ var initialize = function() {
 		{src:"/client/img/hidden_large_opponent.png", id:"hlo"},
 		{src:"/client/img/units.png", id:"u"},
 		{src:"/client/img/units_opponent.png", id:"uo"},
+		{src:"/client/img/five_units.png", id:"5u"},
+		{src:"/client/img/ten_units.png", id:"10u"},
+		{src:"/client/img/fifteen_units.png", id:"15u"},
+		{src:"/client/img/twenty_units.png", id:"20u"},
+		{src:"/client/img/twentyfive_units.png", id:"25u"},
+		{src:"/client/img/thirty_units.png", id:"30u"},
+		{src:"/client/img/thirtyfive_units.png", id:"35u"},
+		{src:"/client/img/forty_units.png", id:"40u"},
+		{src:"/client/img/fortyfive_units.png", id:"45u"},
+		{src:"/client/img/fifty_units.png", id:"50u"},
+		{src:"/client/img/five_units_opponent.png", id:"5uo"},
+		{src:"/client/img/ten_units_opponent.png", id:"10uo"},
+		{src:"/client/img/fifteen_units_opponent.png", id:"15uo"},
+		{src:"/client/img/twenty_units_opponent.png", id:"20uo"},
+		{src:"/client/img/twentyfive_units_opponent.png", id:"25uo"},
+		{src:"/client/img/thirty_units_opponent.png", id:"30uo"},
+		{src:"/client/img/thirtyfive_units_opponent.png", id:"35uo"},
+		{src:"/client/img/forty_units_opponent.png", id:"40uo"},
+		{src:"/client/img/fortyfive_units_opponent.png", id:"45uo"},
+		{src:"/client/img/fifty_units_opponent.png", id:"50uo"},
 		//instruction images
 		
 		{src:"/client/img/instruction1.png", id:"p1"},
@@ -342,6 +367,26 @@ var complete_handler = function(event) {
 	hidden_opponent_large_node = new createjs.Bitmap(preload.getResult("hlo"));
 	units_img = new createjs.Bitmap(preload.getResult("u"));
 	units_opponent_img = new createjs.Bitmap(preload.getResult("uo"));
+	five_units_img = new createjs.Bitmap(preload.getResult("5u"));
+	ten_units_img = new createjs.Bitmap(preload.getResult("10u"));
+	fifteen_units_img = new createjs.Bitmap(preload.getResult("15u"));
+	twenty_units_img = new createjs.Bitmap(preload.getResult("20u"));
+	twentyfive_units_img = new createjs.Bitmap(preload.getResult("25u"));
+	thirty_units_img = new createjs.Bitmap(preload.getResult("30u"));
+	thirtyfive_units_img = new createjs.Bitmap(preload.getResult("35u"));
+	forty_units_img = new createjs.Bitmap(preload.getResult("40u"));
+	fortyfive_units_img = new createjs.Bitmap(preload.getResult("45u"));
+	fifty_units_img = new createjs.Bitmap(preload.getResult("50u"));
+	five_units_opponentimg = new createjs.Bitmap(preload.getResult("5uo"));
+	ten_units_opponentimg = new createjs.Bitmap(preload.getResult("10uo"));
+	fifteen_units_opponentimg = new createjs.Bitmap(preload.getResult("15uo"));
+	twenty_units_opponentimg = new createjs.Bitmap(preload.getResult("20uo"));
+	twentyfive_units_opponentimg = new createjs.Bitmap(preload.getResult("25uo"));
+	thirty_units_opponentimg = new createjs.Bitmap(preload.getResult("30uo"));
+	thirtyfive_units_opponentimg = new createjs.Bitmap(preload.getResult("35uo"));
+	forty_units_opponentimg = new createjs.Bitmap(preload.getResult("40uo"));
+	fortyfive_units_opponentimg = new createjs.Bitmap(preload.getResult("45uo"));
+	fifty_units_opponentimg = new createjs.Bitmap(preload.getResult("50uo"));
 	//pages
 	
 	page1= new createjs.Bitmap(preload.getResult("p1"));
@@ -686,33 +731,6 @@ create_nodes.push (function() {
 })
 
 create_nodes.push (function() {
-	nodes.push(new node(large, 550, 296, [1, 2, 4]));
-	nodes.push(new node(large, 425, 295, [2, 0, 5]));
-	nodes.push(new node(large, 486, 372, [1, 0, 3]));
-	nodes.push(new node(small, 484, 494, [2, 9, 10, 16]));
-	nodes.push(new node(small, 662, 227, [11, 0, 12, 15]));
-	nodes.push(new node(small, 309, 224, [1, 13, 14, 17]));
-	nodes.push(new node(large, 846, 559, [9, 10, 21]));
-	nodes.push(new node(large, 529, 45, [11, 12, 22]));
-	nodes.push(new node(large, 80, 422, [13, 14, 23]));
-	nodes.push(new node(small, 652, 566, [3, 6, 16]));
-	nodes.push(new node(medium, 678, 458, [6, 3, 18]));
-	nodes.push(new node(small, 653, 82, [7, 4, 15]));
-	nodes.push(new node(medium, 495, 125, [7, 4, 20]));
-	nodes.push(new node(small, 117, 253, [5, 8, 17]));
-	nodes.push(new node(medium, 217, 337, [8, 5, 19]));
-	nodes.push(new node(small, 753, 277, [11, 4, 18]));
-	nodes.push(new node(small, 387, 508, [3, 9, 19]));
-	nodes.push(new node(small, 369, 141, [5, 13, 20]));
-	nodes.push(new node(small, 633, 348, [15, 10]));
-	nodes.push(new node(small, 347, 361, [16, 14]));
-	nodes.push(new node(small, 446, 199, [12, 17]));
-	nodes.push(new node(small, 907, 405, [6]));
-	nodes.push(new node(small, 364, 22, [7]));
-	nodes.push(new node(small, 180, 576, [8]));
-})
-
-create_nodes.push (function() {
 	nodes.push(new node(large, 52, 57, [11, 18]));
 	nodes.push(new node(large, 51, 586, [10, 21]));
 	nodes.push(new node(large, 941, 596, [9, 20]));
@@ -756,6 +774,85 @@ create_nodes.push (function() {
 	nodes.push(new node(medium, 757, 209, [8, 23, 7]));
 })
 
+create_nodes.push (function() {
+	nodes.push(new node(large, 206, 181, [5, 7, 29]));
+	nodes.push(new node(large, 870, 126, [4, 8, 23]));
+	nodes.push(new node(large, 546, 525, [3, 6, 28]));
+	nodes.push(new node(small, 474, 569, [2, 19]));
+	nodes.push(new node(small, 794, 113, [1, 31]));
+	nodes.push(new node(small, 287, 144, [0, 21]));
+	nodes.push(new node(medium, 566, 427, [2, 10]));
+	nodes.push(new node(medium, 186, 285, [0, 9]));
+	nodes.push(new node(medium, 852, 186, [1, 11]));
+	nodes.push(new node(small, 225, 299, [7, 18]));
+	nodes.push(new node(small, 610, 427, [6, 16]));
+	nodes.push(new node(small, 792, 188, [8, 17]));
+	nodes.push(new node(medium, 515, 270, [13, 15, 14, 26, 27]));
+	nodes.push(new node(small, 551, 227, [12, 17, 22]));
+	nodes.push(new node(small, 444, 287, [12, 18, 20]));
+	nodes.push(new node(small, 583, 309, [12, 16, 25]));
+	nodes.push(new node(small, 658, 364, [15, 10]));
+	nodes.push(new node(small, 682, 227, [13, 11]));
+	nodes.push(new node(small, 317, 323, [9, 14]));
+	nodes.push(new node(medium, 408, 415, [3, 20]));
+	nodes.push(new node(medium, 459, 352, [19, 14, 32]));
+	nodes.push(new node(medium, 369, 144, [5, 22]));
+	nodes.push(new node(medium, 523, 149, [21, 13, 31]));
+	nodes.push(new node(small, 924, 184, [24, 1]));
+	nodes.push(new node(medium, 859, 271, [25, 23]));
+	nodes.push(new node(medium, 720, 292, [15, 24, 30]));
+	nodes.push(new node(large, 385, 220, [12]));
+	nodes.push(new node(large, 529, 362, [12]));
+	nodes.push(new node(small, 627, 570, [2, 30]));
+	nodes.push(new node(small, 172, 100, [0, 32]));
+	nodes.push(new node(small, 741, 442, [28, 25]));
+	nodes.push(new node(small, 627, 70, [22, 4]));
+	nodes.push(new node(small, 134, 386, [29, 20]));
+})
+
+create_nodes.push (function() {
+	nodes.push(new node(large, 64, 77, [18, 17]));
+	nodes.push(new node(large, 146, 539, [15, 16]));
+	nodes.push(new node(large, 895, 49, [19, 22]));
+	nodes.push(new node(large, 896, 550, [20, 21]));
+	nodes.push(new node(large, 495, 306, [12, 9, 10, 5, 11]));
+	nodes.push(new node(large, 552, 124, [4, 10, 11, 14, 32, 31]));
+	nodes.push(new node(large, 667, 456, [9, 10, 23, 26, 25]));
+	nodes.push(new node(large, 269, 243, [12, 11, 24, 28, 27]));
+	nodes.push(new node(large, 390, 493, [12, 9, 13, 29, 30]));
+	nodes.push(new node(medium, 518, 435, [4, 8, 6]));
+	nodes.push(new node(medium, 622, 272, [6, 4, 5]));
+	nodes.push(new node(medium, 344, 226, [5, 4, 7]));
+	nodes.push(new node(medium, 381, 340, [8, 4, 7]));
+	nodes.push(new node(medium, 379, 571, [8, 16]));
+	nodes.push(new node(medium, 612, 83, [5, 35, 40]));
+	nodes.push(new node(medium, 148, 457, [1, 29]));
+	nodes.push(new node(medium, 226, 584, [1, 13]));
+	nodes.push(new node(medium, 53, 145, [0, 27]));
+	nodes.push(new node(medium, 192, 39, [0, 28]));
+	nodes.push(new node(medium, 799, 44, [2, 31]));
+	nodes.push(new node(medium, 874, 458, [3, 23]));
+	nodes.push(new node(medium, 827, 576, [3, 26]));
+	nodes.push(new node(medium, 884, 121, [2, 32]));
+	nodes.push(new node(medium, 733, 402, [6, 20]));
+	nodes.push(new node(medium, 208, 201, [7, 39, 36]));
+	nodes.push(new node(medium, 739, 487, [6, 38, 34]));
+	nodes.push(new node(medium, 588, 541, [6, 21]));
+	nodes.push(new node(medium, 219, 324, [7, 17]));
+	nodes.push(new node(medium, 305, 164, [7, 18]));
+	nodes.push(new node(medium, 312, 473, [15, 8]));
+	nodes.push(new node(medium, 318, 538, [8, 37, 33]));
+	nodes.push(new node(medium, 587, 24, [5, 19]));
+	nodes.push(new node(medium, 630, 179, [5, 22]));
+	nodes.push(new node(small, 226, 436, [36, 30]));
+	nodes.push(new node(small, 798, 383, [25, 35]));
+	nodes.push(new node(small, 729, 204, [34, 14]));
+	nodes.push(new node(small, 137, 282, [24, 33]));
+	nodes.push(new node(small, 343, 626, [30, 38]));
+	nodes.push(new node(small, 656, 591, [37, 25]));
+	nodes.push(new node(small, 292, 79, [40, 24]));
+	nodes.push(new node(small, 516, 57, [14, 39]));
+})
 
 // ^^^^^^^^^^^^^^
 // NEW MAPS ABOVE
