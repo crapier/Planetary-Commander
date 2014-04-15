@@ -141,8 +141,6 @@ var small_units_distance = 45;
 var medium_units_distance = 50;
 var large_units_distance = 70;
 
-
-
 var none = 0;
 var player = 1;
 var opponent = 2;
@@ -201,6 +199,7 @@ player_match_message.regX = player_match_message.getMeasuredWidth()/2;
 player_match_message.y = 350;
 player_match_message.regY = player_match_message.getMeasuredHeight()/2;
 
+// Handles resizing the window if the stage is to large
 var handle_resize = function(event) {
 	if(window.innerWidth < canvas.width && window.innerHeight < canvas.height) {
 		var width_scale = window.innerWidth/canvas.width;
@@ -240,6 +239,7 @@ var initialize = function() {
 		return false;  
 	} 
 	
+	// size the window and then set the listener for resizing
 	handle_resize();
 	window.onresize = handle_resize;
 	
@@ -434,8 +434,6 @@ var complete_handler = function(event) {
 	// Show the start menu
 	start_menu();
 }
-
-
 
 // Shows the main menu
 var start_menu = function() {

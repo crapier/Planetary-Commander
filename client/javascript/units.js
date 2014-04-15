@@ -199,7 +199,7 @@ var animation_unit = function(movement) {
 	}
 	else {
 		if(this.units <= 7) {
-			this.img = five_units_opponentimg.clone();
+			this.img = five_units_opponent_img.clone();
 		}
 		else if(this.units > 7 && this.units <= 12) {
 			this.img = ten_units_opponent_img.clone();
