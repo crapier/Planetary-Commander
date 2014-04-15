@@ -152,6 +152,8 @@ var node_in_source = function(event) {
 	var hover = event.currentTarget.node_id;
 	nodes[hover].show_target_source();
 	stage.update();
+	var over_sound_instance = createjs.Sound.play("button_over");
+	over_sound_instance.volume = 0.05;
 }
 
 // Listener for mouse out for a node when selecting source node
@@ -159,6 +161,8 @@ var node_out_source = function(event) {
 	var hover = event.currentTarget.node_id;
 	nodes[hover].hide_target_source();
 	stage.update();
+	var over_sound_instance = createjs.Sound.play("button_over");
+	over_sound_instance.volume = 0.05;
 }
 
 // Listener for mouse over for a node when selecting destination node
@@ -166,6 +170,8 @@ var node_in_dest = function(event) {
 	var hover = event.currentTarget.node_id;
 	nodes[hover].show_target_dest();
 	stage.update();
+	var over_sound_instance = createjs.Sound.play("button_over");
+	over_sound_instance.volume = 0.05;
 }
 
 // Listener for mouse out for a node when selecting destination node
@@ -173,6 +179,8 @@ var node_out_dest = function(event) {
 	var hover = event.currentTarget.node_id;
 	nodes[hover].hide_target_dest();
 	stage.update();
+	var over_sound_instance = createjs.Sound.play("button_over");
+	over_sound_instance.volume = 0.05;
 }
 
 // Handles results messages from the server
@@ -260,6 +268,8 @@ var source_node_select = function(event) {
 		nodes[nodes[selected].adjacent[i]].img.addEventListener("click", destination_node_select);
 		nodes[nodes[selected].adjacent[i]].img.addEventListener("mouseover", node_in_dest);
 		nodes[nodes[selected].adjacent[i]].img.addEventListener("mouseout", node_out_dest);
+		var over_sound_instance = createjs.Sound.play("source_click");
+		over_sound_instance.volume = 0.1;
 	}
 }
 
@@ -287,10 +297,16 @@ var destination_node_select = function(event) {
 		}
 		movements.push(new movement(selected, destination, send_units));
 		units_list.push(new units(selected, destination, send_units));
+		
+		var over_sound_instance = createjs.Sound.play("dest_click");
+		over_sound_instance.volume = 0.1;
 	}
 	// The node clicked was the source, so cancel the movement
 	else {
 		nodes[selected].update({owner:player, units:selection_units.max, visible:true});
+		
+		var over_sound_instance = createjs.Sound.play("cancel");
+		over_sound_instance.volume = 0.1;
 	}
 	
 	// Remove the selection units and clear it for future use
@@ -349,6 +365,9 @@ var units_click_listener = function(event) {
 	nodes[units_list[unit_id].source].img.addEventListener("click", source_node_select);
 	nodes[units_list[unit_id].source].img.addEventListener("mouseover", node_in_source);
 	nodes[units_list[unit_id].source].img.addEventListener("mouseout", node_out_source);
+	
+	var over_sound_instance = createjs.Sound.play("cancel");
+	over_sound_instance.volume = 0.1;
 }
 
 // Handles events for the finish button

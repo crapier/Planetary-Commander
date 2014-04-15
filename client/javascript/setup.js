@@ -330,6 +330,9 @@ var initialize = function() {
 		//Sounds
 		{src:"client/sound/button_over.mp3", id:"button_over"},
 		{src:"client/sound/button_click.mp3", id:"button_click"},
+		{src:"client/sound/planet_select.mp3", id:"source_click"},
+		{src:"client/sound/destination_select.mp3", id:"dest_click"},
+		{src:"client/sound/planet_deselect.mp3", id:"cancel"},
 		{src:"client/sound/bgm1.mp3", id:"bgm1"}
 	]
 	
