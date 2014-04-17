@@ -504,6 +504,9 @@ var start_menu = function() {
 	quit_button.regX = quit_button.image.width/2;
 	quit_button.y = 25;
 	quit_button.regY = quit_button.image.height/2;
+	var hit_circle = new createjs.Shape();
+	hit_circle.graphics.beginFill("#000000").drawRect(0,0, quit_button.image.width, quit_button.image.height);
+	quit_button.hitArea = hit_circle;
 
 	// Add and show the main menu to the stage
 	stage.addChild(start_menu_background);
@@ -745,6 +748,12 @@ var draw_map = function(map_id) {
 	create_nodes[map_id]();
 	// Draw the lines for the nodes
 	create_lines();
+	
+	// Stop the timer
+	if(timer.started) {
+		timer.started = false;
+		window.clearInterval(timer.interval);
+	}
 	
 	// Add listeners for updates and results messages from the server for this match
 	socket.on("animations", animation_handler);
