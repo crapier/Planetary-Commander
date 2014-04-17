@@ -238,8 +238,8 @@ var animation_unit = function(movement) {
 	// Set image location and rotation
 	this.img.x = this.start_x;
 	this.img.y = this.start_y;
-	this.img.regX = this.img.image.width/2
-	this.img.regY = this.img.image.height/2
+	this.img.regX = this.img.image.width/2;
+	this.img.regY = this.img.image.height/2;
 	this.img.rotation = rotation;
 	
 	// Set text, text location
@@ -249,9 +249,17 @@ var animation_unit = function(movement) {
 	this.text.y = this.start_y;
 	this.text.regY = this.text.getMeasuredHeight()/2;
 	
+	// Set units target, target location
+	this.target = units_target_img.clone();
+	this.target.x = this.start_x;
+	this.target.regX = this.target.image.width/2;
+	this.target.y = this.start_y;
+	this.target.regY = this.target.image.width/2;
+	
 	// Add to stage below nodes
 	stage.addChildAt(this.img, stage.getChildIndex(nodes[0].img));
 	stage.addChildAt(this.text, stage.getChildIndex(nodes[0].img));
+	stage.addChildAt(this.target, stage.getChildIndex(nodes[0].img));
 }
 
 // Moves the animation object to correct spot for animation time
@@ -260,6 +268,8 @@ animation_unit.prototype.animate = function(time) {
 	this.img.y = (this.end_y - this.start_y)/500 * time + this.start_y;
 	this.text.x = (this.end_x - this.start_x)/500 * time + this.start_x;
 	this.text.y = (this.end_y - this.start_y)/500 * time + this.start_y;
+	this.target.x = (this.end_x - this.start_x)/500 * time + this.start_x;
+	this.target.y = (this.end_y - this.start_y)/500 * time + this.start_y;
 }
 
 // Calls animations on an interval

@@ -102,6 +102,7 @@ var done_animating = function() {
 	for(var i = 0; i < animation_list.length; i++) {
 		stage.removeChild(animation_list[i].img);
 		stage.removeChild(animation_list[i].text);
+		stage.removeChild(animation_list[i].target);
 	}
 	
 	stage.removeChild(sending);

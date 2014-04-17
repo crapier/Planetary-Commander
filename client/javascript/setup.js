@@ -123,6 +123,7 @@ var thirtyfive_units_opponent_img;
 var forty_units_opponent_img;
 var fortyfive_units_opponent_img;
 var fifty_units_opponent_img;
+var units_target_img;
 
 // ------
 // SOUNDS
@@ -317,6 +318,7 @@ var initialize = function() {
 		{src:"/client/img/forty_units_opponent.png", id:"40uo"},
 		{src:"/client/img/fortyfive_units_opponent.png", id:"45uo"},
 		{src:"/client/img/fifty_units_opponent.png", id:"50uo"},
+		{src:"/client/img/units_target.png", id:"ut"},
 		//instruction images
 		
 		{src:"/client/img/instruction1.png", id:"p1"},
@@ -420,6 +422,7 @@ var complete_handler = function(event) {
 	forty_units_opponent_img = new createjs.Bitmap(preload.getResult("40uo"));
 	fortyfive_units_opponent_img = new createjs.Bitmap(preload.getResult("45uo"));
 	fifty_units_opponent_img = new createjs.Bitmap(preload.getResult("50uo"));
+	units_target_img = new createjs.Bitmap(preload.getResult("ut"));
 	//pages
 	
 	page1= new createjs.Bitmap(preload.getResult("p1"));
