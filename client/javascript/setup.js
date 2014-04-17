@@ -124,6 +124,10 @@ var forty_units_opponent_img;
 var fortyfive_units_opponent_img;
 var fifty_units_opponent_img;
 var units_target_img;
+var text_thirty_background;
+var text_fifty_background;
+var text_hundred_background;
+var text_hundred_background_red;
 
 // ------
 // SOUNDS
@@ -171,36 +175,41 @@ loading_message.x = 500;
 loading_message.regX = loading_message.getMeasuredWidth()/2;
 loading_message.y = 350;
 loading_message.regY = loading_message.getMeasuredHeight()/2;
+var loading_text_box;
 
 var waiting = new createjs.Text("Waiting for other Player", "30px Arial", "#006cff");
-waiting.x = 830;
+waiting.x = 820;
 waiting.regX = waiting.getMeasuredWidth()/2;
-waiting.y = 670;
+waiting.y = 660;
 waiting.regY = waiting.getMeasuredHeight()/2;
+var waiting_sending_text_box;
 
 var sending = new createjs.Text("Sending units", "30px Arial", "#006cff");
-sending.x = 890;
+sending.x = 820;
 sending.regX = sending.getMeasuredWidth()/2;
-sending.y = 670;
+sending.y = 660;
 sending.regY = sending.getMeasuredHeight()/2;
 
-var win_message = new createjs.Text("You Won!", "100px Arial", "#0000FF");
+var win_message = new createjs.Text("VICTORY", "100px Arial", "#006cff");
 win_message.x = 500;
 win_message.regX = win_message.getMeasuredWidth()/2;
 win_message.y = 350;
 win_message.regY = win_message.getMeasuredHeight()/2;
+var win_message_text_box;
 
-var lose_message = new createjs.Text("You Lost...", "100px Arial", "#FF0000");
+var lose_message = new createjs.Text("DEFEAT", "100px Arial", "#ff0000");
 lose_message.x = 500;
 lose_message.regX = lose_message.getMeasuredWidth()/2;
 lose_message.y = 350;
 lose_message.regY = lose_message.getMeasuredHeight()/2;
+var win_message_text_box;
 
 var player_match_message = new createjs.Text("Waiting for another Player.", "50px Arial", "#006cff");
 player_match_message.x = 500;
 player_match_message.regX = player_match_message.getMeasuredWidth()/2;
 player_match_message.y = 350;
 player_match_message.regY = player_match_message.getMeasuredHeight()/2;
+var match_message_text_box;
 
 // Handles resizing the window if the stage is to large
 var handle_resize = function(event) {
@@ -319,6 +328,10 @@ var initialize = function() {
 		{src:"/client/img/fortyfive_units_opponent.png", id:"45uo"},
 		{src:"/client/img/fifty_units_opponent.png", id:"50uo"},
 		{src:"/client/img/units_target.png", id:"ut"},
+		{src:"/client/img/text_thirty_background.png", id:"t30"},
+		{src:"/client/img/text_fifty_background.png", id:"t50"},
+		{src:"/client/img/text_hundred_background.png", id:"t100"},
+		{src:"/client/img/text_hundred_background_red.png", id:"t100r"},
 		//instruction images
 		
 		{src:"/client/img/instruction1.png", id:"p1"},
@@ -423,6 +436,10 @@ var complete_handler = function(event) {
 	fortyfive_units_opponent_img = new createjs.Bitmap(preload.getResult("45uo"));
 	fifty_units_opponent_img = new createjs.Bitmap(preload.getResult("50uo"));
 	units_target_img = new createjs.Bitmap(preload.getResult("ut"));
+	text_thirty_background = new createjs.Bitmap(preload.getResult("t30"));
+	text_fifty_background = new createjs.Bitmap(preload.getResult("t50"));
+	text_hundred_background = new createjs.Bitmap(preload.getResult("t100"));
+	text_hundred_background_red = new createjs.Bitmap(preload.getResult("t100r"));
 	//pages
 	
 	page1= new createjs.Bitmap(preload.getResult("p1"));
@@ -448,6 +465,31 @@ var complete_handler = function(event) {
 
 // Shows the main menu
 var start_menu = function() {
+	// Prepare message boxes
+	waiting_sending_text_box = text_thirty_background.clone();
+	waiting_sending_text_box.x = waiting.x - 5;
+	waiting_sending_text_box.regX = waiting_sending_text_box.image.width/2;
+	waiting_sending_text_box.y = waiting.y + 2;
+	waiting_sending_text_box.regY = waiting_sending_text_box.image.height/2;
+	
+	win_message_text_box = text_hundred_background.clone();
+	win_message_text_box.x = win_message.x;
+	win_message_text_box.regX = win_message_text_box.image.width/2;
+	win_message_text_box.y = win_message.y + 2;
+	win_message_text_box.regY = win_message_text_box.image.height/2;
+	
+	lose_message_text_box = text_hundred_background_red.clone();
+	lose_message_text_box.x = win_message.x;
+	lose_message_text_box.regX = lose_message_text_box.image.width/2;
+	lose_message_text_box.y = win_message.y + 2;
+	lose_message_text_box.regY = lose_message_text_box.image.height/2;
+	
+	match_message_text_box = text_fifty_background.clone();
+	match_message_text_box.x = player_match_message.x;
+	match_message_text_box.regX = match_message_text_box.image.width/2;
+	match_message_text_box.y = player_match_message.y + 2;
+	match_message_text_box.regY = match_message_text_box.image.height/2;
+
 	// Prepare all the button instances
 	play_button = play_button_img.clone();
 	instructions_button = instructions_button_img.clone();
@@ -704,6 +746,7 @@ var start_game = function() {
 	
 	// Add the waiting for other player message
 	stage.addChild(player_match_message);
+	stage.addChild(match_message_text_box);
 	
 	stage.update();
 	
@@ -743,6 +786,7 @@ var create_lines = function() {
 var draw_map = function(map_id) {
 	// Remove matchmaking message
 	stage.removeChild(player_match_message);
+	stage.removeChild(match_message_text_box);
 	
 	// Draw appropriate nodes for map id
 	create_nodes[map_id]();

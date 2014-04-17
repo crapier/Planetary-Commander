@@ -106,6 +106,7 @@ var done_animating = function() {
 	}
 	
 	stage.removeChild(sending);
+	stage.removeChild(waiting_sending_text_box);
 	
 	stage.update();
 }
@@ -196,9 +197,11 @@ var result_handler = function(message) {
 	
 	// Show appropriate win or lose message
 	if(message.results == "winner"){
+		stage.addChild(win_message_text_box);
 		stage.addChild(win_message);
 	}
 	else if (message.results == "loser") {
+		stage.addChild(lose_message_text_box);
 		stage.addChild(lose_message);
 	}
 	
@@ -227,6 +230,7 @@ var result_handler = function(message) {
 	// Remove the finalize button or waiting message if present
 	stage.removeChild(finalize_button);
 	stage.removeChild(waiting);
+	stage.removeChild(waiting_sending_text_box);
 	
 	// Stop the timer
 	timer.started = false;
@@ -495,6 +499,7 @@ var end_turn = function() {
 	stage.removeChild(finalize_button);
 	// show the waiting message
 	stage.addChild(waiting);
+	stage.addChild(waiting_sending_text_box);
 	
 	// make sure the timer won't send the call this again when it reaches 0
 	timer.already_finished = true;
