@@ -54,6 +54,8 @@ var finalize_button_img;
 var finalize_button_hover_img;
 var bgm_mute_img;
 var bgm_play_img;
+var quit_img;
+var quit_hover_img;
 var next_button_img;
 var next_button_hover_img;
 var previous_button_img;
@@ -69,13 +71,13 @@ var play_button;
 var instruction_button;
 var finalize_button;
 var bgm_button;
+var quit_button;
 var next_button;
 var previous_button;
 var back_button;
 
 //pages
 var page1,page2,page3,page4,page5,page6,page7,page8,page9,page10,page11,page12;
-var page1_img,page2_img,page3_img,page4_img,page5_img,page6_img,page7_img,page8_img,page9_img,page10_img,page11_img,page12_img;
 
 var small_target_source;
 var medium_target_source;
@@ -270,6 +272,8 @@ var initialize = function() {
 		{src:"/client/img/back_button_hover.png", id:"bkbh"},
 		{src:"/client/img/sound_mute.png", id:"sm"},
 		{src:"/client/img/sound_high.png", id:"sp"},
+		{src:"/client/img/quit.png", id:"q"},
+		{src:"/client/img/quit_hover.png", id:"qh"},
 		{src:"/client/img/small_target_source.png", id:"sts"},
 		{src:"/client/img/medium_target_source.png", id:"mts"},
 		{src:"/client/img/large_target_source.png", id:"lts"},
@@ -368,11 +372,12 @@ var complete_handler = function(event) {
 	next_button_hover_img = new createjs.Bitmap(preload.getResult("nbh"));
 	back_button_img= new createjs.Bitmap(preload.getResult("bkb"));
 	back_button_hover_img= new createjs.Bitmap(preload.getResult("bkbh"));
-	
 	previous_button_img = new createjs.Bitmap(preload.getResult("prb"));
 	previous_button_hover_img = new createjs.Bitmap(preload.getResult("prbh"));	
 	bgm_mute_img = new createjs.Bitmap(preload.getResult("sm"));
 	bgm_play_img = new createjs.Bitmap(preload.getResult("sp"));
+	quit_img = new createjs.Bitmap(preload.getResult("q"));
+	quit_hover_img = new createjs.Bitmap(preload.getResult("qh"));
 	small_target_source = new createjs.Bitmap(preload.getResult("sts"));
 	medium_target_source = new createjs.Bitmap(preload.getResult("mts"));
 	large_target_source = new createjs.Bitmap(preload.getResult("lts"));
@@ -452,6 +457,7 @@ var start_menu = function() {
 	back_button = back_button_img.clone();
 	bgm_button = bgm_play_img.clone();
 	bgm_button.playing = true;
+	quit_button = quit_img.clone();
 	
 	play_button.x = 500;
 	play_button.regX = play_button.image.width/2;
@@ -484,13 +490,23 @@ var start_menu = function() {
 	back_button.y = 670;
 	back_button.regY = back_button.image.height/2;
 
-		
-	bgm_button.scaleX = .5;
-	bgm_button.scaleY = .5;
+
 	bgm_button.x = 980;
 	bgm_button.regX = bgm_button.image.width/2;
 	bgm_button.y = 20;
 	bgm_button.regY = bgm_button.image.height/2;
+	// Add a hit box for the sound button
+	var hit_box = new createjs.Shape();
+	hit_box.graphics.beginFill("#000000").drawRect(0,0,bgm_button.image.width, bgm_button.image.height);
+	bgm_button.hitArea = hit_box;
+	
+	quit_button.x = 25;
+	quit_button.regX = quit_button.image.width/2;
+	quit_button.y = 25;
+	quit_button.regY = quit_button.image.height/2;
+	var hit_circle = new createjs.Shape();
+	hit_circle.graphics.beginFill("#000000").drawRect(0,0, quit_button.image.width, quit_button.image.height);
+	quit_button.hitArea = hit_circle;
 
 	// Add and show the main menu to the stage
 	stage.addChild(start_menu_background);
@@ -507,6 +523,9 @@ var start_menu = function() {
 	instructions_button.addEventListener("click", instruction_button_listener);
 	instructions_button.addEventListener("mouseout", instruction_button_listener);
 	bgm_button.addEventListener("click", bgm_control);
+	quit_button.addEventListener("mouseover", quit_button_listener);
+	quit_button.addEventListener("click", quit_button_listener);
+	quit_button.addEventListener("mouseout", quit_button_listener);
 	finalize_button.addEventListener("mouseover", finish_click_listener);
 	finalize_button.addEventListener("click", finish_click_listener);
 	finalize_button.addEventListener("mouseout", finish_click_listener);
@@ -527,10 +546,32 @@ var start_menu = function() {
 	// Set the volume of the bgm music
 	bgm_loop.volume = 0.1;
 }
-// check next image for instruction
-var check_next= function(counter){
 
-	counters=counter;
+// Returns to the main menu without unecessary recreation of buttons, sound, etc.
+var return_to_menu = function() {
+	// Add back just the menu
+	stage.removeAllChildren();
+	stage.addChild(start_menu_background);
+	stage.addChild(play_button);
+	// Move play button back to right spot
+	play_button.x = 500;
+	play_button.y = 300;
+	stage.addChild(instructions_button);
+	stage.addChild(bgm_button);
+	stage.update();
+	
+	// Reset game variables
+	selection_units = null;
+	selected = -1;
+	
+	// Disconnect from the server if connected
+	if(socket) {
+		socket.disconnect();
+	}
+}
+
+// check next image for instruction
+var check_next= function(){
 	stage.removeAllChildren();
 	//stage.addChild(game_background);
 	stage.addChild(bgm_button);
@@ -650,6 +691,9 @@ var start_game = function() {
 	// Add the background for gameplay
 	stage.addChild(game_background);
 	
+	// Add the quit button
+	stage.addChild(quit_button);
+	
 	// Add back the music button
 	stage.addChild(bgm_button);
 	
@@ -704,6 +748,12 @@ var draw_map = function(map_id) {
 	create_nodes[map_id]();
 	// Draw the lines for the nodes
 	create_lines();
+	
+	// Stop the timer
+	if(timer.started) {
+		timer.started = false;
+		window.clearInterval(timer.interval);
+	}
 	
 	// Add listeners for updates and results messages from the server for this match
 	socket.on("animations", animation_handler);

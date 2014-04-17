@@ -393,7 +393,27 @@ var finish_click_listener = function(event) {
 	}
 }
 
+// Handles events for the quit button
+var quit_button_listener = function(event) {
+	// Change to hover image on mouse over and play sound
+	if(event.type == 'mouseover') {
+		quit_button.image = quit_hover_img.image;
+		stage.update();
+	} 
+	// Change to normal image on mouse out
+	else if(event.type == 'mouseout') {
+		quit_button.image = quit_img.image;
+		stage.update();
+	}
+	// Return to menu and play a sound
+	else if(event.type == 'click') {
+		return_to_menu();
+		var click_sound_instance = createjs.Sound.play("button_click");
+		click_sound_instance.volume = 0.1;
+	}
+}
 
+// Handles events for the next button in the instructions
 var next_click_listener = function(event) {
 	
 	// Change to hover image on mouse over and play sound
@@ -408,18 +428,18 @@ var next_click_listener = function(event) {
 		next_button.image = next_button_img.image;
 		stage.update();
 	}
-	// Call the end turn function and play a sound
+	// Go to the next instruction page and play a sound
 	else if(event.type == 'click') {
 		counters++;
 		if( counters==12)
 			counters=1;
-			
-		check_next(counters);
+		check_next();
 		var click_sound_instance = createjs.Sound.play("button_click");
 		click_sound_instance.volume = 0.1;
 	}
 }
 
+// Handles events for the previous button in the instructions
 var previous_click_listener = function(event) {
 	// Change to hover image on mouse over and play sound
 	if(event.type == 'mouseover') {
@@ -433,17 +453,18 @@ var previous_click_listener = function(event) {
 		previous_button.image = previous_button_img.image;
 		stage.update();
 	}
-	// Call the end turn function and play a sound
+	// Go to the previous instruction page and play a sound
 	else if(event.type == 'click') {
 		counters--;
 		if( counters==0)
 			counters=1;
-		check_next(counters);
+		check_next();
 		var click_sound_instance = createjs.Sound.play("button_click");
 		click_sound_instance.volume = 0.1;
 	}
 }
 
+// Handles events for the return button in the instructions
 var back_click_listener = function(event) {
 	// Change to hover image on mouse over and play sound
 	if(event.type == 'mouseover') {
@@ -457,9 +478,9 @@ var back_click_listener = function(event) {
 		back_button.image = back_button_img.image;
 		stage.update();
 	}
-	// Call the end turn function and play a sound
+	// Return to the main menu and play a sound
 	else if(event.type == 'click') {
-		start_menu();
+		return_to_menu();
 		var click_sound_instance = createjs.Sound.play("button_click");
 		click_sound_instance.volume = 0.1;
 	}
