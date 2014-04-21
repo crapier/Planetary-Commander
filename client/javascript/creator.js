@@ -324,7 +324,7 @@ var add_node = function(event) {
 			number_starts++;
 			// Add the node and update it
 			nodes.push(new node(large, event.stageX/stage.scaleX, event.stageY/stage.scaleY, []));
-			nodes[nodes.length-1].update({units:50, owner:player, visible:true});
+			nodes[nodes.length-1].update({units:20, owner:player, visible:true});
 			// Check to see which listener should be added for clicking
 			if(selected == -1) {
 				nodes[nodes.length-1].img.addEventListener("click", node_click_source);
