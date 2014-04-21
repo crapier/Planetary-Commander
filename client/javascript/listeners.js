@@ -552,6 +552,16 @@ var key_listener = function(event) {
 	}
 }
 
+var full_screen_listener = function(event) {
+	//Tested this, confirmed working in FireFox and Chrome Internet Explorer 11
+	var key_pressed = event.which;
+	
+	// F key
+	if (key_pressed == 70) {
+		canvas.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+	}
+}
+
 // Handles mouse wheel events
 var wheel_listener = function(event) {
 	//wheelDelta is for chrome, detail is for firefox

@@ -165,7 +165,7 @@ var animation_unit = function(movement) {
 	this.end_y = nodes[this.destination].y;
 	
 	// Set image based on owner of source planet
-	if(nodes[this.source].owner == player) {
+	if(nodes[this.source].owner == player && nodes[this.source].visible == true) {
 		if(this.units <= 7) {
 			this.img = five_units_img.clone();
 		}

@@ -211,32 +211,75 @@ player_match_message.y = 350;
 player_match_message.regY = player_match_message.getMeasuredHeight()/2;
 var match_message_text_box;
 
+
+var original_width;
+var original_height;
+
 // Handles resizing the window if the stage is to large
 var handle_resize = function(event) {
-	if(window.innerWidth < canvas.width && window.innerHeight < canvas.height) {
-		var width_scale = window.innerWidth/canvas.width;
-		var height_scale = window.innerHeight/canvas.height;
+	var width_scale = window.innerWidth/original_width;
+	var height_scale = window.innerHeight/original_height;
+
+	if(window.innerWidth < original_width && window.innerHeight < original_height) {
 		if(width_scale < height_scale) {
 			stage.scaleX = width_scale;
 			stage.scaleY = width_scale;
+			
+			canvas.width = canvas.width*width_scale;
+			canvas.height = canvas.height*width_scale;
 		}
 		else {
 			stage.scaleX = height_scale;
 			stage.scaleY = height_scale;
+			
+			canvas.width = original_width*height_scale;
+			canvas.height = original_height*height_scale;
 		}
 	}
-	else if(window.innerWidth < canvas.width) {
-		stage.scaleX = window.innerWidth/canvas.width;
-		stage.scaleY = window.innerWidth/canvas.width;
+	else if(window.innerWidth < original_width) {
+		stage.scaleX = width_scale;
+		stage.scaleY = width_scale;
+		
+		canvas.width = original_width*width_scale;
+		canvas.height = original_height*width_scale;
 	}
-	else if(window.innerHeight < canvas.height) {
-		stage.scaleX = window.innerHeight/canvas.height;
-		stage.scaleY = window.innerHeight/canvas.height;
+	else if(window.innerHeight < original_height) {
+		stage.scaleX = height_scale;
+		stage.scaleY = height_scale;
+		
+		canvas.width = original_width*height_scale;
+		canvas.height = original_height*height_scale;
 	}
-	else {
-		stage.scaleX = 1;
-		stage.scaleY = 1;
-	}	
+	else if(window.innerWidth > original_width && window.innerHeight > original_height) {
+		if(width_scale < height_scale) {
+			stage.scaleX = width_scale;
+			stage.scaleY = width_scale;
+			
+			canvas.width = canvas.width*width_scale;
+			canvas.height = canvas.height*width_scale;
+		}
+		else {
+			stage.scaleX = height_scale;
+			stage.scaleY = height_scale;
+			
+			canvas.width = original_width*height_scale;
+			canvas.height = original_height*height_scale;
+		}
+	}
+	else if(window.innerWidth > original_width) {
+		stage.scaleX = width_scale;
+		stage.scaleY = width_scale;
+		
+		canvas.width = original_width*width_scale;
+		canvas.height = original_height*width_scale;
+	}
+	else if(window.innerHeight > original_height) {
+		stage.scaleX = height_scale;
+		stage.scaleY = height_scale;
+		
+		canvas.width = original_width*height_scale;
+		canvas.height = original_height*height_scale;
+	}
 	stage.update();
 }
 
@@ -250,10 +293,14 @@ var initialize = function() {
 	canvas.oncontextmenu = function() {
 		return false;  
 	} 
+	original_width = canvas.width;
+	original_height = canvas.height;
 	
 	// size the window and then set the listener for resizing
 	handle_resize();
 	window.onresize = handle_resize;
+	
+	document.addEventListener("keydown", full_screen_listener);
 	
 	// Show loading message while preloading
 	var black_background = new createjs.Shape();
@@ -613,7 +660,7 @@ var return_to_menu = function() {
 }
 
 // check next image for instruction
-var check_next= function(){
+var check_next = function(){
 	stage.removeAllChildren();
 	//stage.addChild(game_background);
 	stage.addChild(bgm_button);
@@ -710,7 +757,7 @@ var check_next= function(){
 	
 }
 
-var start_instruction= function(){
+var start_instruction = function(){
 
 	stage.removeAllChildren();
 	stage.addChild(page1);
@@ -756,7 +803,7 @@ var start_game = function() {
 	socket.on("map_select", draw_map);
 	
 	// Add listeners for keyboard and mousewheel events, used to control units being sent
-	document.onkeydown = key_listener;
+	document.addEventListener("keydown", key_listener);
 	var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel";
 	document.addEventListener(mousewheelevt, wheel_listener);
 }
