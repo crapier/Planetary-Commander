@@ -731,6 +731,8 @@ var key_listener = function(event) {
 				nodes[i].img.addEventListener("mouseover", node_in);
 				nodes[i].img.addEventListener("mouseout", node_out);
 			}
+			
+			stage.addEventListener("click", add_node);
 		}
 		stage.update();
 	}
